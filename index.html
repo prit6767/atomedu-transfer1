@@ -125,15 +125,6 @@
   .ft-links { display: flex; gap: 20px; flex-wrap: wrap; }
   .kicker { color: var(--stamp); font-family: "Inter", sans-serif; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px; }
 
-  /* legal pages */
-  .legal { scroll-margin-top: 80px; }
-  .legal-title { font-family: "Fraunces", Georgia, serif; font-size: clamp(40px, 6vw, 68px); letter-spacing: -0.03em; font-weight: 400; margin: 0 0 20px; line-height: 1.02; }
-  .legal-title .it { font-style: italic; font-weight: 300; }
-  .legal-lead { font-family: "Inter", sans-serif; font-size: 15.5px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 36px; line-height: 1.65; }
-  .legal-lead b { color: var(--ink); font-weight: 700; }
-  .legal h3 { font-family: "Inter", sans-serif; font-size: 18px; font-weight: 700; margin: 30px 0 10px; color: var(--ink); letter-spacing: -0.005em; }
-  .legal p { font-family: "Inter", sans-serif; font-size: 14.5px; line-height: 1.7; color: var(--ink-soft); max-width: 70ch; margin: 0 0 10px; }
-  .legal p b { color: var(--ink); font-weight: 700; }
 
   /* workspace */
   .ws-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
@@ -373,6 +364,19 @@
   .modal .go { width: 100%; padding: 12px; border-radius: 999px; background: var(--ink); color: var(--bg); border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: "Inter", sans-serif; }
   .modal .fine { text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); }
   .modal-err { color: var(--stamp); font-size: 12.5px; font-weight: 600; min-height: 18px; margin-bottom: 10px; }
+  .auth-tabs { display: flex; gap: 6px; margin-bottom: 22px; }
+  .auth-tab {
+    flex: 1; padding: 10px 12px; border-radius: 999px;
+    border: 1px solid var(--line-strong); background: transparent; color: var(--muted);
+    font-family: "Inter", sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .auth-tab.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .auth-pane.hidden { display: none; }
+  .auth-pane p a { color: var(--ink); text-decoration: underline; }
+  .admin-shortcut { margin-top: 12px; text-align: center; font-family: "Inter", sans-serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
+  .admin-shortcut a { color: var(--stamp); text-decoration: none; padding: 6px 12px; border: 1px dashed var(--stamp); border-radius: 999px; }
+  .admin-shortcut a:hover { background: color-mix(in srgb, var(--stamp) 10%, transparent); }
   .modal-lg { max-width: 720px; }
   .ai-head { display: flex; justify-content: space-between; align-items: flex-start; }
   .ai-head h3 { margin-bottom: 14px; }
@@ -383,14 +387,42 @@
   .ai-spinner { width: 18px; height: 18px; border: 2px solid var(--line-strong); border-top-color: var(--ink); border-radius: 50%; animation: ai-spin 0.8s linear infinite; }
   @keyframes ai-spin { to { transform: rotate(360deg); } }
   .ai-status { font-size: 13px; color: var(--muted); font-weight: 500; }
-  .ai-body {
+  textarea.ai-body {
     background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
-    padding: 20px 22px; max-height: 55vh; overflow-y: auto;
+    padding: 20px 22px; height: 44vh; min-height: 240px; max-height: 55vh;
     font-family: "Fraunces", Georgia, serif; font-size: 15px; line-height: 1.6;
     color: var(--ink); white-space: pre-wrap; margin-bottom: 14px;
+    width: 100%; resize: vertical; outline: none;
+    display: block;
   }
-  .ai-body.hidden { display: none; }
-  .ai-body:empty::before { content: "Waiting for Atom&hellip;"; color: var(--muted); font-family: "Inter", sans-serif; font-size: 13px; }
+  textarea.ai-body:focus { border-color: var(--ink); }
+  textarea.ai-body.hidden { display: none; }
+  .ai-sub { font-family: "Inter", sans-serif; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .ai-foot .ai-approve { background: var(--ok); color: #fff; border-color: var(--ok); }
+
+  /* empty state */
+  .empty {
+    padding: 60px 40px; text-align: center;
+    border: 1px dashed var(--line-strong); border-radius: 18px;
+    background: var(--bg-elev); font-family: "Inter", sans-serif;
+    margin-bottom: 24px;
+  }
+  .empty-icon {
+    width: 60px; height: 60px; margin: 0 auto 18px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 16px; background: color-mix(in srgb, var(--ink) 8%, transparent);
+    font-family: "Fraunces", Georgia, serif; font-size: 34px; font-weight: 400; color: var(--ink);
+  }
+  .empty-title {
+    font-family: "Fraunces", Georgia, serif; font-size: 28px; letter-spacing: -0.02em;
+    font-weight: 500; margin-bottom: 8px;
+  }
+  .empty-title .it { font-style: italic; font-weight: 300; }
+  .empty-body {
+    font-size: 14px; color: var(--muted); max-width: 44ch; line-height: 1.55;
+    margin: 0 auto 24px;
+  }
+  .empty-cta { margin: 0 auto; }
   .ai-foot { display: flex; gap: 8px; justify-content: flex-end; }
   .ai-foot button {
     font-family: "Inter", sans-serif; font-size: 13px; padding: 10px 16px; border-radius: 999px;
@@ -440,9 +472,10 @@
     <div class="nav-right">
       <a class="nav-link" href="#how">How it works</a>
       <a class="nav-link" href="#inside">Inside</a>
-      <a class="nav-link" href="#privacy">Privacy</a>
-      <a class="nav-link" href="#terms">Terms</a>
-      <button class="nav-cta" data-demo>Try the workspace</button>
+      <a class="nav-link" href="/privacy/">Privacy</a>
+      <a class="nav-link" href="/terms/">Terms</a>
+      <button class="nav-link ghost" data-signin>Sign in</button>
+      <button class="nav-cta" data-signup>Get started</button>
     </div>
   </div>
 </nav>
@@ -453,7 +486,7 @@
     <h1 class="headline">Atom drafts. <span class="it">You approve.</span> Every time.</h1>
     <p class="lede sans">Atom drafts the worksheet, the quiz, the rubric, the note home. You edit and approve every piece. Nothing goes out until you say yes.</p>
     <div class="cta-row">
-      <button class="btn" data-demo>Try the workspace <span class="arrow">&rarr;</span></button>
+      <button class="btn" data-signup>Get started <span class="arrow">&rarr;</span></button>
       <a class="btn ghost" href="#how">See how it works</a>
     </div>
     <div class="fine">Free forever. No card.</div>
@@ -501,72 +534,7 @@
 <section class="end">
   <div class="wrap">
     <h2 class="tag">Atom drafts. <span class="it">You approve.</span> Every time.</h2>
-    <button class="btn" data-demo>Try the workspace <span class="arrow">&rarr;</span></button>
-  </div>
-</section>
-
-<section class="section legal" id="privacy">
-  <div class="wrap">
-    <h2 class="legal-title">Privacy <span class="it">policy.</span></h2>
-    <p class="legal-lead"><b>Last updated: 2026.</b> Atom Edu is a free tool for teachers. This is the whole policy in plain English.</p>
-
-    <h3>What we collect</h3>
-    <p>Your name, work email, subject, and password (stored as-is in your own browser's localStorage, never leaves your device). Drafts you approve, students you add, and grades you enter are stored the same way, locally, on your device only. When you generate a worksheet, the input text and topic you provide are sent to Atom's inference backend to draft the worksheet. We do not persist those requests.</p>
-
-    <h3>What we don't collect</h3>
-    <p>No analytics. No cookies. No third-party trackers. No student names or grades ever leave your browser. We do not know who you are and we do not track individual accounts.</p>
-
-    <h3>What we count (aggregate only)</h3>
-    <p>Our admin dashboard tracks the total number of accounts and drafts made across the whole platform, as counts only, never as identifiable data. Emails, names, drafts, students, and grades are not visible to us.</p>
-
-    <h3>Model calls</h3>
-    <p>Every draft you generate goes through a large language model. The prompt you type and the class context you attached are the only things sent. Student work you upload for adaptation stays on your device and is not sent unless you explicitly ask Atom to work on it. When it is sent, it is sent for that one call and is not stored on our side and is not used to train any model, ours or a provider's.</p>
-
-    <h3>Deletion</h3>
-    <p>To delete everything, clear your browser storage for atom-edu.org. That is the whole delete flow, because there is nothing on our side to erase.</p>
-
-    <h3>Children</h3>
-    <p>Atom Edu is for teachers, not students. Students never sign in. We do not knowingly collect data from anyone under 13.</p>
-
-    <h3>Changes</h3>
-    <p>If this policy changes, the "Last updated" date at the top changes with it and the change is called out on the workspace home page the first time you visit after it happens.</p>
-
-    <h3>Contact</h3>
-    <p>Questions or concerns: hello@atom-edu.org.</p>
-  </div>
-</section>
-
-<section class="section legal" id="terms">
-  <div class="wrap">
-    <h2 class="legal-title">Terms of <span class="it">use.</span></h2>
-    <p class="legal-lead"><b>Last updated: 2026.</b> By using Atom Edu, you agree to the following. Also in plain English.</p>
-
-    <h3>What Atom is</h3>
-    <p>A free tool that drafts classroom materials for teachers. Atom drafts. You edit. You approve. Nothing goes out to a student, a family, or a gradebook until you say yes.</p>
-
-    <h3>Who can use it</h3>
-    <p>Teachers, instructional coaches, and other educators. You are responsible for what you approve and send. Atom is a drafting tool, not a source of truth.</p>
-
-    <h3>Your account and content</h3>
-    <p>Your account lives in your browser. The drafts, rosters, and notes you make are yours. We do not claim any ownership of what you create with Atom.</p>
-
-    <h3>What you agree not to do</h3>
-    <p>Do not use Atom to draft anything you would not send with your own name attached, and do not use it to harass, dox, or harm any student, family, colleague, or third party.</p>
-
-    <h3>Cost</h3>
-    <p>Free. Forever. Every feature. Every classroom. Every year you keep teaching. If that ever changes, existing teachers keep the free tier they signed up under.</p>
-
-    <h3>No warranty</h3>
-    <p>Atom drafts are a starting point. They can be wrong, out of date, or a bad fit for your class. Your judgment, your rubric, and your review are what makes an artifact ready. We offer Atom as-is, without warranty of any kind.</p>
-
-    <h3>Ending your use</h3>
-    <p>Stop using Atom whenever you want. Clear your browser storage to remove everything. No accounts to close, no cancellation flow.</p>
-
-    <h3>Governing law</h3>
-    <p>These terms are governed by the laws of the state where Atom Edu is registered. Disputes go there.</p>
-
-    <h3>Contact</h3>
-    <p>hello@atom-edu.org.</p>
+    <button class="btn" data-signup>Get started <span class="arrow">&rarr;</span></button>
   </div>
 </section>
 
@@ -576,8 +544,8 @@
     <div class="ft-links">
       <a href="#how">How it works</a>
       <a href="#inside">Inside</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#terms">Terms</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
       <a href="mailto:hello@atom-edu.org">Contact</a>
     </div>
     <div>&copy; Atom Edu</div>
@@ -587,35 +555,57 @@
 
 <div class="modal-veil" id="modal">
   <div class="modal">
-    <h3>Come on <span class="it">in.</span></h3>
-    <p>Verified by a school or district email (.edu or .org).</p>
-    <label>Your name</label>
-    <input id="in-name" placeholder="Ms. Chen" autocomplete="off">
-    <label>School email</label>
-    <input id="in-email" placeholder="you@school.edu" type="email" autocomplete="email">
-    <label>What you teach</label>
-    <input id="in-class" placeholder="6th grade Science" autocomplete="off">
-    <div class="modal-err" id="modal-err"></div>
-    <button class="go" id="go">Open my workspace</button>
-    <div class="fine">Free forever. Email is used only to authorize drafts.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab" data-tab="signin">Sign in</button>
+      <button class="auth-tab on" data-tab="signup">Sign up</button>
+    </div>
+
+    <div class="auth-pane" id="pane-signup">
+      <h3>Come on <span class="it">in.</span></h3>
+      <p>New here? Set up in about 30 seconds. Verified by a school (.edu) or organization (.org) email.</p>
+      <label>Your name</label>
+      <input id="in-name" placeholder="Ms. Chen" autocomplete="name">
+      <label>School email</label>
+      <input id="in-email" placeholder="you@school.edu" type="email" autocomplete="email">
+      <label>What you teach</label>
+      <input id="in-class" placeholder="6th grade Science" autocomplete="off">
+      <div class="modal-err" id="modal-err"></div>
+      <button class="go" id="go">Create my workspace</button>
+      <div class="fine">Free forever. Email is used only to authorize drafts.</div>
+    </div>
+
+    <div class="auth-pane hidden" id="pane-signin">
+      <h3>Welcome <span class="it">back.</span></h3>
+      <p>Type the email you signed up with.</p>
+      <label>School email</label>
+      <input id="si-email" placeholder="you@school.edu" type="email" autocomplete="email">
+      <div class="modal-err" id="si-err"></div>
+      <button class="go" id="si-go">Sign in</button>
+      <div class="fine">Sign in works on any browser where you set up before. New device? Just <a href="#" data-switch-tab="signup">sign up</a> again.</div>
+      <div class="admin-shortcut"><a href="#" id="admin-login">Test as admin</a></div>
+    </div>
   </div>
 </div>
 
 <div class="modal-veil" id="ai-modal">
   <div class="modal modal-lg">
     <div class="ai-head">
-      <h3>Your <span class="it">draft.</span></h3>
+      <div>
+        <h3 id="ai-title">Your <span class="it">draft.</span></h3>
+        <div class="ai-sub" id="ai-sub">Edit anything before you save.</div>
+      </div>
       <button class="ai-close" id="ai-close" aria-label="Close">&times;</button>
     </div>
     <div class="ai-state" id="ai-state">
       <div class="ai-spinner"></div>
       <div class="ai-status" id="ai-status">Drafting with Atom&hellip;</div>
     </div>
-    <div class="ai-body" id="ai-body"></div>
+    <textarea class="ai-body" id="ai-body" placeholder="Waiting for Atom&hellip;"></textarea>
     <div class="ai-foot">
       <button class="ai-regen" id="ai-regen">Regenerate</button>
       <button class="ai-copy" id="ai-copy">Copy</button>
-      <button class="ai-use" id="ai-use">Use this draft</button>
+      <button class="ai-approve" id="ai-approve">Approve &amp; save</button>
+      <button class="ai-use" id="ai-use">Save as draft</button>
     </div>
   </div>
 </div>
@@ -697,51 +687,34 @@
       
 <div class="ws-page on" data-page="home">
   <h1 class="ws-hello">Good to see you, <span class="it" id="hello-name">Ms. Chen</span>.</h1>
-  <div class="ws-sub">Drafts waiting on your yes are below.</div>
+  <div class="ws-sub" id="home-sub">Everything you draft with Atom lives here.</div>
 
-  <div class="queue">
-    <div class="queue-head">
-      <div class="t">Awaiting <span class="it">your yes</span></div>
-    </div>
-    <div class="qrow">
-      <div>
-        <div class="qi"><span class="tag">Assignment</span>Rate of Change worksheet <span class="cchip">Period 3</span></div>
-        <div class="qs">Draft ready</div>
-      </div>
-      <div class="qa"><button>Open</button><button class="approve">Approve</button></div>
-    </div>
-    <div class="qrow">
-      <div>
-        <div class="qi"><span class="tag">Quiz</span>Photosynthesis quiz <span class="cchip">Period 3</span></div>
-        <div class="qs">Draft ready</div>
-      </div>
-      <div class="qa"><button>Open</button><button class="approve">Approve</button></div>
-    </div>
-    <div class="qrow">
-      <div>
-        <div class="qi"><span class="tag">Note home</span>Message to Ms. Alvarez <span class="cchip">Family</span></div>
-        <div class="qs">You wrote it. EN + ES ready.</div>
-      </div>
-      <div class="qa"><button>Open</button><button class="approve">Approve</button></div>
-    </div>
+  <div id="home-awaiting"></div>
+
+  <div id="home-recent-wrap" style="display:none;">
+    <div class="grid-label">Recent</div>
+    <div class="recent-list" id="home-recent"></div>
   </div>
 
-  <div class="grid-label">Recent</div>
-  <div class="recent-list">
-    <div class="rrow"><div><div class="name">Rate of Change worksheet <span class="cchip">Period 3</span></div><div class="meta">Draft ready</div></div><div class="status st-review">Awaiting yes</div></div>
-    <div class="rrow"><div><div class="name">Lab safety warm up <span class="cchip">Period 1, 2, 3</span></div><div class="meta">Sent Monday</div></div><div class="status st-out">Sent</div></div>
-    <div class="rrow"><div><div class="name">Argumentative essay rubric <span class="cchip">All periods</span></div><div class="meta">Started yesterday</div></div><div class="status st-draft">Draft</div></div>
-    <div class="rrow"><div><div class="name">Unit 2 study guide <span class="cchip">Period 3</span></div><div class="meta">Sent home as PDF</div></div><div class="status st-out">Sent</div></div>
+  <div class="empty" id="home-empty" style="display:none;">
+    <div class="empty-icon">&#43;</div>
+    <div class="empty-title">Draft your <span class="it">first thing.</span></div>
+    <div class="empty-body">Every draft you make with Atom lands here. Nothing goes out until you approve it. Start with an assignment, a quiz, a note home, or anything else in the "New draft" menu.</div>
+    <button class="btn empty-cta" data-empty-cta>Draft your first thing <span class="arrow">&rarr;</span></button>
   </div>
 </div>
 
 <div class="ws-page" data-page="queue">
   <div class="ph"><h1>Approval <span class="it">queue</span></h1><p>Everything waiting on you. Nothing has gone out.</p></div>
-  <div class="queue">
-    <div class="qrow"><div><div class="qi"><span class="tag">Assignment</span>Rate of Change worksheet <span class="cchip">Period 3</span></div><div class="qs">Draft ready</div></div><div class="qa"><button>Open</button><button class="approve">Approve</button></div></div>
-    <div class="qrow"><div><div class="qi"><span class="tag">Quiz</span>Photosynthesis quiz <span class="cchip">Period 3</span></div><div class="qs">Draft ready</div></div><div class="qa"><button>Open</button><button class="approve">Approve</button></div></div>
-    <div class="qrow"><div><div class="qi"><span class="tag">Note home</span>Message to Ms. Alvarez <span class="cchip">Family</span></div><div class="qs">You wrote it. EN + ES ready.</div></div><div class="qa"><button>Open</button><button class="approve">Approve</button></div></div>
-    <div class="qrow"><div><div class="qi"><span class="tag">Rubric</span>Argumentative essay rubric <span class="cchip">All periods</span></div><div class="qs">4 rows</div></div><div class="qa"><button>Open</button><button class="approve">Approve</button></div></div>
+  <div id="queue-list"></div>
+  <div class="empty" id="queue-empty" style="display:none;">
+    <div class="empty-icon">&#10003;</div>
+    <div class="empty-title">All <span class="it">clear.</span></div>
+    <div class="empty-body">You have no drafts awaiting your yes. Start a new one from the "+ New draft" menu.</div>
+  </div>
+  <div id="queue-sent-wrap" style="display:none; margin-top: 40px;">
+    <div class="grid-label">Sent history</div>
+    <div class="recent-list" id="queue-sent"></div>
   </div>
 </div>
 
@@ -1033,7 +1006,25 @@ Ms. Chen</textarea>
     });
 
     var veil = document.getElementById('modal');
-    document.querySelectorAll('[data-open]').forEach(function(b){ b.addEventListener('click', function(){ veil.classList.add('on'); }); });
+    function switchAuthTab(name){
+      document.querySelectorAll('.auth-tab').forEach(function(t){
+        t.classList.toggle('on', t.getAttribute('data-tab') === name);
+      });
+      document.getElementById('pane-signup').classList.toggle('hidden', name !== 'signup');
+      document.getElementById('pane-signin').classList.toggle('hidden', name !== 'signin');
+      var e = document.getElementById('modal-err'); if(e) e.textContent = '';
+      var e2 = document.getElementById('si-err'); if(e2) e2.textContent = '';
+    }
+    document.querySelectorAll('.auth-tab').forEach(function(t){
+      t.addEventListener('click', function(){ switchAuthTab(t.getAttribute('data-tab')); });
+    });
+    document.querySelectorAll('[data-switch-tab]').forEach(function(a){
+      a.addEventListener('click', function(e){ e.preventDefault(); switchAuthTab(a.getAttribute('data-switch-tab')); });
+    });
+    function openModal(tab){ switchAuthTab(tab || 'signup'); veil.classList.add('on'); setTimeout(function(){ var i = document.querySelector((tab==='signin'?'#si-email':'#in-name')); if(i) i.focus(); }, 30); }
+    document.querySelectorAll('[data-signup]').forEach(function(b){ b.addEventListener('click', function(){ openModal('signup'); }); });
+    document.querySelectorAll('[data-signin]').forEach(function(b){ b.addEventListener('click', function(){ openModal('signin'); }); });
+    document.querySelectorAll('[data-open]').forEach(function(b){ b.addEventListener('click', function(){ openModal('signup'); }); });
     veil.addEventListener('click', function(e){ if(e.target === veil) veil.classList.remove('on'); });
 
     function initials(name){
@@ -1067,6 +1058,7 @@ Ms. Chen</textarea>
         localStorage.setItem('atom-user', JSON.stringify({name:name, cls:cls, email:email || ''}));
         if(email) localStorage.setItem('atom-email', email);
       } catch(e){}
+      renderAll();
     }
     function getUserEmail(){
       try {
@@ -1077,8 +1069,54 @@ Ms. Chen</textarea>
       } catch(e){}
       return '';
     }
-    document.querySelectorAll('[data-demo]').forEach(function(b){ b.addEventListener('click', function(){ enterWorkspace(); }); });
     var EMAIL_RX = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/i;
+    var ADMIN_EMAIL = 'admin@atom-edu.org';
+    var ADMIN_NAME  = 'Test Admin';
+    var ADMIN_CLS   = 'Test class, all grades';
+    function loginAsAdmin(){
+      saveKnownUser({ name: ADMIN_NAME, email: ADMIN_EMAIL, cls: ADMIN_CLS });
+      enterWorkspace(ADMIN_NAME, ADMIN_CLS, ADMIN_EMAIL);
+    }
+    var adminBtn = document.getElementById('admin-login');
+    if(adminBtn){ adminBtn.addEventListener('click', function(e){ e.preventDefault(); loginAsAdmin(); }); }
+    // Store known users by email (localStorage-only per browser).
+    function saveKnownUser(u){
+      try {
+        var known = JSON.parse(localStorage.getItem('atom-known') || '{}');
+        known[u.email.toLowerCase()] = { name: u.name, cls: u.cls };
+        localStorage.setItem('atom-known', JSON.stringify(known));
+      } catch(e){}
+    }
+    function findKnownUser(email){
+      try {
+        var known = JSON.parse(localStorage.getItem('atom-known') || '{}');
+        return known[(email||'').toLowerCase()] || null;
+      } catch(e){ return null; }
+    }
+    // Sign in submit
+    var siGo = document.getElementById('si-go');
+    if(siGo){
+      siGo.addEventListener('click', function(){
+        var email = document.getElementById('si-email').value.trim();
+        var err = document.getElementById('si-err');
+        err.textContent = '';
+        if(!EMAIL_RX.test(email)){ err.textContent = 'A .edu or .org email is required.'; return; }
+        if(email.toLowerCase() === ADMIN_EMAIL){ loginAsAdmin(); return; }
+        var known = findKnownUser(email);
+        if(!known){
+          err.textContent = 'No account found on this browser. Sign up instead.';
+          setTimeout(function(){
+            switchAuthTab('signup');
+            document.getElementById('in-email').value = email;
+            document.getElementById('in-name').focus();
+          }, 900);
+          return;
+        }
+        enterWorkspace(known.name, known.cls, email);
+      });
+      document.getElementById('si-email').addEventListener('keydown', function(e){ if(e.key === 'Enter') siGo.click(); });
+    }
+    // Sign up submit
     document.getElementById('go').addEventListener('click', function(){
       var name = document.getElementById('in-name').value.trim();
       var email = document.getElementById('in-email').value.trim();
@@ -1089,7 +1127,13 @@ Ms. Chen</textarea>
       if(!EMAIL_RX.test(email)){ err.textContent = 'A school (.edu) or organization (.org) email is required.'; return; }
       if(!cls){ err.textContent = 'What do you teach?'; return; }
       try { localStorage.setItem('atom-email', email); } catch(e){}
+      saveKnownUser({ name: name, email: email, cls: cls });
       enterWorkspace(name, cls, email);
+    });
+    // Also allow Enter on signup fields
+    ['in-name','in-email','in-class'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.addEventListener('keydown', function(e){ if(e.key === 'Enter') document.getElementById('go').click(); });
     });
     try {
       var u = JSON.parse(localStorage.getItem('atom-user') || 'null');
@@ -1113,26 +1157,27 @@ Ms. Chen</textarea>
       toastTimer = setTimeout(function(){ toast.classList.remove('on'); }, 5000);
     }
     document.getElementById('toast-undo').addEventListener('click', function(){
-      if(lastApprovedRow) lastApprovedRow.classList.remove('gone');
+      if(lastApprovedId){
+        updateDraft(lastApprovedId, { status: 'awaiting', approvedAt: null });
+      }
       toast.classList.remove('on');
       showToast('Pulled back to draft.');
     });
 
-    // Approve buttons (queue rows)
-    document.querySelectorAll('.qrow .approve').forEach(function(b){
-      b.addEventListener('click', function(){
-        var row = b.closest('.qrow');
-        if(row){ row.classList.add('gone'); lastApprovedRow = row; }
-        showToast('Approved.');
-      });
-    });
-    // Approve buttons (approve-bar on maker pages)
+    // Approve buttons on maker pages (visual, opens ask box if empty)
     document.querySelectorAll('.approve-bar .primary').forEach(function(b){
       b.addEventListener('click', function(){ showToast('Approved. Saved to your workspace.'); });
     });
-    // Return / Cancel buttons on approve-bar
     document.querySelectorAll('.approve-bar button:not(.primary)').forEach(function(b){
       b.addEventListener('click', function(){ showToast('Returned to draft.'); });
+    });
+
+    // Empty state CTA on Home
+    document.querySelectorAll('[data-empty-cta]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var menu = document.getElementById('new-menu');
+        if(menu) menu.classList.add('on');
+      });
     });
 
     // Tabs
@@ -1165,48 +1210,243 @@ Ms. Chen</textarea>
       });
     });
 
+    // ===== Draft store (localStorage) =====
+    var DRAFTS_KEY = 'atom-drafts';
+    function loadDrafts(){
+      try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]'); } catch(e){ return []; }
+    }
+    function saveDrafts(list){
+      try { localStorage.setItem(DRAFTS_KEY, JSON.stringify(list)); } catch(e){}
+    }
+    function randomId(){
+      return 'd_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+    }
+    function addDraft(d){
+      var list = loadDrafts();
+      d.id = randomId();
+      d.createdAt = new Date().getTime();
+      list.unshift(d);
+      saveDrafts(list);
+      renderAll();
+      return d.id;
+    }
+    function updateDraft(id, changes){
+      var list = loadDrafts();
+      for(var i=0;i<list.length;i++){ if(list[i].id === id){ Object.assign(list[i], changes); break; } }
+      saveDrafts(list);
+      renderAll();
+    }
+    function deleteDraft(id){
+      var list = loadDrafts().filter(function(d){ return d.id !== id; });
+      saveDrafts(list); renderAll();
+    }
+    function findDraft(id){ return loadDrafts().find(function(d){ return d.id === id; }); }
+
+    var TYPE_META = {
+      assignment: { tag: 'Assignment', page: 'assignment' },
+      quiz:       { tag: 'Quiz', page: 'quiz' },
+      rubric:     { tag: 'Rubric', page: 'rubric' },
+      lesson:     { tag: 'Lesson', page: 'lesson' },
+      passages:   { tag: 'Passage', page: 'passages' },
+      slides:     { tag: 'Slides', page: 'slides' },
+      docs:       { tag: 'Doc', page: 'docs' },
+      notes:      { tag: 'Note home', page: 'notes' },
+      diff:       { tag: 'Differentiation', page: 'diff' }
+    };
+    function tagFor(t){ return (TYPE_META[t] && TYPE_META[t].tag) || 'Draft'; }
+    function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+    function titleFrom(content, prompt){
+      if(!content) return prompt || 'Untitled draft';
+      var lines = content.split(/\n+/);
+      for(var i=0;i<lines.length;i++){
+        var l = lines[i].trim().replace(/^[#*\-\s]+/, '').replace(/[*_`]/g,'');
+        if(l && l.length < 90) return l;
+      }
+      return (prompt || 'Untitled draft').slice(0, 80);
+    }
+
+    // ===== Renderers =====
+    function renderAll(){
+      renderHome();
+      renderQueuePage();
+    }
+    function renderHome(){
+      var drafts = loadDrafts();
+      var awaiting = drafts.filter(function(d){ return d.status === 'awaiting'; });
+      var awaitingBox = document.getElementById('home-awaiting');
+      var recentWrap = document.getElementById('home-recent-wrap');
+      var recentBox  = document.getElementById('home-recent');
+      var empty = document.getElementById('home-empty');
+      var sub = document.getElementById('home-sub');
+      if(!awaitingBox) return;
+
+      if(drafts.length === 0){
+        awaitingBox.innerHTML = '';
+        recentWrap.style.display = 'none';
+        empty.style.display = 'block';
+        sub.textContent = 'Nothing here yet. Start your first draft.';
+        return;
+      }
+      empty.style.display = 'none';
+      sub.textContent = 'Everything you draft with Atom lives here.';
+
+      if(awaiting.length){
+        awaitingBox.innerHTML =
+          '<div class="queue"><div class="queue-head"><div class="t">Awaiting <span class="it">your yes</span></div></div>' +
+          awaiting.map(qrowHTML).join('') + '</div>';
+        wireQrow(awaitingBox);
+      } else {
+        awaitingBox.innerHTML =
+          '<div class="empty" style="padding: 34px 30px;">' +
+          '<div class="empty-title" style="font-size:22px;">All clear.</div>' +
+          '<div class="empty-body" style="margin-bottom:0;">Nothing awaiting your yes right now.</div>' +
+          '</div>';
+      }
+
+      recentWrap.style.display = 'block';
+      recentBox.innerHTML = drafts.slice(0, 10).map(rrowHTML).join('');
+      wireRrow(recentBox);
+    }
+    function renderQueuePage(){
+      var drafts = loadDrafts();
+      var awaiting = drafts.filter(function(d){ return d.status === 'awaiting'; });
+      var sent = drafts.filter(function(d){ return d.status === 'sent'; }).slice(0, 20);
+      var list = document.getElementById('queue-list');
+      var empty = document.getElementById('queue-empty');
+      var sentWrap = document.getElementById('queue-sent-wrap');
+      var sentBox  = document.getElementById('queue-sent');
+      if(!list) return;
+      if(awaiting.length === 0){
+        list.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        list.innerHTML =
+          '<div class="queue"><div class="queue-head"><div class="t">Needs <span class="it">you</span></div></div>' +
+          awaiting.map(qrowHTML).join('') + '</div>';
+        wireQrow(list);
+      }
+      if(sent.length){
+        sentWrap.style.display = 'block';
+        sentBox.innerHTML = sent.map(rrowHTML).join('');
+        wireRrow(sentBox);
+      } else {
+        sentWrap.style.display = 'none';
+      }
+    }
+    function qrowHTML(d){
+      var cls = d.class ? ' <span class="cchip">' + escapeHTML(d.class) + '</span>' : '';
+      return '<div class="qrow" data-id="' + d.id + '">' +
+        '<div>' +
+          '<div class="qi"><span class="tag">' + escapeHTML(tagFor(d.type)) + '</span>' + escapeHTML(d.title || 'Untitled') + cls + '</div>' +
+          '<div class="qs">Draft ready</div>' +
+        '</div>' +
+        '<div class="qa"><button class="js-open">Open &amp; edit</button><button class="approve">Approve</button></div>' +
+      '</div>';
+    }
+    function rrowHTML(d){
+      var cls = d.class ? ' <span class="cchip">' + escapeHTML(d.class) + '</span>' : '';
+      var statusCls = d.status === 'sent' ? 'st-out' : d.status === 'awaiting' ? 'st-review' : 'st-draft';
+      var statusText = d.status === 'sent' ? 'Sent' : d.status === 'awaiting' ? 'Awaiting yes' : 'Draft';
+      var meta = d.status === 'sent'
+        ? 'Approved ' + timeAgo(d.approvedAt || d.createdAt)
+        : 'Created ' + timeAgo(d.createdAt);
+      return '<div class="rrow" data-id="' + d.id + '">' +
+        '<div><div class="name">' + escapeHTML(d.title || 'Untitled') + cls + '</div><div class="meta">' + meta + '</div></div>' +
+        '<div class="status ' + statusCls + '">' + statusText + '</div>' +
+      '</div>';
+    }
+    function timeAgo(ts){
+      if(!ts) return '';
+      var s = Math.max(1, Math.floor((Date.now() - ts) / 1000));
+      if(s < 60) return 'just now';
+      if(s < 3600) return Math.floor(s/60) + ' min ago';
+      if(s < 86400) return Math.floor(s/3600) + ' hr ago';
+      var days = Math.floor(s/86400);
+      return days + (days===1?' day ago':' days ago');
+    }
+
+    function wireQrow(container){
+      container.querySelectorAll('.qrow').forEach(function(row){
+        var id = row.getAttribute('data-id');
+        var openBtn = row.querySelector('.js-open');
+        var approveBtn = row.querySelector('.approve');
+        if(openBtn){ openBtn.addEventListener('click', function(){ openDraft(id); }); }
+        if(approveBtn){ approveBtn.addEventListener('click', function(){ approveDraft(id, row); }); }
+      });
+    }
+    function wireRrow(container){
+      container.querySelectorAll('.rrow').forEach(function(row){
+        var id = row.getAttribute('data-id');
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', function(){ openDraft(id); });
+      });
+    }
+    function approveDraft(id, row){
+      updateDraft(id, { status: 'sent', approvedAt: Date.now() });
+      lastApprovedId = id;
+      showToast('Approved.');
+    }
+    function openDraft(id){
+      var d = findDraft(id);
+      if(!d) return;
+      currentDraftId = d.id;
+      lastAIRequest = { page: d.type, userText: d.prompt || '' };
+      var t = TYPE_META[d.type];
+      if(t && t.page) goto(t.page);
+      openAIModal();
+      aiState.classList.add('hidden');
+      aiBody.value = d.content || '';
+      document.getElementById('ai-title').innerHTML = 'Edit <span class="it">' + escapeHTML(d.title || 'draft') + '</span>';
+      document.getElementById('ai-sub').textContent = 'Changes save when you click "Save as draft" or "Approve & save".';
+      aiUse.disabled = false; aiApprove.disabled = false; aiCopy.disabled = false; aiRegen.disabled = false;
+    }
+
     // ===== AI (Groq) via Cloudflare Worker =====
     var aiModal = document.getElementById('ai-modal');
     var aiState = document.getElementById('ai-state');
     var aiStatus = document.getElementById('ai-status');
     var aiBody = document.getElementById('ai-body');
     var aiUse = document.getElementById('ai-use');
+    var aiApprove = document.getElementById('ai-approve');
     var aiCopy = document.getElementById('ai-copy');
     var aiRegen = document.getElementById('ai-regen');
     var aiClose = document.getElementById('ai-close');
     var lastAIRequest = null;
+    var currentDraftId = null;
+    var lastApprovedId = null;
 
     function openAIModal(){ aiModal.classList.add('on'); }
-    function closeAIModal(){ aiModal.classList.remove('on'); }
+    function closeAIModal(){ aiModal.classList.remove('on'); currentDraftId = null; }
     aiClose.addEventListener('click', closeAIModal);
     aiModal.addEventListener('click', function(e){ if(e.target === aiModal) closeAIModal(); });
 
     function setAILoading(msg){
       aiState.classList.remove('hidden');
       aiStatus.textContent = msg || 'Drafting with Atom…';
-      aiBody.textContent = '';
-      aiUse.disabled = true; aiCopy.disabled = true; aiRegen.disabled = true;
+      aiBody.value = '';
+      aiUse.disabled = true; aiApprove.disabled = true; aiCopy.disabled = true; aiRegen.disabled = true;
     }
     function setAIDone(content){
       aiState.classList.add('hidden');
-      aiBody.textContent = content || '';
-      aiUse.disabled = false; aiCopy.disabled = false; aiRegen.disabled = false;
+      aiBody.value = content || '';
+      aiUse.disabled = false; aiApprove.disabled = false; aiCopy.disabled = false; aiRegen.disabled = false;
     }
     function setAIError(msg){
       aiState.classList.remove('hidden');
       aiStatus.textContent = '';
-      aiBody.textContent = '';
       aiState.innerHTML = '<div style="color:var(--stamp);font-family:Inter,sans-serif;font-size:13.5px;">' + (msg || 'Something went wrong.') + '</div>';
-      aiUse.disabled = true; aiCopy.disabled = true; aiRegen.disabled = false;
+      aiUse.disabled = true; aiApprove.disabled = true; aiCopy.disabled = true; aiRegen.disabled = false;
     }
 
     function systemPromptFor(page){
       var teacherCls = document.getElementById('ws-class-name').textContent || 'a class';
-      var base = 'You are Atom, a drafting assistant for teachers. Draft a first version the teacher will edit. Be clear, warm, plain, no purple prose. Never claim to have final authority. The teacher is teaching: ' + teacherCls + '. ';
+      var base = 'You are Atom, a drafting assistant for teachers. Draft a first version the teacher will edit. Be clear, warm, plain, no purple prose. Never claim to have final authority. The teacher is teaching: ' + teacherCls + '. Start the response with a short, plain title on the first line (no markdown, no quotes), then a blank line, then the body. ';
       var by = {
-        assignment: 'Draft a printable worksheet. Include a title, numbered questions with point values in parentheses, and a mix of multiple choice and short answer as requested. Format as plain text ready for the teacher to paste in.',
+        assignment: 'Draft a printable worksheet. Include a title, numbered questions with point values in parentheses, and a mix of multiple choice and short answer as requested.',
         quiz: 'Draft a quiz with numbered questions, point values in parentheses, and an answer key at the end. Multiple choice options should be labeled 1-4.',
-        rubric: 'Draft a rubric as a table (Row / 1 Beginning / 2 Developing / 3 Meeting / 4 Exceeding). Tie each row to a standard if given.',
+        rubric: 'Draft a rubric with rows and four levels (1 Beginning, 2 Developing, 3 Meeting, 4 Exceeding). Tie each row to a standard if given.',
         lesson: 'Draft a lesson plan with a warm up, mini lesson, guided practice, independent practice, and exit ticket. Include time budgets and materials.',
         passages: 'Draft a reading passage at the requested Lexile level with 3 to 5 comprehension questions after it.',
         slides: 'Draft an outline for a slide deck. One line per slide: title and one bullet.',
@@ -1221,10 +1461,14 @@ Ms. Chen</textarea>
       var email = getUserEmail();
       if(!email){
         setAIError('Please sign in with a .edu or .org email first.');
+        openAIModal();
         return;
       }
       setAILoading('Drafting with Atom…');
+      document.getElementById('ai-title').innerHTML = 'Your <span class="it">draft.</span>';
+      document.getElementById('ai-sub').textContent = 'Edit anything before you save.';
       openAIModal();
+      currentDraftId = null;
       var payload = {
         model: DEFAULT_MODEL,
         email: email,
@@ -1254,10 +1498,33 @@ Ms. Chen</textarea>
     }
 
     aiCopy.addEventListener('click', function(){
-      try { navigator.clipboard.writeText(aiBody.textContent || ''); showToast('Copied to clipboard.'); } catch(e){ showToast('Copy failed.'); }
+      try { navigator.clipboard.writeText(aiBody.value || ''); showToast('Copied to clipboard.'); } catch(e){ showToast('Copy failed.'); }
     });
+    function saveCurrentDraft(status){
+      var content = aiBody.value || '';
+      var title = titleFrom(content, lastAIRequest && lastAIRequest.userText);
+      var teacherCls = document.getElementById('ws-class-name').textContent || '';
+      if(currentDraftId){
+        updateDraft(currentDraftId, { content: content, title: title, status: status, approvedAt: status === 'sent' ? Date.now() : null });
+        lastApprovedId = status === 'sent' ? currentDraftId : lastApprovedId;
+      } else {
+        var id = addDraft({
+          type: (lastAIRequest && lastAIRequest.page) || 'assignment',
+          title: title, class: teacherCls, content: content,
+          prompt: (lastAIRequest && lastAIRequest.userText) || '',
+          status: status, approvedAt: status === 'sent' ? Date.now() : null
+        });
+        lastApprovedId = status === 'sent' ? id : lastApprovedId;
+      }
+    }
     aiUse.addEventListener('click', function(){
-      showToast('Draft saved to your workspace.');
+      saveCurrentDraft('awaiting');
+      showToast('Draft saved to your queue.');
+      closeAIModal();
+    });
+    aiApprove.addEventListener('click', function(){
+      saveCurrentDraft('sent');
+      showToast('Approved and saved.');
       closeAIModal();
     });
     aiRegen.addEventListener('click', function(){
@@ -1310,46 +1577,7 @@ Ms. Chen</textarea>
       });
     }
 
-    // Queue "Open" buttons → navigate to relevant maker page based on tag
-    var tagToPage = {
-      'Assignment': 'assignment',
-      'Quiz': 'quiz',
-      'Note home': 'notes',
-      'Rubric': 'rubric',
-      'Slides': 'slides',
-      'Docs': 'docs',
-      'Passage': 'passages',
-      'Lesson': 'lesson'
-    };
-    document.querySelectorAll('.qrow').forEach(function(row){
-      var tagEl = row.querySelector('.tag');
-      var target = tagEl ? tagToPage[tagEl.textContent.trim()] : null;
-      var openBtn = row.querySelector('.qa button:not(.approve)');
-      if(openBtn && target){
-        openBtn.addEventListener('click', function(e){
-          e.stopPropagation();
-          goto(target);
-        });
-      }
-    });
-
-    // Recent rows → open assignment maker as default
-    document.querySelectorAll('.rrow').forEach(function(r){
-      r.style.cursor = 'pointer';
-      r.addEventListener('click', function(){
-        var name = (r.querySelector('.name') && r.querySelector('.name').textContent || '').toLowerCase();
-        var target = 'assignment';
-        if(name.indexOf('rubric') > -1) target = 'rubric';
-        else if(name.indexOf('quiz') > -1) target = 'quiz';
-        else if(name.indexOf('warm up') > -1 || name.indexOf('lesson') > -1) target = 'lesson';
-        else if(name.indexOf('note') > -1 || name.indexOf('message') > -1) target = 'notes';
-        else if(name.indexOf('reading') > -1 || name.indexOf('passage') > -1) target = 'passages';
-        else if(name.indexOf('slide') > -1) target = 'slides';
-        else if(name.indexOf('doc') > -1 || name.indexOf('handout') > -1 || name.indexOf('letter') > -1) target = 'docs';
-        else if(name.indexOf('study guide') > -1) target = 'docs';
-        goto(target);
-      });
-    });
+    // Static qrow/rrow wiring is not needed anymore, all rows are rendered by renderAll.
 
     // Class switcher toggle
     var clToggle = document.getElementById('ws-class-toggle');

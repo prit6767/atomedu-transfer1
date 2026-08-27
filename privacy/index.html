@@ -1,37 +1,145 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Privacy, Atom Edu</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,300&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Privacy policy, Atom Edu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-body{background:#f4efe4;color:#0b1226;font-family:"Fraunces",Georgia,serif;margin:0;line-height:1.6}
-.w{max-width:780px;margin:0 auto;padding:0 28px}
-nav{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(11,18,38,.12);font-family:"Inter",sans-serif}
-nav a{text-decoration:none;color:#2a324a;font-size:14px;padding:6px 12px}
-nav .b{font-weight:700;color:#0b1226}
-nav .c{background:#0b1226;color:#f4efe4;padding:9px 16px;border-radius:999px;font-weight:600}
-h1{font-size:clamp(46px,6vw,72px);letter-spacing:-.035em;font-weight:400;margin:60px 0 20px;line-height:1.02}
-h1 .it{font-style:italic;font-weight:300}
-.lead{font-family:"Inter",sans-serif;font-size:16px;color:#2a324a;max-width:65ch;margin:0 0 40px}
-.lead b{color:#0b1226}
-h2{font-family:"Inter",sans-serif;font-size:18px;font-weight:700;margin:30px 0 10px}
-p{font-family:"Inter",sans-serif;font-size:14.5px;color:#2a324a;max-width:70ch;margin:0 0 12px}
-.tl{font-family:"Inter",sans-serif;font-size:12.5px;color:#5a6178;padding:14px 18px;border-radius:10px;background:rgba(11,18,38,.04);border-left:3px solid #0b1226;margin:30px 0}
-footer{border-top:1px solid rgba(11,18,38,.12);padding:30px 0;font-family:"Inter",sans-serif;font-size:13px;color:#5a6178}
-footer .r{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
-footer a{color:#5a6178;text-decoration:none}
-</style></head><body>
-<nav class="w"><a class="b" href="/">Atom Edu</a><div><a href="/">Home</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a class="c" href="/">Try the workspace</a></div></nav>
-<main class="w">
-<h1>Privacy <span class="it">policy.</span></h1>
-<p class="lead"><b>Last updated: 2026.</b> Atom Edu is a free tool for teachers. This is the whole policy in plain English.</p>
-<div class="tl">In one sentence: your drafts and student data live in your browser, not on our servers. What we count is drafts and unique teachers, nothing more.</div>
-<h2>What we collect</h2><p>Your name, work email, subject, and any drafts you generate are stored in your browser's localStorage. When you generate a worksheet, only the prompt and class context are sent to Atom's inference backend. We do not persist those requests.</p>
-<h2>What we don't collect</h2><p>No analytics. No cookies. No third-party trackers. No student names or grades ever leave your browser.</p>
-<h2>What we count (aggregate only)</h2><p>Total drafts, total teachers, per-day totals, per-model totals, per-school-domain totals. Counts only. Emails are redacted to first two letters plus domain.</p>
-<h2>Model calls</h2><p>Prompts go to Groq via our Cloudflare Worker. Content is not stored on our side and is not used to train any model.</p>
-<h2>Deletion</h2><p>Clear your browser storage for atom-edu.org.</p>
-<h2>Children</h2><p>Atom Edu is for teachers. Students never sign in.</p>
-<h2>Contact</h2><p><a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a></p>
+  :root {
+    --bg: #f4efe4; --bg-elev: #ffffff;
+    --ink: #0b1226; --ink-soft: #2a324a; --muted: #5a6178;
+    --line: rgba(11, 18, 38, 0.12);
+    --line-strong: rgba(11, 18, 38, 0.22);
+    --stamp: #b7331f;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Fraunces", "Iowan Old Style", Georgia, serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.55;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 28px; }
+
+  nav {
+    height: 64px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line); background: var(--bg);
+    font-family: "Inter", sans-serif;
+  }
+  nav .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 17px; letter-spacing: -0.01em;
+    text-decoration: none; color: var(--ink);
+  }
+  nav .links a {
+    font-size: 13.5px; color: var(--ink-soft); font-weight: 500;
+    padding: 6px 12px; text-decoration: none;
+  }
+  nav .links a:hover { color: var(--ink); }
+  nav .cta {
+    background: var(--ink); color: var(--bg); border: 1px solid var(--ink);
+    padding: 9px 16px; border-radius: 999px; text-decoration: none;
+    font-size: 14px; font-weight: 600;
+  }
+
+  main { padding: 60px 0 80px; }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: clamp(46px, 6vw, 72px);
+    letter-spacing: -0.035em; font-weight: 400;
+    margin: 0 0 20px; line-height: 1.02;
+  }
+  h1 .it { font-style: italic; font-weight: 300; }
+  .lead {
+    font-family: "Inter", sans-serif; font-size: 16px;
+    color: var(--ink-soft); max-width: 65ch; margin: 0 0 40px; line-height: 1.65;
+  }
+  .lead b { color: var(--ink); font-weight: 700; }
+  h2 {
+    font-family: "Inter", sans-serif; font-size: 18px; font-weight: 700;
+    color: var(--ink); margin: 30px 0 10px; letter-spacing: -0.005em;
+  }
+  p {
+    font-family: "Inter", sans-serif; font-size: 14.5px;
+    color: var(--ink-soft); line-height: 1.7; margin: 0 0 12px; max-width: 70ch;
+  }
+  p b { color: var(--ink); font-weight: 700; }
+  .tocline {
+    font-family: "Inter", sans-serif; font-size: 12.5px; color: var(--muted);
+    padding: 14px 18px; border-radius: 10px;
+    background: color-mix(in srgb, var(--ink) 4%, var(--bg-elev));
+    border-left: 3px solid var(--ink);
+    margin: 30px 0;
+  }
+
+  footer {
+    border-top: 1px solid var(--line); padding: 30px 0;
+    font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted);
+  }
+  footer .row { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  footer .links { display: flex; gap: 22px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<nav class="wrap">
+  <a class="brand" href="/"><span>Atom Edu</span></a>
+  <div class="links">
+    <a href="/">Home</a>
+    <a href="/privacy/">Privacy</a>
+    <a href="/terms/">Terms</a>
+    <a class="cta" href="/">Try the workspace</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <h1>Privacy <span class="it">policy.</span></h1>
+  <p class="lead"><b>Last updated: 2026.</b> Atom Edu is a free tool for teachers. This is the whole policy in plain English.</p>
+
+  <div class="tocline">In one sentence: your drafts and student data live in your browser, not on our servers. What we do keep is a count of drafts and unique teachers, nothing more.</div>
+
+  <h2>What we collect</h2>
+  <p>Your name, work email, subject, and any drafts you generate are stored as-is in your own browser's localStorage. They never leave your device. When you generate a worksheet, only the prompt you typed and the class context you chose are sent to Atom's inference backend to draft it. We do not persist those requests.</p>
+
+  <h2>What we don't collect</h2>
+  <p>No analytics on the site. No cookies. No third-party trackers. No student names or grades ever leave your browser. We do not know who you are and we do not track individual accounts.</p>
+
+  <h2>What we count (aggregate only)</h2>
+  <p>Our admin dashboard tracks the total number of teachers who have signed up, the total number of drafts made across the whole platform, per-day totals, per-model totals, and per-school-domain totals. All counts only, never identifiable content. Emails are hashed for the "unique teacher" count and are shown redacted (first two letters plus the domain) in the recent-activity list. Prompts, drafts, students, and grades are never visible to us.</p>
+
+  <h2>Model calls</h2>
+  <p>Every draft you generate goes through a large language model, currently Groq. The prompt you type and the class context you attached are the only things sent. Student work you upload for adaptation stays on your device and is not sent unless you explicitly ask Atom to work on it. When it is sent, it is sent for that one call and is not stored on our side and is not used to train any model, ours or a provider's.</p>
+
+  <h2>Deletion</h2>
+  <p>To delete everything, clear your browser storage for atom-edu.org. That is the whole delete flow, because there is nothing on our side to erase for you. Your account has no server-side row to remove.</p>
+
+  <h2>Children</h2>
+  <p>Atom Edu is for teachers, not students. Students never sign in. We do not knowingly collect data from anyone under 13.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the "Last updated" date at the top changes with it, and the change is called out on the workspace home page the first time you visit after it happens.</p>
+
+  <h2>Contact</h2>
+  <p>Questions or concerns: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
 </main>
-<footer><div class="w r"><div>&copy; 2026 Atom Edu.</div><div><a href="/">Home</a> <a href="/privacy/">Privacy</a> <a href="/terms/">Terms</a></div></div></footer>
-</body></html>
+
+<footer>
+  <div class="wrap row">
+    <div>&copy; 2026 Atom Edu. Free forever for teachers.</div>
+    <div class="links">
+      <a href="/">Home</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <a href="mailto:hello@atom-edu.org">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

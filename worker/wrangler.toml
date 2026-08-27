@@ -1,0 +1,17 @@
+name = "atom-edu"
+main = "src/worker.js"
+compatibility_date = "2025-08-01"
+workers_dev = true
+
+# Public vars (safe to commit). Secrets live in `wrangler secret put` — never here.
+[vars]
+ALLOWED_ORIGIN = "https://atomedu.pages.dev"
+GROQ_ENDPOINT  = "https://api.groq.com/openai/v1/chat/completions"
+DAILY_CAP      = "5"
+
+# Optional: KV namespace for server-side daily-cap tracking.
+# Create with:  wrangler kv:namespace create RATE_KV
+# Then paste the id below and re-deploy.
+# [[kv_namespaces]]
+# binding = "RATE_KV"
+# id = "PASTE_KV_NAMESPACE_ID_HERE"

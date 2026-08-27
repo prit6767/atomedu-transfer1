@@ -5,7 +5,7 @@ workers_dev = true
 
 # Public vars (safe to commit). Secrets live in `wrangler secret put` — never here.
 [vars]
-ALLOWED_ORIGIN = "https://atomedu.pages.dev"
+ALLOWED_ORIGIN = "https://atom-edu.org"
 GROQ_ENDPOINT  = "https://api.groq.com/openai/v1/chat/completions"
 DAILY_CAP      = "5"
 

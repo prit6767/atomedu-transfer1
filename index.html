@@ -125,6 +125,16 @@
   .ft-links { display: flex; gap: 20px; flex-wrap: wrap; }
   .kicker { color: var(--stamp); font-family: "Inter", sans-serif; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px; }
 
+  /* legal pages */
+  .legal { scroll-margin-top: 80px; }
+  .legal-title { font-family: "Fraunces", Georgia, serif; font-size: clamp(40px, 6vw, 68px); letter-spacing: -0.03em; font-weight: 400; margin: 0 0 20px; line-height: 1.02; }
+  .legal-title .it { font-style: italic; font-weight: 300; }
+  .legal-lead { font-family: "Inter", sans-serif; font-size: 15.5px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 36px; line-height: 1.65; }
+  .legal-lead b { color: var(--ink); font-weight: 700; }
+  .legal h3 { font-family: "Inter", sans-serif; font-size: 18px; font-weight: 700; margin: 30px 0 10px; color: var(--ink); letter-spacing: -0.005em; }
+  .legal p { font-family: "Inter", sans-serif; font-size: 14.5px; line-height: 1.7; color: var(--ink-soft); max-width: 70ch; margin: 0 0 10px; }
+  .legal p b { color: var(--ink); font-weight: 700; }
+
   /* workspace */
   .ws-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
   @media (max-width: 900px) { .ws-shell { grid-template-columns: 1fr; } }
@@ -141,6 +151,28 @@
   .ws-nav a:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); color: var(--ink); }
   .ws-nav a.on { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); font-weight: 600; }
   .ws-teacher { margin-top: 24px; padding: 10px; border-radius: 10px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); }
+  .ws-teacher-info { flex: 1; min-width: 0; }
+  .signout { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 6px 10px; border-radius: 6px; font-size: 14px; }
+  .signout:hover { background: color-mix(in srgb, var(--stamp) 12%, transparent); color: var(--stamp); }
+
+  /* New draft menu */
+  .new-wrap { position: relative; }
+  .new-menu {
+    display: none;
+    position: absolute; top: calc(100% + 6px); right: 0;
+    min-width: 200px;
+    background: var(--bg-elev); border: 1px solid var(--line-strong);
+    border-radius: 12px; padding: 6px;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+    z-index: 60;
+    font-family: "Inter", sans-serif;
+  }
+  .new-menu.on { display: block; }
+  .new-menu a {
+    display: block; padding: 8px 12px; border-radius: 8px;
+    font-size: 13.5px; color: var(--ink-soft); cursor: pointer; font-weight: 500;
+  }
+  .new-menu a:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); }
   .ws-teacher .av { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
   .ws-teacher .tn { font-size: 13px; font-weight: 600; }
   .ws-teacher .ts { font-size: 11px; color: var(--muted); }
@@ -340,6 +372,65 @@
   .modal input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg-elev); color: var(--ink); font-size: 14px; font-family: "Inter", sans-serif; margin-bottom: 14px; }
   .modal .go { width: 100%; padding: 12px; border-radius: 999px; background: var(--ink); color: var(--bg); border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: "Inter", sans-serif; }
   .modal .fine { text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); }
+  .modal-err { color: var(--stamp); font-size: 12.5px; font-weight: 600; min-height: 18px; margin-bottom: 10px; }
+  .modal-lg { max-width: 720px; }
+  .ai-head { display: flex; justify-content: space-between; align-items: flex-start; }
+  .ai-head h3 { margin-bottom: 14px; }
+  .ai-close { background: transparent; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; }
+  .ai-close:hover { color: var(--ink); }
+  .ai-state { display: flex; gap: 12px; align-items: center; padding: 10px 0 14px; }
+  .ai-state.hidden { display: none; }
+  .ai-spinner { width: 18px; height: 18px; border: 2px solid var(--line-strong); border-top-color: var(--ink); border-radius: 50%; animation: ai-spin 0.8s linear infinite; }
+  @keyframes ai-spin { to { transform: rotate(360deg); } }
+  .ai-status { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .ai-body {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px 22px; max-height: 55vh; overflow-y: auto;
+    font-family: "Fraunces", Georgia, serif; font-size: 15px; line-height: 1.6;
+    color: var(--ink); white-space: pre-wrap; margin-bottom: 14px;
+  }
+  .ai-body.hidden { display: none; }
+  .ai-body:empty::before { content: "Waiting for Atom&hellip;"; color: var(--muted); font-family: "Inter", sans-serif; font-size: 13px; }
+  .ai-foot { display: flex; gap: 8px; justify-content: flex-end; }
+  .ai-foot button {
+    font-family: "Inter", sans-serif; font-size: 13px; padding: 10px 16px; border-radius: 999px;
+    border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; font-weight: 600;
+  }
+  .ai-foot .ai-use { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .ai-foot button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ask-go:disabled { opacity: 0.6; cursor: wait; }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--bg);
+    border-radius: 999px; padding: 12px 16px 12px 14px;
+    display: none; align-items: center; gap: 12px;
+    font-family: "Inter", sans-serif; font-size: 13.5px; font-weight: 600;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
+    z-index: 150; opacity: 0; transition: opacity .25s ease, transform .25s ease;
+  }
+  .toast.on { display: flex; opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast-tick { width: 22px; height: 22px; border-radius: 50%; background: var(--ok); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+  .toast-undo { font-family: "Inter", sans-serif; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; background: transparent; color: var(--bg); border: 1px solid color-mix(in srgb, var(--bg) 40%, transparent); cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
+  .toast-undo:hover { background: color-mix(in srgb, var(--bg) 12%, transparent); }
+
+  /* qrow fade after approve */
+  .qrow.gone { opacity: 0.35; transition: opacity .3s ease; }
+
+  /* class list */
+  .class-list { display: none; margin: -14px 0 22px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--bg-elev); }
+  .class-list.on { display: block; }
+  .cl-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13px; }
+  .cl-row:last-child { border-bottom: none; }
+  .cl-row:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); }
+  .cl-row.on { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+  .cl-n b { font-weight: 600; }
+  .cl-m { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .cl-row.add { color: var(--muted); justify-content: center; font-weight: 600; }
+  .ws-class { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .ws-class .chev { color: var(--muted); font-size: 12px; transition: transform .2s ease; }
+  .ws-class.open .chev { transform: rotate(180deg); }
 </style>
 
 <div id="landing">
@@ -349,6 +440,8 @@
     <div class="nav-right">
       <a class="nav-link" href="#how">How it works</a>
       <a class="nav-link" href="#inside">Inside</a>
+      <a class="nav-link" href="#privacy">Privacy</a>
+      <a class="nav-link" href="#terms">Terms</a>
       <button class="nav-cta" data-demo>Try the workspace</button>
     </div>
   </div>
@@ -357,7 +450,7 @@
 <section class="hero" id="top">
   <div class="wrap">
     <div class="eyebrow"><span class="dot"></span>For teachers</div>
-    <h1 class="headline">Make the work. <span class="it">Keep the judgment.</span></h1>
+    <h1 class="headline">Atom drafts. <span class="it">You approve.</span> Every time.</h1>
     <p class="lede sans">Atom drafts the worksheet, the quiz, the rubric, the note home. You edit and approve every piece. Nothing goes out until you say yes.</p>
     <div class="cta-row">
       <button class="btn" data-demo>Try the workspace <span class="arrow">&rarr;</span></button>
@@ -407,8 +500,73 @@
 
 <section class="end">
   <div class="wrap">
-    <h2 class="tag">Make the work. <span class="it">Keep the judgment.</span></h2>
+    <h2 class="tag">Atom drafts. <span class="it">You approve.</span> Every time.</h2>
     <button class="btn" data-demo>Try the workspace <span class="arrow">&rarr;</span></button>
+  </div>
+</section>
+
+<section class="section legal" id="privacy">
+  <div class="wrap">
+    <h2 class="legal-title">Privacy <span class="it">policy.</span></h2>
+    <p class="legal-lead"><b>Last updated: 2026.</b> Atom Edu is a free tool for teachers. This is the whole policy in plain English.</p>
+
+    <h3>What we collect</h3>
+    <p>Your name, work email, subject, and password (stored as-is in your own browser's localStorage, never leaves your device). Drafts you approve, students you add, and grades you enter are stored the same way, locally, on your device only. When you generate a worksheet, the input text and topic you provide are sent to Atom's inference backend to draft the worksheet. We do not persist those requests.</p>
+
+    <h3>What we don't collect</h3>
+    <p>No analytics. No cookies. No third-party trackers. No student names or grades ever leave your browser. We do not know who you are and we do not track individual accounts.</p>
+
+    <h3>What we count (aggregate only)</h3>
+    <p>Our admin dashboard tracks the total number of accounts and drafts made across the whole platform, as counts only, never as identifiable data. Emails, names, drafts, students, and grades are not visible to us.</p>
+
+    <h3>Model calls</h3>
+    <p>Every draft you generate goes through a large language model. The prompt you type and the class context you attached are the only things sent. Student work you upload for adaptation stays on your device and is not sent unless you explicitly ask Atom to work on it. When it is sent, it is sent for that one call and is not stored on our side and is not used to train any model, ours or a provider's.</p>
+
+    <h3>Deletion</h3>
+    <p>To delete everything, clear your browser storage for atom-edu.org. That is the whole delete flow, because there is nothing on our side to erase.</p>
+
+    <h3>Children</h3>
+    <p>Atom Edu is for teachers, not students. Students never sign in. We do not knowingly collect data from anyone under 13.</p>
+
+    <h3>Changes</h3>
+    <p>If this policy changes, the "Last updated" date at the top changes with it and the change is called out on the workspace home page the first time you visit after it happens.</p>
+
+    <h3>Contact</h3>
+    <p>Questions or concerns: hello@atom-edu.org.</p>
+  </div>
+</section>
+
+<section class="section legal" id="terms">
+  <div class="wrap">
+    <h2 class="legal-title">Terms of <span class="it">use.</span></h2>
+    <p class="legal-lead"><b>Last updated: 2026.</b> By using Atom Edu, you agree to the following. Also in plain English.</p>
+
+    <h3>What Atom is</h3>
+    <p>A free tool that drafts classroom materials for teachers. Atom drafts. You edit. You approve. Nothing goes out to a student, a family, or a gradebook until you say yes.</p>
+
+    <h3>Who can use it</h3>
+    <p>Teachers, instructional coaches, and other educators. You are responsible for what you approve and send. Atom is a drafting tool, not a source of truth.</p>
+
+    <h3>Your account and content</h3>
+    <p>Your account lives in your browser. The drafts, rosters, and notes you make are yours. We do not claim any ownership of what you create with Atom.</p>
+
+    <h3>What you agree not to do</h3>
+    <p>Do not use Atom to draft anything you would not send with your own name attached, and do not use it to harass, dox, or harm any student, family, colleague, or third party.</p>
+
+    <h3>Cost</h3>
+    <p>Free. Forever. Every feature. Every classroom. Every year you keep teaching. If that ever changes, existing teachers keep the free tier they signed up under.</p>
+
+    <h3>No warranty</h3>
+    <p>Atom drafts are a starting point. They can be wrong, out of date, or a bad fit for your class. Your judgment, your rubric, and your review are what makes an artifact ready. We offer Atom as-is, without warranty of any kind.</p>
+
+    <h3>Ending your use</h3>
+    <p>Stop using Atom whenever you want. Clear your browser storage to remove everything. No accounts to close, no cancellation flow.</p>
+
+    <h3>Governing law</h3>
+    <p>These terms are governed by the laws of the state where Atom Edu is registered. Disputes go there.</p>
+
+    <h3>Contact</h3>
+    <p>hello@atom-edu.org.</p>
   </div>
 </section>
 
@@ -418,8 +576,9 @@
     <div class="ft-links">
       <a href="#how">How it works</a>
       <a href="#inside">Inside</a>
-      <a href="#">Privacy</a>
-      <a href="#">Contact</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#terms">Terms</a>
+      <a href="mailto:hello@atom-edu.org">Contact</a>
     </div>
     <div>&copy; Atom Edu</div>
   </div>
@@ -429,13 +588,35 @@
 <div class="modal-veil" id="modal">
   <div class="modal">
     <h3>Come on <span class="it">in.</span></h3>
-    <p>Your name and the class you teach.</p>
+    <p>Verified by a school or district email (.edu or .org).</p>
     <label>Your name</label>
-    <input id="in-name" placeholder="Ms. Chen">
+    <input id="in-name" placeholder="Ms. Chen" autocomplete="off">
+    <label>School email</label>
+    <input id="in-email" placeholder="you@school.edu" type="email" autocomplete="email">
     <label>What you teach</label>
-    <input id="in-class" placeholder="6th grade Science">
+    <input id="in-class" placeholder="6th grade Science" autocomplete="off">
+    <div class="modal-err" id="modal-err"></div>
     <button class="go" id="go">Open my workspace</button>
-    <div class="fine">Free forever.</div>
+    <div class="fine">Free forever. Email is used only to authorize drafts.</div>
+  </div>
+</div>
+
+<div class="modal-veil" id="ai-modal">
+  <div class="modal modal-lg">
+    <div class="ai-head">
+      <h3>Your <span class="it">draft.</span></h3>
+      <button class="ai-close" id="ai-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="ai-state" id="ai-state">
+      <div class="ai-spinner"></div>
+      <div class="ai-status" id="ai-status">Drafting with Atom&hellip;</div>
+    </div>
+    <div class="ai-body" id="ai-body"></div>
+    <div class="ai-foot">
+      <button class="ai-regen" id="ai-regen">Regenerate</button>
+      <button class="ai-copy" id="ai-copy">Copy</button>
+      <button class="ai-use" id="ai-use">Use this draft</button>
+    </div>
   </div>
 </div>
 
@@ -444,7 +625,20 @@
     
 <aside class="ws-side">
   <div class="ws-brand" data-nav="home"><div class="brand-mark"></div><span>Atom Edu</span></div>
-  <div class="ws-class"><div class="cn" id="ws-class-name">6th grade Science</div><div class="cp">Period 3</div></div>
+  <div class="ws-class" id="ws-class-toggle">
+    <div>
+      <div class="cn" id="ws-class-name">6th grade Science</div>
+      <div class="cp">Period 3</div>
+    </div>
+    <div class="chev">&#9662;</div>
+  </div>
+  <div class="class-list" id="class-list">
+    <div class="cl-row on"><div class="cl-n"><b>Period 3</b><div class="cl-m">Science, honors</div></div></div>
+    <div class="cl-row"><div class="cl-n"><b>Period 1</b><div class="cl-m">Science</div></div></div>
+    <div class="cl-row"><div class="cl-n"><b>Period 2</b><div class="cl-m">Science</div></div></div>
+    <div class="cl-row"><div class="cl-n"><b>Period 5</b><div class="cl-m">Science</div></div></div>
+    <div class="cl-row add">+ Add a class</div>
+  </div>
 
   <div class="ws-nav-label">Workspace</div>
   <div class="ws-nav">
@@ -476,14 +670,27 @@
     <a data-nav="settings"><span class="lbl">Settings</span></a>
   </div>
 
-  <div class="ws-teacher"><div class="av" id="av-init">MC</div><div><div class="tn" id="av-name">Ms. Chen</div><div class="ts">Signed in</div></div></div>
+  <div class="ws-teacher" id="ws-teacher"><div class="av" id="av-init">MC</div><div class="ws-teacher-info"><div class="tn" id="av-name">Ms. Chen</div><div class="ts">Signed in</div></div><button class="signout" id="signout" title="Sign out">&#x21E5;</button></div>
 </aside>
 
     <main class="ws-main">
       <div class="ws-top">
         <div></div>
         <div class="actions">
-          <button class="primary">+ New draft</button>
+          <div class="new-wrap">
+            <button class="primary" id="new-draft-btn">+ New draft</button>
+            <div class="new-menu" id="new-menu">
+              <a data-nav="assignment">Assignment</a>
+              <a data-nav="quiz">Quiz or test</a>
+              <a data-nav="rubric">Rubric</a>
+              <a data-nav="lesson">Lesson plan</a>
+              <a data-nav="passages">Reading passage</a>
+              <a data-nav="slides">Slide deck</a>
+              <a data-nav="docs">Doc or handout</a>
+              <a data-nav="notes">Note home</a>
+              <a data-nav="diff">Differentiation</a>
+            </div>
+          </div>
           <button class="theme-toggle" data-tt style="font-size:12px;">Theme</button>
         </div>
       </div>
@@ -802,9 +1009,12 @@ Ms. Chen</textarea>
 
     </main>
   </div>
+  <div class="toast" id="toast"><span class="toast-tick">&check;</span><span id="toast-text">Approved.</span><button class="toast-undo" id="toast-undo">Undo</button></div>
 </div>
 
 <script>
+  var WORKER_URL = 'https://atom-edu.pritamavuthu7.workers.dev';
+  var DEFAULT_MODEL = 'llama-3.3-70b-versatile';
   (function(){
     var root = document.documentElement;
     function apply(mode){
@@ -842,7 +1052,7 @@ Ms. Chen</textarea>
     }
     document.querySelectorAll('[data-nav]').forEach(function(a){ a.addEventListener('click', function(){ goto(a.getAttribute('data-nav')); }); });
 
-    function enterWorkspace(name, cls){
+    function enterWorkspace(name, cls, email){
       name = name || 'Ms. Chen';
       cls = cls || '6th grade Science';
       document.getElementById('hello-name').textContent = name;
@@ -853,11 +1063,33 @@ Ms. Chen</textarea>
       document.getElementById('landing').classList.add('hidden');
       document.getElementById('workspace').classList.remove('hidden');
       goto('home');
-      try { localStorage.setItem('atom-user', JSON.stringify({name:name, cls:cls})); } catch(e){}
+      try {
+        localStorage.setItem('atom-user', JSON.stringify({name:name, cls:cls, email:email || ''}));
+        if(email) localStorage.setItem('atom-email', email);
+      } catch(e){}
+    }
+    function getUserEmail(){
+      try {
+        var e = localStorage.getItem('atom-email');
+        if(e && EMAIL_RX.test(e)) return e;
+        var u = JSON.parse(localStorage.getItem('atom-user') || 'null');
+        if(u && u.email && EMAIL_RX.test(u.email)) return u.email;
+      } catch(e){}
+      return '';
     }
     document.querySelectorAll('[data-demo]').forEach(function(b){ b.addEventListener('click', function(){ enterWorkspace(); }); });
+    var EMAIL_RX = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/i;
     document.getElementById('go').addEventListener('click', function(){
-      enterWorkspace(document.getElementById('in-name').value, document.getElementById('in-class').value);
+      var name = document.getElementById('in-name').value.trim();
+      var email = document.getElementById('in-email').value.trim();
+      var cls = document.getElementById('in-class').value.trim();
+      var err = document.getElementById('modal-err');
+      err.textContent = '';
+      if(!name){ err.textContent = 'Please enter your name.'; return; }
+      if(!EMAIL_RX.test(email)){ err.textContent = 'A school (.edu) or organization (.org) email is required.'; return; }
+      if(!cls){ err.textContent = 'What do you teach?'; return; }
+      try { localStorage.setItem('atom-email', email); } catch(e){}
+      enterWorkspace(name, cls, email);
     });
     try {
       var u = JSON.parse(localStorage.getItem('atom-user') || 'null');
@@ -868,5 +1100,302 @@ Ms. Chen</textarea>
         document.getElementById('ws-class-name').textContent = u.cls || '6th grade Science';
       }
     } catch(e){}
+
+    // Toast
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toast-text');
+    var toastTimer = null;
+    var lastApprovedRow = null;
+    function showToast(msg){
+      toastText.textContent = msg || 'Approved.';
+      toast.classList.add('on');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ toast.classList.remove('on'); }, 5000);
+    }
+    document.getElementById('toast-undo').addEventListener('click', function(){
+      if(lastApprovedRow) lastApprovedRow.classList.remove('gone');
+      toast.classList.remove('on');
+      showToast('Pulled back to draft.');
+    });
+
+    // Approve buttons (queue rows)
+    document.querySelectorAll('.qrow .approve').forEach(function(b){
+      b.addEventListener('click', function(){
+        var row = b.closest('.qrow');
+        if(row){ row.classList.add('gone'); lastApprovedRow = row; }
+        showToast('Approved.');
+      });
+    });
+    // Approve buttons (approve-bar on maker pages)
+    document.querySelectorAll('.approve-bar .primary').forEach(function(b){
+      b.addEventListener('click', function(){ showToast('Approved. Saved to your workspace.'); });
+    });
+    // Return / Cancel buttons on approve-bar
+    document.querySelectorAll('.approve-bar button:not(.primary)').forEach(function(b){
+      b.addEventListener('click', function(){ showToast('Returned to draft.'); });
+    });
+
+    // Tabs
+    document.querySelectorAll('.tabs').forEach(function(tabs){
+      tabs.querySelectorAll('.tab').forEach(function(t){
+        t.addEventListener('click', function(){
+          tabs.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
+          t.classList.add('on');
+        });
+      });
+    });
+
+    // Provider chips (send-to)
+    document.querySelectorAll('.send-to').forEach(function(bar){
+      bar.querySelectorAll('.prov').forEach(function(p){
+        p.addEventListener('click', function(){
+          bar.querySelectorAll('.prov').forEach(function(x){ x.classList.remove('on'); });
+          p.classList.add('on');
+        });
+      });
+    });
+
+    // Chip toggles (EN / ES etc)
+    document.querySelectorAll('.chips').forEach(function(bar){
+      bar.querySelectorAll('.chip').forEach(function(c){
+        c.addEventListener('click', function(){
+          bar.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); });
+          c.classList.add('on');
+        });
+      });
+    });
+
+    // ===== AI (Groq) via Cloudflare Worker =====
+    var aiModal = document.getElementById('ai-modal');
+    var aiState = document.getElementById('ai-state');
+    var aiStatus = document.getElementById('ai-status');
+    var aiBody = document.getElementById('ai-body');
+    var aiUse = document.getElementById('ai-use');
+    var aiCopy = document.getElementById('ai-copy');
+    var aiRegen = document.getElementById('ai-regen');
+    var aiClose = document.getElementById('ai-close');
+    var lastAIRequest = null;
+
+    function openAIModal(){ aiModal.classList.add('on'); }
+    function closeAIModal(){ aiModal.classList.remove('on'); }
+    aiClose.addEventListener('click', closeAIModal);
+    aiModal.addEventListener('click', function(e){ if(e.target === aiModal) closeAIModal(); });
+
+    function setAILoading(msg){
+      aiState.classList.remove('hidden');
+      aiStatus.textContent = msg || 'Drafting with Atom…';
+      aiBody.textContent = '';
+      aiUse.disabled = true; aiCopy.disabled = true; aiRegen.disabled = true;
+    }
+    function setAIDone(content){
+      aiState.classList.add('hidden');
+      aiBody.textContent = content || '';
+      aiUse.disabled = false; aiCopy.disabled = false; aiRegen.disabled = false;
+    }
+    function setAIError(msg){
+      aiState.classList.remove('hidden');
+      aiStatus.textContent = '';
+      aiBody.textContent = '';
+      aiState.innerHTML = '<div style="color:var(--stamp);font-family:Inter,sans-serif;font-size:13.5px;">' + (msg || 'Something went wrong.') + '</div>';
+      aiUse.disabled = true; aiCopy.disabled = true; aiRegen.disabled = false;
+    }
+
+    function systemPromptFor(page){
+      var teacherCls = document.getElementById('ws-class-name').textContent || 'a class';
+      var base = 'You are Atom, a drafting assistant for teachers. Draft a first version the teacher will edit. Be clear, warm, plain, no purple prose. Never claim to have final authority. The teacher is teaching: ' + teacherCls + '. ';
+      var by = {
+        assignment: 'Draft a printable worksheet. Include a title, numbered questions with point values in parentheses, and a mix of multiple choice and short answer as requested. Format as plain text ready for the teacher to paste in.',
+        quiz: 'Draft a quiz with numbered questions, point values in parentheses, and an answer key at the end. Multiple choice options should be labeled 1-4.',
+        rubric: 'Draft a rubric as a table (Row / 1 Beginning / 2 Developing / 3 Meeting / 4 Exceeding). Tie each row to a standard if given.',
+        lesson: 'Draft a lesson plan with a warm up, mini lesson, guided practice, independent practice, and exit ticket. Include time budgets and materials.',
+        passages: 'Draft a reading passage at the requested Lexile level with 3 to 5 comprehension questions after it.',
+        slides: 'Draft an outline for a slide deck. One line per slide: title and one bullet.',
+        docs: 'Draft the requested document in the teacher voice. Plain, warm, second person.',
+        notes: 'Draft or improve a note home to a family. Warm, specific, not alarmed unless the situation warrants it.',
+        diff: 'Adapt the assignment three ways: on grade, scaffolded, and ELL with sentence frames.'
+      };
+      return base + (by[page] || by.assignment);
+    }
+
+    async function callAI(page, userText){
+      var email = getUserEmail();
+      if(!email){
+        setAIError('Please sign in with a .edu or .org email first.');
+        return;
+      }
+      setAILoading('Drafting with Atom…');
+      openAIModal();
+      var payload = {
+        model: DEFAULT_MODEL,
+        email: email,
+        temperature: 0.5,
+        max_tokens: 2048,
+        messages: [
+          { role: 'system', content: systemPromptFor(page) },
+          { role: 'user', content: userText || 'Draft a first version.' }
+        ]
+      };
+      lastAIRequest = { page: page, userText: userText };
+      try {
+        var res = await fetch(WORKER_URL + '/api/groq', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        var data = await res.json();
+        if(!res.ok){
+          setAIError((data && (data.error || data.detail)) || ('Error ' + res.status));
+          return;
+        }
+        setAIDone((data && data.content) || '(empty response)');
+      } catch(e){
+        setAIError('Network error: ' + (e && e.message ? e.message : String(e)));
+      }
+    }
+
+    aiCopy.addEventListener('click', function(){
+      try { navigator.clipboard.writeText(aiBody.textContent || ''); showToast('Copied to clipboard.'); } catch(e){ showToast('Copy failed.'); }
+    });
+    aiUse.addEventListener('click', function(){
+      showToast('Draft saved to your workspace.');
+      closeAIModal();
+    });
+    aiRegen.addEventListener('click', function(){
+      if(!lastAIRequest) return;
+      callAI(lastAIRequest.page, lastAIRequest.userText);
+    });
+
+    // Ask box "Draft it" button, calls the Worker
+    document.querySelectorAll('.ask-go').forEach(function(b){
+      b.addEventListener('click', function(){
+        var input = b.parentElement.querySelector('input');
+        var text = input ? input.value.trim() : '';
+        if(!text){ showToast('Type what you want to make first.'); return; }
+        var page = b.closest('.ws-page');
+        var pageKey = page ? page.getAttribute('data-page') : 'assignment';
+        callAI(pageKey, text);
+      });
+    });
+
+    // New draft menu
+    var ndBtn = document.getElementById('new-draft-btn');
+    var ndMenu = document.getElementById('new-menu');
+    if(ndBtn && ndMenu){
+      ndBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        ndMenu.classList.toggle('on');
+      });
+      ndMenu.querySelectorAll('a').forEach(function(a){
+        a.addEventListener('click', function(){
+          goto(a.getAttribute('data-nav'));
+          ndMenu.classList.remove('on');
+        });
+      });
+      document.addEventListener('click', function(e){
+        if(!ndMenu.contains(e.target) && e.target !== ndBtn) ndMenu.classList.remove('on');
+      });
+    }
+
+    // Sign out
+    var soBtn = document.getElementById('signout');
+    if(soBtn){
+      soBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(!confirm('Sign out? Your local drafts stay on this device.')) return;
+        try {
+          localStorage.removeItem('atom-user');
+          localStorage.removeItem('atom-email');
+        } catch(e){}
+        location.reload();
+      });
+    }
+
+    // Queue "Open" buttons → navigate to relevant maker page based on tag
+    var tagToPage = {
+      'Assignment': 'assignment',
+      'Quiz': 'quiz',
+      'Note home': 'notes',
+      'Rubric': 'rubric',
+      'Slides': 'slides',
+      'Docs': 'docs',
+      'Passage': 'passages',
+      'Lesson': 'lesson'
+    };
+    document.querySelectorAll('.qrow').forEach(function(row){
+      var tagEl = row.querySelector('.tag');
+      var target = tagEl ? tagToPage[tagEl.textContent.trim()] : null;
+      var openBtn = row.querySelector('.qa button:not(.approve)');
+      if(openBtn && target){
+        openBtn.addEventListener('click', function(e){
+          e.stopPropagation();
+          goto(target);
+        });
+      }
+    });
+
+    // Recent rows → open assignment maker as default
+    document.querySelectorAll('.rrow').forEach(function(r){
+      r.style.cursor = 'pointer';
+      r.addEventListener('click', function(){
+        var name = (r.querySelector('.name') && r.querySelector('.name').textContent || '').toLowerCase();
+        var target = 'assignment';
+        if(name.indexOf('rubric') > -1) target = 'rubric';
+        else if(name.indexOf('quiz') > -1) target = 'quiz';
+        else if(name.indexOf('warm up') > -1 || name.indexOf('lesson') > -1) target = 'lesson';
+        else if(name.indexOf('note') > -1 || name.indexOf('message') > -1) target = 'notes';
+        else if(name.indexOf('reading') > -1 || name.indexOf('passage') > -1) target = 'passages';
+        else if(name.indexOf('slide') > -1) target = 'slides';
+        else if(name.indexOf('doc') > -1 || name.indexOf('handout') > -1 || name.indexOf('letter') > -1) target = 'docs';
+        else if(name.indexOf('study guide') > -1) target = 'docs';
+        goto(target);
+      });
+    });
+
+    // Class switcher toggle
+    var clToggle = document.getElementById('ws-class-toggle');
+    var clList = document.getElementById('class-list');
+    if(clToggle && clList){
+      clToggle.addEventListener('click', function(){
+        clList.classList.toggle('on');
+        clToggle.classList.toggle('open');
+      });
+      clList.querySelectorAll('.cl-row').forEach(function(r){
+        r.addEventListener('click', function(e){
+          e.stopPropagation();
+          if(r.classList.contains('add')){ showToast('Add a class: coming soon.'); return; }
+          clList.querySelectorAll('.cl-row').forEach(function(x){ x.classList.remove('on'); });
+          r.classList.add('on');
+          var b = r.querySelector('b'); var m = r.querySelector('.cl-m');
+          if(b && m){
+            document.getElementById('ws-class-name').textContent = m.textContent.trim();
+            document.querySelector('.ws-class .cp').textContent = b.textContent;
+          }
+          clList.classList.remove('on');
+          clToggle.classList.remove('open');
+          showToast('Switched to ' + b.textContent + '.');
+        });
+      });
+    }
+
+    // Tool cards on Classes page
+    document.querySelectorAll('.tool').forEach(function(t){
+      if(!t.hasAttribute('data-goto')){
+        t.style.cursor = 'pointer';
+        t.addEventListener('click', function(){
+          var name = t.querySelector('.tt');
+          showToast('Opening ' + (name ? name.textContent : 'class') + '.');
+        });
+      }
+    });
+
+    // Regenerate / import mini buttons
+    document.querySelectorAll('.mini-btn').forEach(function(b){
+      b.addEventListener('click', function(){ showToast(b.textContent.trim() + ': running.'); });
+    });
+
+    // Settings save/cancel
+    document.querySelectorAll('.sblock textarea, .frow input').forEach(function(el){
+      // no-op, just to let them focus
+    });
   })();
 </script>

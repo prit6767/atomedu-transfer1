@@ -104,9 +104,10 @@ export default {
 };
 
 function corsHeaders(origin, allowed) {
-  const ok = allowed === "*" || origin === allowed;
+  const list = (allowed || "*").split(",").map(s => s.trim());
+  const ok = list.includes("*") || list.includes(origin);
   return {
-    "Access-Control-Allow-Origin": ok ? (origin || allowed) : allowed,
+    "Access-Control-Allow-Origin": ok ? origin : list[0],
     "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",

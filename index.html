@@ -495,7 +495,7 @@ h2.big .it{font-style:italic;font-weight:300}
             </div>
             <div class="mk-cta">
               <div class="lim" id="mk-lim">You have <b>5</b> drafts left today.</div>
-              <button id="mk-start">Begin interview &rarr;</button>
+              <button id="mk-start">Create assignment &rarr;</button>
             </div>
           </div>
         </div>
@@ -743,7 +743,7 @@ h2.big .it{font-style:italic;font-weight:300}
     var u=currentUser();if(!u)throw new Error('Not signed in.');
     var body={model:model,messages:messages,temperature:(opts&&opts.temperature!==undefined)?opts.temperature:0.5,max_tokens:(opts&&opts.max_tokens)||2048,email:u.email};
     if(opts&&opts.response_format)body.response_format=opts.response_format;
-    var r=await fetch(WORKER_URL+'/api/groq',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify(body)});
+    var r=await fetch(WORKER_URL+'/api/groq',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(!r.ok){var t=await r.text();throw new Error('Worker '+r.status+': '+t.slice(0,200));}
     var j=await r.json();
     return j.content;

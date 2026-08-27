@@ -49,13 +49,7 @@ PAGE_QUEUE = r'''
 PAGE_CLASSES = r'''
 <div class="ws-page" data-page="classes">
   <div class="ph"><h1>Your <span class="it">classes</span></h1><p>Every class you teach.</p></div>
-  <div class="tools">
-    <div class="tool"><div class="ic">1</div><div class="tt">Period 1</div><div class="td">Morning block</div></div>
-    <div class="tool"><div class="ic">2</div><div class="tt">Period 2</div><div class="td">Morning block</div></div>
-    <div class="tool"><div class="ic">3</div><div class="tt">Period 3</div><div class="td">Morning block</div></div>
-    <div class="tool"><div class="ic">5</div><div class="tt">Period 5</div><div class="td">Morning block</div></div>
-    <div class="tool"><div class="ic">+</div><div class="tt">Add a class</div><div class="td">Start a new class.</div></div>
-  </div>
+  <div class="tools" id="classes-list"></div>
 </div>
 '''
 
@@ -76,209 +70,36 @@ def maker_shell(title, italic, sub, prompt_val, dest_default, approve_label, bod
 </div>
 '''
 
-PAGE_ASSIGNMENT = maker_shell('Assignment', 'maker', 'A printable worksheet. A printable worksheet ready for handout.',
-  '6 question rate of change worksheet for period 3, mix MC and graph, 20 points', 'Canvas',
-  'Approve', r'''
-  <div class="worksheet">
-    <div class="ws-title">Rate of Change</div>
-    <div class="ws-meta">Name <span class="ln"></span> Date <span class="ln sm"></span> Period <span class="ln xs"></span></div>
-    <hr class="ws-hr">
-    <div class="ws-q">
-      <div class="ws-qh"><b>1.</b> <span class="pts">(1 point)</span> <span class="qtype">Multiple choice</span></div>
-      <div class="ws-qb">Which expression is the derivative of f(x) = 3x&sup2; &minus; 4x + 1?</div>
-      <ol class="ws-opts"><li>6x &minus; 4</li><li>3x &minus; 4</li><li>x&sup3; &minus; 2x&sup2; + x</li><li>6x + 4</li></ol>
-    </div>
-    <div class="ws-q">
-      <div class="ws-qh"><b>2.</b> <span class="pts">(2 points)</span> <span class="qtype">Short answer</span></div>
-      <div class="ws-qb">Evaluate &int;(2x + 3) dx.</div>
-      <div class="ws-lines"><div class="wl"></div><div class="wl"></div></div>
-    </div>
-    <div class="ws-q">
-      <div class="ws-qh"><b>3.</b> <span class="pts">(4 points)</span> <span class="qtype">Graph</span></div>
-      <div class="ws-qb">Sketch f(x) = x&sup2; on the axes below. Mark the point where the slope equals 4.</div>
-      <div class="ws-graph"></div>
-    </div>
-  </div>
-''').replace('__PAGE__','assignment').replace('__TITLE__','Assignment').replace('__IT__','maker').replace('__SUB__','A printable worksheet. A printable worksheet ready for handout.').replace('__PROMPT__','6 question rate of change worksheet for period 3, mix MC and graph, 20 points').replace('__APPROVE__','Approve').replace('__BODY__', r'''
-  <div class="worksheet">
-    <div class="ws-title">Rate of Change</div>
-    <div class="ws-meta">Name <span class="ln"></span> Date <span class="ln sm"></span> Period <span class="ln xs"></span></div>
-    <hr class="ws-hr">
-    <div class="ws-q">
-      <div class="ws-qh"><b>1.</b> <span class="pts">(1 point)</span> <span class="qtype">Multiple choice</span></div>
-      <div class="ws-qb">Which expression is the derivative of f(x) = 3x&sup2; &minus; 4x + 1?</div>
-      <ol class="ws-opts"><li>6x &minus; 4</li><li>3x &minus; 4</li><li>x&sup3; &minus; 2x&sup2; + x</li><li>6x + 4</li></ol>
-    </div>
-    <div class="ws-q">
-      <div class="ws-qh"><b>2.</b> <span class="pts">(2 points)</span> <span class="qtype">Short answer</span></div>
-      <div class="ws-qb">Evaluate &int;(2x + 3) dx.</div>
-      <div class="ws-lines"><div class="wl"></div><div class="wl"></div></div>
-    </div>
-    <div class="ws-q">
-      <div class="ws-qh"><b>3.</b> <span class="pts">(4 points)</span> <span class="qtype">Graph</span></div>
-      <div class="ws-qb">Sketch f(x) = x&sup2; on the axes below. Mark the point where the slope equals 4.</div>
-      <div class="ws-graph"></div>
-    </div>
-  </div>
-''')
 
-PAGE_QUIZ = r'''
-<div class="ws-page" data-page="quiz">
-  <div class="ph"><h1>Quiz &amp; test <span class="it">builder</span></h1><p>Mix multiple choice, short answer, and diagrams. Includes an answer key.</p></div>
-  ''' + CONTROL_NOTE + r'''
+def clean_maker(page, title, italic, sub, approve):
+    return f'''
+<div class="ws-page" data-page="{page}">
+  <div class="ph"><h1>{title} <span class="it">{italic}</span></h1><p>{sub}</p></div>
+  ''' + CONTROL_NOTE + '''
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input value="12 question photosynthesis quiz for period 3, mostly MC, 25 min">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want. For example: 6 question worksheet on photosynthesis for period 3">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
-  <div class="worksheet">
-    <div class="ws-title">Photosynthesis, short quiz</div>
-    <div class="ws-meta">Name <span class="ln"></span> Date <span class="ln sm"></span> Period <span class="ln xs"></span></div>
-    <hr class="ws-hr">
-    <div class="ws-q"><div class="ws-qh"><b>1.</b> <span class="pts">(1 point)</span> <span class="qtype">Multiple choice</span></div><div class="ws-qb">Which pair does a plant take in for photosynthesis?</div><ol class="ws-opts"><li>Water and salt</li><li>Water and carbon dioxide</li><li>Oxygen and nitrogen</li><li>Sugar and oxygen</li></ol></div>
-    <div class="ws-q"><div class="ws-qh"><b>2.</b> <span class="pts">(1 point)</span> <span class="qtype">Multiple choice</span></div><div class="ws-qb">Chlorophyll makes leaves look what color?</div><ol class="ws-opts"><li>Red</li><li>Green</li><li>Blue</li><li>Yellow</li></ol></div>
-    <div class="ws-q"><div class="ws-qh"><b>3.</b> <span class="pts">(2 points)</span> <span class="qtype">Short answer</span></div><div class="ws-qb">Describe what happens to a plant left in a dark closet for a week.</div><div class="ws-lines"><div class="wl"></div><div class="wl"></div></div></div>
+  <div class="empty" style="padding: 50px 30px;">
+    <div class="empty-icon">&#43;</div>
+    <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
+    <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  ''' + SEND_TO + r'''
-  <div class="approve-bar"><button>Return to draft</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 '''
 
-PAGE_RUBRIC = r'''
-<div class="ws-page" data-page="rubric">
-  <div class="ph"><h1>Rubric <span class="it">builder</span></h1><p>Rows tied to a standard. Attach to any assignment.</p></div>
-  ''' + CONTROL_NOTE + r'''
-  <div class="rubric-matrix">
-    <div class="rm-row rm-head"><div>Row / Standard</div><div>1 &middot; Beginning</div><div>2 &middot; Developing</div><div>3 &middot; Meeting</div><div>4 &middot; Exceeding</div></div>
-    <div class="rm-row"><div><b>Claim</b><div class="mm">W.6.1a</div></div><div>No clear claim</div><div>Claim present, unclear</div><div>Clear, arguable claim</div><div>Nuanced, precise claim</div></div>
-    <div class="rm-row"><div><b>Evidence</b><div class="mm">W.6.1b</div></div><div>Little or no evidence</div><div>Evidence, uneven fit</div><div>Relevant, sufficient</div><div>Layered, well chosen</div></div>
-    <div class="rm-row"><div><b>Reasoning</b><div class="mm">W.6.1b</div></div><div>Restates evidence</div><div>Reasoning shows</div><div>Connects evidence to claim</div><div>Addresses counter</div></div>
-    <div class="rm-row"><div><b>Conventions</b><div class="mm">L.6.1</div></div><div>Frequent errors</div><div>Errors distract</div><div>Errors do not distract</div><div>Precise, controlled</div></div>
-  </div>
-  <div class="approve-bar"><button>Return to draft</button><button class="primary">Approve &amp; save</button></div>
-</div>
-'''
-
-PAGE_LESSON = r'''
-<div class="ws-page" data-page="lesson">
-  <div class="ph"><h1>Lesson <span class="it">planner</span></h1><p>One class, or a whole unit.</p></div>
-  ''' + CONTROL_NOTE + r'''
-  <div class="timeline">
-    <div class="tl-row"><div class="tl-time">Warm up</div><div class="tl-card"><b>Silent write, 5 min</b><div class="mm">Project the question.</div></div></div>
-    <div class="tl-row"><div class="tl-time">Mini lesson</div><div class="tl-card"><b>Chlorophyll and light, 12 min</b><div class="mm">Slides 3 to 9.</div></div></div>
-    <div class="tl-row"><div class="tl-time">Practice</div><div class="tl-card"><b>Guided, 15 min &middot; then independent, 10 min</b><div class="mm">Handout, 2 pages.</div></div></div>
-    <div class="tl-row"><div class="tl-time">Exit</div><div class="tl-card"><b>One sentence exit ticket, 3 min</b><div class="mm">What does chlorophyll do?</div></div></div>
-  </div>
-  <div class="approve-bar"><button>Return to draft</button><button class="primary">Approve</button></div>
-</div>
-'''
-
-PAGE_PASSAGES = r'''
-<div class="ws-page" data-page="passages">
-  <div class="ph"><h1>Reading <span class="it">passages</span></h1><p>Leveled to your class. Questions attached.</p></div>
-  ''' + CONTROL_NOTE + r'''
-  <div class="ask-box">
-    <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input value="350 word passage on how leaves turn light into food, 820L, warm and curious">
-      <button class="ask-go">Draft it &rarr;</button>
-    </div>
-  </div>
-  <div class="worksheet">
-    <div class="ws-title">How leaves turn light into food</div>
-    <hr class="ws-hr">
-    <div class="passage">
-      <p>You have walked past a tree a thousand times and never thought about what it eats. It does not eat, really. Not the way you do. A tree makes its own food, right there in its leaves, using sunlight.</p>
-      <p>Inside each leaf are tiny green pockets called <b>chlorophyll</b>. When light hits the leaf, chlorophyll grabs it. The leaf pulls in water from the roots and carbon dioxide from the air. Then the leaf turns those three things into sugar. The tree uses that sugar to grow.</p>
-    </div>
-    <hr class="ws-hr">
-    <div class="ws-q"><div class="ws-qh"><b>1.</b> <span class="pts">(2 points)</span> <span class="qtype">Short answer</span></div><div class="ws-qb">What are the three things a leaf uses to make food?</div><div class="ws-lines"><div class="wl"></div><div class="wl"></div></div></div>
-  </div>
-  ''' + SEND_TO + r'''
-  <div class="approve-bar"><button>Return to draft</button><button class="primary">Approve</button></div>
-</div>
-'''
-
-PAGE_SLIDES = r'''
-<div class="ws-page" data-page="slides">
-  <div class="ph"><h1>Slides &amp; <span class="it">boards</span></h1><p>Slides for the projector, notes for the board.</p></div>
-  ''' + CONTROL_NOTE + r'''
-  <div class="ask-box">
-    <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input value="8 slide photosynthesis intro for period 3, warm up on slide 1, exit ticket on slide 8">
-      <button class="ask-go">Draft it &rarr;</button>
-    </div>
-  </div>
-  <div class="slides">
-    <div class="slide"><div class="sn">01</div><div class="sc"><b>Photosynthesis</b><div class="mm">Warm up: what does a plant eat?</div></div></div>
-    <div class="slide"><div class="sn">02</div><div class="sc"><b>Three things a leaf needs</b><div class="mm">Water, light, carbon dioxide</div></div></div>
-    <div class="slide"><div class="sn">03</div><div class="sc"><b>Chlorophyll</b><div class="mm">Where it lives, what it does</div></div></div>
-    <div class="slide"><div class="sn">04</div><div class="sc"><b>Diagram: inside the leaf</b><div class="mm">Label the arrows</div></div></div>
-    <div class="slide"><div class="sn">05</div><div class="sc"><b>Sugar, oxygen, out</b><div class="mm">What the plant gives back</div></div></div>
-    <div class="slide"><div class="sn">06</div><div class="sc"><b>Try it: partner talk</b><div class="mm">Explain in one sentence</div></div></div>
-    <div class="slide"><div class="sn">07</div><div class="sc"><b>Exit ticket</b><div class="mm">One input, one output</div></div></div>
-    <div class="slide"><div class="sn">+</div><div class="sc"><b>Add slide</b><div class="mm">Blank or diagram</div></div></div>
-  </div>
-  <div class="approve-bar"><button>Return to draft</button><button class="primary">Approve</button></div>
-</div>
-'''
-
-PAGE_DOCS = r'''
-<div class="ws-page" data-page="docs">
-  <div class="ph"><h1>Docs &amp; <span class="it">handouts</span></h1><p>Family letters, syllabi, permission slips, newsletters.</p></div>
-  ''' + CONTROL_NOTE + r'''
-  <div class="ask-box">
-    <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input value="one page unit overview for families, Unit 3 Plants, warm and plain, EN + ES">
-      <button class="ask-go">Draft it &rarr;</button>
-    </div>
-  </div>
-  <div class="worksheet">
-    <div class="ws-title">A quick note from room 214</div>
-    <div class="passage">
-      <p>Hi families,</p>
-      <p>This month, our class is studying plants. We are learning how a leaf makes food out of sunlight, water, and air, and why leaves look green. It is a hands on unit, so students will be using magnifiers, a few real leaves, and their own careful observations.</p>
-      <p>Two ways you can help at home: ask your student to explain photosynthesis in one sentence at dinner, and take a walk to look at how different leaves are shaped. That is the whole homework.</p>
-      <p>Warmly,<br>Ms. Chen</p>
-    </div>
-    <div class="chips" style="margin-top:14px;"><span class="chip on">EN</span><span class="chip">ES draft ready</span></div>
-  </div>
-  <div class="approve-bar"><button>Return to draft</button><button class="primary">Approve</button></div>
-</div>
-'''
-
-PAGE_NOTES = r'''
-<div class="ws-page" data-page="notes">
-  <div class="ph"><h1>Notes <span class="it">home</span></h1><p>You write the message. Atom checks tone and drafts a translation.</p></div>
-  ''' + CONTROL_NOTE + r'''
-  <div class="worksheet">
-    <div class="doc-tag">Your draft &middot; message home</div>
-    <textarea class="msg-write">Hi Ms. Alvarez,
-
-I wanted to reach out about Diego. He is doing thoughtful work in class this year, and I have really enjoyed his questions during our plants unit. I noticed he was a little quieter on Friday and did not turn in the lab we started last week. Nothing to worry about, I just wanted you to know.
-
-Would it help to schedule a quick check in with Diego on Friday during lunch? I can walk him through the lab and give him a chance to finish it in a smaller setting.
-
-Warmly,
-Ms. Chen</textarea>
-    <div class="chips"><span class="chip on">EN</span><span class="chip">ES draft ready</span></div>
-  </div>
-  <div class="approve-bar"><button>Return to draft</button><button class="primary">Approve</button></div>
-</div>
-'''
-
-PAGE_DIFF = r'''
-<div class="ws-page" data-page="diff">
-  <div class="ph"><h1>Differentia<span class="it">tion</span></h1><p>Same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
-  ''' + CONTROL_NOTE + r'''
-  <div class="diff-grid">
-    <div class="diff-col"><div class="section-label">On grade</div><div class="worksheet mini"><p><b>3.</b> If a plant sits in a dark closet for a week, what happens? Explain in 2 sentences.</p></div></div>
-    <div class="diff-col"><div class="section-label">Scaffolded</div><div class="worksheet mini"><p><b>3.</b> A plant sits in a dark closet. What happens? Choose one: (a) grows tall (b) stays green (c) fades and dies.</p></div></div>
-    <div class="diff-col"><div class="section-label">ELL frames</div><div class="worksheet mini"><p><b>3.</b> In a dark closet, a plant _____ because it does not have _____.</p></div></div>
-  </div>
-  <div class="approve-bar"><button>Return to drafts</button><button class="primary">Approve all three</button></div>
-</div>
-'''
+PAGE_ASSIGNMENT = clean_maker('assignment', 'Assignment', 'maker', 'A printable worksheet ready for handout.', 'Approve')
+PAGE_QUIZ = clean_maker('quiz', 'Quiz &amp; test', 'builder', 'Mix multiple choice, short answer, and diagrams. Includes an answer key.', 'Approve')
+PAGE_RUBRIC = clean_maker('rubric', 'Rubric', 'builder', 'Rows tied to a standard. Attach to any assignment.', 'Approve &amp; save')
+PAGE_LESSON = clean_maker('lesson', 'Lesson', 'planner', 'One class, or a whole unit.', 'Approve')
+PAGE_PASSAGES = clean_maker('passages', 'Reading', 'passages', 'Leveled to your class. Questions attached.', 'Approve')
+PAGE_SLIDES = clean_maker('slides', 'Slides &amp;', 'boards', 'Slides for the projector, notes for the board.', 'Approve')
+PAGE_DOCS = clean_maker('docs', 'Docs &amp;', 'handouts', 'Family letters, syllabi, permission slips, newsletters.', 'Approve')
+PAGE_NOTES = clean_maker('notes', 'Notes', 'home', 'You write the message. Atom checks tone and drafts a translation.', 'Approve')
+PAGE_DIFF = clean_maker('diff', 'Differentia', 'tion', 'Same assignment, adapted for reading level, IEP, or your ELL group.', 'Approve all three')
 
 PAGE_STANDARDS = r'''
 <div class="ws-page" data-page="standards">
@@ -302,14 +123,14 @@ PAGE_SETTINGS = r'''
   <div class="settings">
     <div class="sblock">
       <h3>You</h3>
-      <div class="frow"><label>Name</label><input value="Ms. Chen"></div>
-      <div class="frow"><label>School email</label><input value="chen@rooseveltms.org"></div>
-      <div class="frow"><label>Subject &amp; grade</label><input value="6th grade Science"></div>
+      <div class="frow"><label>Name</label><input id="set-name" value=""></div>
+      <div class="frow"><label>School email</label><input id="set-email" value="" readonly></div>
+      <div class="frow"><label>Subject &amp; grade</label><input id="set-cls" value=""></div>
     </div>
     <div class="sblock">
       <h3>Voice</h3>
-      <p class="mm">Atom writes drafts in a voice close to yours. Paste something you already wrote.</p>
-      <textarea>Warm, direct, second person. Everyday comparisons. No big words for the sake of it.</textarea>
+      <p class="mm">Atom writes drafts in a voice close to yours. Paste something you already wrote and Atom will match it.</p>
+      <textarea id="set-voice" placeholder="Paste a paragraph you already wrote, or leave blank for a neutral warm voice."></textarea>
     </div>
     <div class="sblock">
       <h3>Privacy</h3>
@@ -1323,6 +1144,24 @@ SCRIPT = r'''
     function renderAll(){
       renderHome();
       renderQueuePage();
+      renderClasses();
+      renderSettings();
+    }
+    function renderClasses(){
+      var box = document.getElementById('classes-list');
+      if(!box) return;
+      var cls = document.getElementById('ws-class-name').textContent || 'My class';
+      box.innerHTML =
+        '<div class="tool"><div class="ic">1</div><div class="tt">' + escapeHTML(cls) + '</div><div class="td">Your class.</div></div>' +
+        '<div class="tool"><div class="ic">+</div><div class="tt">Add a class</div><div class="td">Start a new class.</div></div>';
+    }
+    function renderSettings(){
+      try {
+        var u = JSON.parse(localStorage.getItem('atom-user') || 'null') || {};
+        var e = document.getElementById('set-name'); if(e) e.value = u.name || '';
+        var em = document.getElementById('set-email'); if(em) em.value = u.email || '';
+        var c = document.getElementById('set-cls'); if(c) c.value = u.cls || '';
+      } catch(e){}
     }
     function renderHome(){
       var drafts = loadDrafts();

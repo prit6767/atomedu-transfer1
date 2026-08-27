@@ -15,3 +15,7 @@ DAILY_CAP      = "5"
 # [[kv_namespaces]]
 # binding = "RATE_KV"
 # id = "PASTE_KV_NAMESPACE_ID_HERE"
+
+[[kv_namespaces]]
+binding = "RATE_KV"
+id = "071e14ef5a8f4084b1df3de437ee679d"

@@ -270,6 +270,42 @@ h2.big .it{font-style:italic;font-weight:300}
 
 /* KaTeX color harmony */
 .katex{color:var(--ink)}
+.katex-error{color:var(--stamp);border-bottom:1px dotted var(--stamp);font-family:"JetBrains Mono",monospace;font-size:12px}
+
+/* Diagrams: force high-contrast, sharp lines */
+.ws-diagram{margin:14px 0;padding:18px;background:#fff;border:1px solid var(--line-strong);border-radius:10px;display:flex;justify-content:center;color:#0b1226}
+.ws-diagram svg{max-width:100%;height:auto;color:#0b1226;stroke:#0b1226;fill:none}
+.ws-diagram svg text{fill:#0b1226;stroke:none;font-family:"Inter",sans-serif;font-size:11px;font-weight:500}
+.ws-diagram svg .fill,.ws-diagram svg [data-fill]{fill:#0b1226}
+:root[data-theme="dark"] .ws-diagram{background:#f4efe4}
+
+/* Print / PDF — US Letter (8.5 x 11 in) */
+@page { size: Letter; margin: 0.6in 0.55in 0.7in 0.55in; }
+@media print {
+  html, body { background: #fff !important; color: #000 !important; overflow: visible !important; }
+  #landing, .ws-side, .ws-header, .approve-bar, .mk-form, .iv-panel, .control-note, .toast, .hdr-row, .ws-top, #mk-limit-note, .no-print { display: none !important; }
+  .ws-shell { display: block !important; grid-template-columns: 1fr !important; }
+  .ws-main { padding: 0 !important; margin: 0 !important; }
+  .ws-page { display: block !important; }
+  .ph { display: none !important; }
+  .worksheet { background: #fff !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; color: #000 !important; }
+  .ws-title { color: #000 !important; font-size: 22pt !important; }
+  .ws-sub { color: #333 !important; font-size: 10.5pt !important; margin-bottom: 10pt !important; }
+  .ws-meta { font-size: 10pt !important; color: #000 !important; }
+  .ws-hr { border-color: #000 !important; }
+  .ws-q { page-break-inside: avoid; break-inside: avoid; padding: 8pt 0 12pt !important; border-bottom: 1px dashed #999 !important; }
+  .ws-qh, .ws-qh b, .ws-qh .pts, .ws-qh .qtype { color: #000 !important; }
+  .ws-qh .qtype { border-color: #000 !important; }
+  .ws-qb { color: #000 !important; font-size: 12pt !important; line-height: 1.5 !important; }
+  .ws-opts li { color: #000 !important; font-size: 11.5pt !important; }
+  .ws-lines .wl { border-color: #000 !important; }
+  .ws-diagram { background: #fff !important; border: 1px solid #000 !important; padding: 8pt !important; page-break-inside: avoid; }
+  .ws-diagram svg, .ws-diagram svg text { color: #000 !important; stroke: #000 !important; fill: none !important; }
+  .ws-diagram svg text { fill: #000 !important; stroke: none !important; }
+  #ws-key { display: block !important; page-break-before: always; }
+  .katex { color: #000 !important; }
+}
+
 
 /* toasts */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;font-family:"Inter",sans-serif;font-size:13px;font-weight:600;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:.2s ease}
@@ -817,55 +853,89 @@ h2.big .it{font-style:italic;font-weight:300}
 
     var qa=iv.questions.map(function(q,i){return {q:q.q,a:iv.answers[i]||''};});
     var compressed=null;
+    var maxDiagrams=(iv.spec.diagrams==='none')?0:2;
     try{
-      var cPrompt='Compress this teacher interview into a compact JSON spec for a downstream worksheet-drafting model. Keep only decision-relevant facts. Prefer terse phrases, no filler. Include: objective, standard (best guess), audience, misconceptions[], hook, difficulty_curve, scaffolds[], extensions[], diagram_needs[], usage. Reply ONLY JSON.\n\nSEED:\n'+JSON.stringify(iv.spec)+'\n\nQA:\n'+JSON.stringify(qa);
-      var comp=await callGroq('openai/gpt-oss-20b',[{role:'user',content:cPrompt}],{temperature:0.2,max_tokens:600,response_format:{type:'json_object'}});
+      var cPrompt='You are a router that compresses a teacher interview into a compact JSON spec for a downstream worksheet-drafting model. Keep only decision-relevant facts. Prefer terse phrases.\n\nAlso design AT MOST '+maxDiagrams+' diagrams for the worksheet. Each diagram must be genuinely useful (not decorative), specific to a concept, and richly labelled. For each diagram, produce a detailed prompt (60-120 words) that specifies: exact objects to draw, spatial layout with coordinates in a 400x260 viewBox, every label text and its position, arrows with directions, axes with units, and any grid or reference lines. AVOID: generic circles, unlabeled shapes, repeated motifs, decorative flourishes. PREFER: real scientific/mathematical figures — free body diagrams with forces & angles, labelled cell/organ cross-sections, circuit schematics with component values, phase diagrams with axes & regions, geometry constructions with points named, graphs with tick marks and shaded regions.\n\nOutput JSON:\n{\n  "objective": "...",\n  "standard": "...",\n  "audience": "...",\n  "misconceptions": [...],\n  "hook": "...",\n  "difficulty_curve": "...",\n  "scaffolds": [...],\n  "extensions": [...],\n  "usage": "...",\n  "diagrams": [\n    { "attach_to_question_topic": "...", "prompt": "detailed SVG-drawing instructions, 60-120 words, includes every label and coordinate" }\n  ]\n}\nReturn diagrams as [] if the spec says none or if none genuinely help.\n\nSEED:\n'+JSON.stringify(iv.spec)+'\n\nQA:\n'+JSON.stringify(qa);
+      var comp=await callGroq('openai/gpt-oss-20b',[{role:'user',content:cPrompt}],{temperature:0.3,max_tokens:1400,response_format:{type:'json_object'}});
       compressed=parseJSON(comp);
-    }catch(e){compressed={raw_qa:qa};}
+      if(compressed&&Array.isArray(compressed.diagrams))compressed.diagrams=compressed.diagrams.slice(0,maxDiagrams);
+    }catch(e){compressed={raw_qa:qa,diagrams:[]};}
 
     document.getElementById('mk-interview-wrap').innerHTML='<div class="iv-panel"><div class="iv-thinking"><span>GPT-OSS 120B is drafting your worksheet</span><span class="dots"><span></span><span></span><span></span></span></div></div>';
 
     var s=iv.spec;
     var typeNames={mcq:'multiple choice',sa:'short answer',frq:'long free-response'};
     var typeList=s.types.map(function(t){return typeNames[t];}).join(', ');
-    var diagLine=s.diagrams==='none'?'No diagrams.':s.diagrams==='many'?'Include intricately detailed labelled SVG diagrams on most questions where a picture aids understanding.':'Include a labelled SVG diagram on questions that clearly benefit.';
+    var diagList=(compressed&&Array.isArray(compressed.diagrams))?compressed.diagrams:[];
+    var diagBrief=diagList.length?('Attach EXACTLY '+diagList.length+' diagram'+(diagList.length===1?'':'s')+' total (max 2). Use these router-designed prompts verbatim as your drawing spec:\n'+diagList.map(function(d,i){return '  ['+(i+1)+'] For a question about: '+d.attach_to_question_topic+'\n      Prompt: '+d.prompt;}).join('\n')):'No diagrams this worksheet.';
 
     var draftPrompt=[
-      'You are Atom, drafting a worksheet for a teacher. Output ONE JSON object, no prose, no markdown fence.',
+      'You are Atom, drafting a worksheet for a US high-school teacher. Output ONE JSON object, no prose, no markdown fence.',
       '',
       'SPEC:',
       'class: '+s.cls,
       'topic: '+s.topic,
       'question_count: '+s.count,
-      'question_types_allowed: '+typeList+' (use only these; mix them freely)',
+      'question_types_allowed: '+typeList+' (use only these; mix roughly evenly)',
       'detail_level: '+s.detailLabel+' ('+s.detail+'/5)',
-      'diagrams: '+diagLine,
       'teacher_notes: '+(s.notes||'(none)'),
       '',
-      'COMPRESSED_INTERVIEW:',
-      JSON.stringify(compressed).slice(0,4000),
+      'DIAGRAM PLAN (from the router):',
+      diagBrief,
       '',
-      'RULES:',
-      '1. Use PROPER LaTeX for ALL math and STEM notation, delimited $...$ or $$...$$. Real integrals \\int, sums \\sum, vectors \\vec{v}, fractions \\frac{}{}, Greek letters \\alpha \\beta, chemistry with \\ce{H_2O + CO_2 -> C_6H_{12}O_6}, proper subscripts/superscripts. Never write "x^2" as plain text; write $x^2$.',
-      '2. For diagrams, produce INLINE SVG that is intricately detailed and clearly labelled with <text> tags. viewBox roughly 0 0 400 260. Use currentColor for strokes so it works in dark mode. Include arrows, axis labels, part labels, units. NO external images. NO <script>.',
-      '3. Every question has: number, type (one of "mcq","sa","frq"), points (integer), body (may contain $...$), and one of: options (array of 4 strings for mcq), lines (integer 2-4 for sa), or space (integer 6-12 lines for frq). Optional: diagram_svg (string).',
-      '4. Include an answer_key array parallel to questions with concise correct answer + brief rationale (also in LaTeX where math).',
-      '5. Match the requested question_count exactly. Mix the allowed types roughly evenly. Detail level '+s.detail+'/5 controls rigor and length.',
+      'COMPRESSED_INTERVIEW:',
+      JSON.stringify(compressed).slice(0,3500),
+      '',
+      'HARD RULES — VIOLATIONS BREAK THE WORKSHEET:',
+      '',
+      'LaTeX (this is the #1 failure point — follow exactly):',
+      '  A. Any math symbol, variable, expression, unit, chemistry, or Greek letter MUST be inside $...$ (inline) or $$...$$ (display). NEVER use \\( \\) or \\[ \\].',
+      '  B. Inside JSON strings, every LaTeX backslash must appear as a SINGLE backslash "\\" — the JSON encoder will escape it. Do NOT emit "\\\\alpha"; emit "\\alpha". Do NOT prefix commands with double backslashes.',
+      '  C. Balance every $ — count them. Every opening $ needs a closing $ on the SAME question body.',
+      '  D. Never mix plain-text math with LaTeX in the same expression. "x squared" → "$x^2$", not "x^2" alone. "3/4" as a fraction → "$\\frac{3}{4}$".',
+      '  E. Use \\text{...} for words inside math ($v = \\frac{d}{t}$, not $v = d/t\\text{ where}...$).',
+      '  F. For units, wrap in \\,\\text{unit}: $9.8\\,\\text{m/s}^2$.',
+      '  G. Chemistry: use \\ce{} inside math — $\\ce{6CO2 + 6H2O -> C6H12O6 + 6O2}$.',
+      '  H. If unsure whether something is math, err on the side of $...$.',
+      '',
+      'Diagrams:',
+      '  I. Emit AT MOST '+diagList.length+' diagrams total for the whole worksheet ('+(diagList.length===0?'zero — do not invent any':'follow the router plan above')+'). Attach each to the question whose topic matches. All other questions have NO diagram_svg field.',
+      '  J. Each diagram is a self-contained SVG string in the question\'s "diagram_svg" field. Rules:',
+      '     - viewBox="0 0 400 260". width="100%".',
+      '     - Use ONLY currentColor for stroke — never hard-coded colors. fill="none" for shapes; fill="currentColor" only for arrowheads and text.',
+      '     - stroke-width="1.6" for main lines, "1" for gridlines, "2" for emphasized features.',
+      '     - Every meaningful part gets a <text> label with font-size="11" placed near what it names, joined by a short leader line where needed. NO unlabeled shapes.',
+      '     - Include real arrowheads via <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs> then stroke-attributed marker-end="url(#arr)".',
+      '     - Axes get tick marks with numeric labels and axis titles WITH UNITS.',
+      '     - Do NOT emit generic circles-with-orbits atom clichés. Do NOT repeat the same shape for different concepts. Draw the ACTUAL concept: a labelled free-body force diagram, a titrated pH curve with axes and equivalence point marked, a labelled cross-section of a leaf/cell/eye, a Cartesian graph with shaded solution region, an electric circuit with battery symbol and resistor values, a geometric construction with named points and given angles.',
+      '     - NO <script>. NO external hrefs. NO <image>.',
+      '',
+      'Question shape:',
+      '  K. Every question object: { "n":<int>, "type":"mcq"|"sa"|"frq", "points":<int>, "body":"<question text with $LaTeX$>", plus one of: "options":[4 strings] for mcq, "lines":2-4 for sa, "space":6-12 for frq. Optional "diagram_svg":"<svg ...>..." only when the router plan says so.',
+      '  L. MCQ options: exactly 4, all plausible, one clearly correct. Options may contain $LaTeX$.',
+      '',
+      'Answer key:',
+      '  M. Provide "answer_key" parallel to questions: [{ "n":1, "answer":"correct answer with $LaTeX$", "rationale":"one-sentence why" }].',
+      '',
+      'Structure:',
+      '  N. Match question_count exactly ('+s.count+'). Rigor scales with detail_level ('+s.detail+'/5).',
+      '  O. Total points is the sum of question points.',
       '',
       'OUTPUT JSON SHAPE:',
       '{',
       '  "title": "...",',
       '  "subtitle": "class + topic",',
       '  "total_points": N,',
-      '  "questions": [ { "n":1, "type":"mcq|sa|frq", "points":N, "body":"...", "options":[...], "lines":N, "space":N, "diagram_svg":"<svg ...>...</svg>" } ],',
+      '  "questions": [ { "n":1, "type":"mcq", "points":2, "body":"...", "options":[...], "diagram_svg":"..." } ],',
       '  "answer_key": [ { "n":1, "answer":"...", "rationale":"..." } ]',
       '}'
     ].join('\n');
 
     try{
-      var out=await callGroq('openai/gpt-oss-120b',[{role:'user',content:draftPrompt}],{temperature:0.6,max_tokens:6144,response_format:{type:'json_object'}});
+      var out=await callGroq('openai/gpt-oss-120b',[{role:'user',content:draftPrompt}],{temperature:0.55,max_tokens:6144,response_format:{type:'json_object'}});
       var doc=parseJSON(out);
       if(!doc||!Array.isArray(doc.questions))throw new Error('Draft response malformed.');
+      doc=repairDoc(doc,maxDiagrams);
       renderDraft(doc);
       bumpDaily();
       pendingDraft={id:uid(),ts:Date.now(),owner:currentUser().email,class:s.cls,topic:s.topic,types:s.types,count:s.count,detail:s.detail,doc:doc};
@@ -907,7 +977,8 @@ h2.big .it{font-style:italic;font-weight:300}
         '</div>';
     }
 
-    var html='<div class="worksheet" id="ws-draft">'+
+    var html='<div class="ws-print-only"><style>@media screen{.ws-print-only{display:none}}</style></div>'+
+      '<div class="worksheet" id="ws-draft">'+
       '<div class="ws-title">'+esc(doc.title||iv.spec.topic)+'</div>'+
       '<div class="ws-sub">'+esc(doc.subtitle||iv.spec.cls)+' &middot; '+esc(iv.spec.cls)+(doc.total_points?' &middot; '+doc.total_points+' points':'')+'</div>'+
       '<div class="ws-meta">Name <span class="ln"></span> Date <span class="ln sm"></span> Period <span class="ln xs"></span></div>'+
@@ -917,18 +988,20 @@ h2.big .it{font-style:italic;font-weight:300}
       keyHtml+
       '<div class="approve-bar">'+
         '<button id="ws-toggle-key">'+(keyHtml?'Show answer key':'')+'</button>'+
+        '<button id="ws-pdf">Download PDF</button>'+
         '<button id="ws-redo">Regenerate</button>'+
         '<button id="ws-back">Return to form</button>'+
         '<button class="primary" id="ws-approve">Approve &amp; save</button>'+
       '</div>';
     document.getElementById('mk-draft-wrap').innerHTML=html;
 
-    // KaTeX render
+    // KaTeX render — forgiving mode
     if(window.renderMathInElement){
-      try{window.renderMathInElement(document.getElementById('mk-draft-wrap'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});}catch(e){}
+      try{window.renderMathInElement(document.getElementById('mk-draft-wrap'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false,strict:'ignore',trust:true,macros:{"\\ce":"\\mathrm{#1}"}});}catch(e){}
     }
 
     document.getElementById('ws-toggle-key').addEventListener('click',function(){var k=document.getElementById('ws-key');if(!k)return;var vis=k.style.display!=='none';k.style.display=vis?'none':'block';this.textContent=vis?'Show answer key':'Hide answer key';});
+    document.getElementById('ws-pdf').addEventListener('click',function(){window.print();});
     document.getElementById('ws-redo').addEventListener('click',function(){draftWorksheet();});
     document.getElementById('ws-back').addEventListener('click',function(){document.getElementById('mk-draft-wrap').innerHTML='';document.getElementById('mk-form-wrap').style.display='';});
     document.getElementById('ws-approve').addEventListener('click',function(){
@@ -946,8 +1019,46 @@ h2.big .it{font-style:italic;font-weight:300}
 
   function sanitizeSvg(s){
     if(!s)return '';
-    s=s.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/on[a-z]+\s*=\s*"[^"]*"/gi,'').replace(/on[a-z]+\s*=\s*'[^']*'/gi,'');
+    s=s.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/on[a-z]+\s*=\s*"[^"]*"/gi,'').replace(/on[a-z]+\s*=\s*'[^']*'/gi,'').replace(/<image[^>]*>/gi,'').replace(/xlink:href\s*=\s*"[^"]*"/gi,'');
+    if(!/viewBox=/i.test(s)&&/<svg/i.test(s))s=s.replace(/<svg/i,'<svg viewBox="0 0 400 260"');
+    if(!/width=/i.test(s))s=s.replace(/<svg/i,'<svg width="100%"');
     return s;
+  }
+
+  // Repair common LaTeX + shape mistakes from the drafter.
+  function repairLatex(t){
+    if(!t||typeof t!=='string')return t;
+    // Convert \( \) and \[ \] to $ $ / $$ $$
+    t=t.replace(/\\\(/g,'$').replace(/\\\)/g,'$').replace(/\\\[/g,'$$').replace(/\\\]/g,'$$');
+    // Collapse accidental double-escaped backslashes only outside already-doubled command sequences.
+    t=t.replace(/\\\\([a-zA-Z]+)/g,'\\$1');
+    // Balance dollar signs: if odd count, append a closing $
+    var count=(t.match(/(?<!\\)\$/g)||[]).length;
+    if(count%2===1)t+='$';
+    // Normalize non-breaking artifacts
+    t=t.replace(/ /g,' ');
+    return t;
+  }
+  function repairDoc(doc,maxDiag){
+    if(!doc)return doc;
+    var used=0;
+    (doc.questions||[]).forEach(function(q,i){
+      q.n=q.n||(i+1);
+      if(!q.type||['mcq','sa','frq'].indexOf(q.type)===-1)q.type='sa';
+      q.points=q.points||1;
+      q.body=repairLatex(q.body||'');
+      if(q.type==='mcq'&&Array.isArray(q.options))q.options=q.options.slice(0,4).map(repairLatex);
+      if(q.diagram_svg){
+        if(used>=maxDiag){delete q.diagram_svg;}
+        else{q.diagram_svg=sanitizeSvg(q.diagram_svg);used++;}
+      }
+    });
+    (doc.answer_key||[]).forEach(function(k){
+      if(k.answer)k.answer=repairLatex(k.answer);
+      if(k.rationale)k.rationale=repairLatex(k.rationale);
+    });
+    if(doc.total_points==null)doc.total_points=(doc.questions||[]).reduce(function(a,b){return a+(b.points||0);},0);
+    return doc;
   }
 
   // ---------- history ----------
@@ -965,8 +1076,8 @@ h2.big .it{font-style:italic;font-weight:300}
   function viewAssignment(id){
     var a=get(LS.assignments,[]).find(function(x){return x.id===id;});if(!a)return;
     var target=document.getElementById('hist-view');
-    target.innerHTML='<div style="margin-top:20px">'+a.html+'</div>';
-    if(window.renderMathInElement){try{window.renderMathInElement(target,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}catch(e){}}
+    target.innerHTML='<div style="margin-top:20px">'+a.html+'</div><div class="approve-bar no-print" style="margin-top:10px"><button onclick="window.print()">Download PDF</button></div>';
+    if(window.renderMathInElement){try{window.renderMathInElement(target,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false,strict:'ignore'});}catch(e){}}
     target.scrollIntoView({behavior:'smooth'});
   }
 

@@ -42,7 +42,7 @@ a{color:inherit;text-decoration:none}
 .nav-link:hover{color:var(--ink)}
 .hero{padding:96px 0 72px}
 .eyebrow{font-family:"Inter",sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-bottom:24px;display:inline-flex;align-items:center;gap:10px}
-.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--stamp);box-shadow:0 0 0 4px color-mix(in srgb,var(--stamp) 20%,transparent)}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 20%,transparent)}
 h1.headline{font-size:clamp(48px,8.5vw,100px);line-height:.96;letter-spacing:-.035em;font-weight:400;margin:0 0 24px;max-width:14ch}
 h1.headline .it{font-style:italic;font-weight:300}
 .lede{font-family:"Inter",sans-serif;font-size:18px;color:var(--ink-soft);max-width:52ch;margin:0 0 36px}
@@ -346,8 +346,10 @@ h2.big .it{font-style:italic;font-weight:300}
     <div class="nav-right">
       <a class="nav-link" href="#how">How it works</a>
       <a class="nav-link" href="#inside">Inside</a>
+      <a class="nav-link" href="#privacy">Privacy</a>
+      <a class="nav-link" href="#terms">Terms</a>
       <button class="nav-link" data-open-signin id="nav-signin">Sign in</button>
-      <button class="nav-cta" data-open-signup id="nav-signup">Sign up free</button>
+      <button class="nav-cta" data-open-signup id="nav-signup">Create account</button>
       <button class="nav-cta" id="nav-workspace" style="display:none">Open workspace</button>
     </div>
   </div>
@@ -355,14 +357,14 @@ h2.big .it{font-style:italic;font-weight:300}
 
 <section class="hero" id="top">
   <div class="wrap">
-    <div class="eyebrow"><span class="dot"></span>For teachers &middot; school &amp; org email only</div>
+    <div class="eyebrow"><span class="dot"></span>Built for teachers</div>
     <h1 class="headline">Make the work. <span class="it">Keep the judgment.</span></h1>
-    <p class="lede sans">Atom interviews you like a thoughtful colleague, drafts the worksheet in real LaTeX with diagrams, and holds it for your yes. Powered by GPT-OSS 120B, guided by a lean 20B router. Nothing goes out until you approve.</p>
+    <p class="lede sans">Atom interviews you like a thoughtful colleague, drafts the worksheet in real LaTeX with intricately labelled diagrams, and holds it for your yes. Nothing goes out until you approve.</p>
     <div class="cta-row">
-      <button class="btn" data-open-signup>Sign up free <span class="arrow">&rarr;</span></button>
+      <button class="btn" data-open-signup>Get started <span class="arrow">&rarr;</span></button>
       <a class="btn ghost" href="#how">See how it works</a>
     </div>
-    <div class="fine">Free forever &middot; .edu or .org email required &middot; 5 assignments / day</div>
+    <div class="fine">Free for every teacher. Verified by school or district email.</div>
   </div>
 </section>
 
@@ -371,8 +373,8 @@ h2.big .it{font-style:italic;font-weight:300}
     <div class="section-label">How it works</div>
     <h2 class="big">Interview. Draft. <span class="it">Approve.</span></h2>
     <div class="flow">
-      <div class="step"><div class="step-num">01</div><h3>Answer <span class="it">ten questions.</span></h3><p>A 20B router asks the ten questions a great colleague would: what class, what standard, what mix of MCQ, short answer, and long FRQ, how detailed, what diagrams.</p></div>
-      <div class="step review"><span class="stamp">Required</span><div class="step-num">02</div><h3>Atom <span class="it">drafts.</span></h3><p>GPT-OSS 120B produces the full worksheet: proper LaTeX for math, real STEM symbols, intricately labelled SVG diagrams. The 20B router compresses the spec first so the 120B call stays lean.</p></div>
+      <div class="step"><div class="step-num">01</div><h3>Answer <span class="it">ten questions.</span></h3><p>Atom asks the ten questions a great colleague would: what class, what standard, what mix of MCQ, short answer, and long FRQ, how detailed, what diagrams.</p></div>
+      <div class="step review"><span class="stamp">Required</span><div class="step-num">02</div><h3>Atom <span class="it">drafts.</span></h3><p>You get the full worksheet: proper LaTeX for math, real STEM symbols, intricately labelled SVG diagrams &mdash; scaled to the detail level you asked for.</p></div>
       <div class="step"><div class="step-num">03</div><h3>Approve, and it <span class="it">is yours.</span></h3><p>Every assignment lands in your history dashboard. Grade it against your class roster. Delete or reprint whenever.</p></div>
     </div>
   </div>
@@ -397,14 +399,14 @@ h2.big .it{font-style:italic;font-weight:300}
   <div class="wrap">
     <div class="kicker">A promise</div>
     <h2 class="huge">Free, <span class="it">forever.</span></h2>
-    <p class="caption">For every teacher at a .edu or .org email. No trial, no card, no upsell.</p>
+    <p class="caption">For every teacher at a .edu or .org email. Every feature, every year you keep teaching.</p>
   </div>
 </section>
 
 <section class="end">
   <div class="wrap">
     <h2 class="tag">Make the work. <span class="it">Keep the judgment.</span></h2>
-    <button class="btn" data-open-signup>Sign up free <span class="arrow">&rarr;</span></button>
+    <button class="btn" data-open-signup>Create your workspace <span class="arrow">&rarr;</span></button>
   </div>
 </section>
 
@@ -415,13 +417,13 @@ h2.big .it{font-style:italic;font-weight:300}
     <div class="legal">
       <p><b>Last updated: 2026.</b> Atom Edu is a free tool for teachers. This is the whole policy in plain English.</p>
       <h3>What we collect</h3>
-      <p>Your name, work email, subject, and password (stored as-is in your own browser's localStorage — never leaves your device). Drafts you approve, students you add, and grades you enter are stored the same way — locally, on your device only. When you generate a worksheet, the interview text and topic you provide are sent to our Cloudflare Worker, which forwards them to Groq to run the GPT-OSS models. We do not persist those requests.</p>
+      <p>Your name, work email, subject, and password (stored as-is in your own browser's localStorage — never leaves your device). Drafts you approve, students you add, and grades you enter are stored the same way — locally, on your device only. When you generate a worksheet, the interview text and topic you provide are sent to Atom's inference backend to draft the worksheet. We do not persist those requests.</p>
       <h3>What we don't collect</h3>
       <p>No analytics. No cookies. No third-party trackers. No student names or grades ever leave your browser. We do not know who you are and we do not track individual accounts.</p>
       <h3>What we count (aggregate only)</h3>
       <p>Our admin dashboard tracks the total number of accounts and drafts made across the whole platform — as counts only, never as identifiable data. Emails, names, drafts, students, and grades are not visible to us.</p>
       <h3>Model calls</h3>
-      <p>Prompts are sent to Groq (which runs open-weight GPT-OSS 20B and 120B). Per Groq's data policy, API prompts are not used to train models. We never send student work — only the teacher-authored spec and interview answers.</p>
+      <p>Prompts are sent to Atom's inference backend, which runs open-weight language models under a no-training data policy. We never send student work — only the teacher-authored spec and interview answers.</p>
       <h3>Deleting your account</h3>
       <p>Clear your browser's site data for atom-edu.org and everything is gone. There is no server-side account to delete because we never had one.</p>
       <h3>Contact</h3>
@@ -449,7 +451,7 @@ h2.big .it{font-style:italic;font-weight:300}
       <h3>Warranty</h3>
       <p>Atom Edu is provided as-is, free, with no warranty. Model output can be wrong. You are the professional in the loop — review every draft carefully.</p>
       <h3>Termination</h3>
-      <p>You can stop using the service at any time by clearing your browser data. We reserve the right to disable the shared Groq backend without notice.</p>
+      <p>You can stop using the service at any time by clearing your browser data. We reserve the right to disable the shared inference backend without notice.</p>
     </div>
   </div>
 </section>
@@ -461,9 +463,8 @@ h2.big .it{font-style:italic;font-weight:300}
     <div class="legal">
       <p>Atom Edu stands on the shoulders of open work. Thank you to:</p>
       <ul>
-        <li><b>OpenAI GPT-OSS 20B &amp; 120B</b> &mdash; open-weight LLMs used for the interview router and worksheet drafter. Licensed under Apache 2.0.</li>
-        <li><b>Groq</b> &mdash; inference platform hosting the GPT-OSS models.</li>
-        <li><b>Cloudflare Workers</b> &mdash; edge runtime that proxies the model calls and holds our secrets.</li>
+        <li><b>Open-weight language models</b> &mdash; licensed permissively, running on a hosted inference platform. We honor their upstream licenses and no-training data terms.</li>
+        <li><b>Cloudflare Workers</b> &mdash; edge runtime that proxies model calls and holds our secrets.</li>
         <li><b>KaTeX</b> (MIT license) &mdash; math typesetting.</li>
         <li><b>Fraunces</b> (SIL Open Font License) by Undercase Type &mdash; display serif.</li>
         <li><b>Inter</b> (SIL Open Font License) by Rasmus Andersson &mdash; UI sans-serif.</li>
@@ -670,15 +671,15 @@ h2.big .it{font-style:italic;font-weight:300}
             <button class="go" id="set-save" style="width:auto;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--bg);border:none;font-family:'Inter';font-size:13px;font-weight:600;cursor:pointer;margin-top:4px">Save</button>
           </div>
           <div class="sblock">
-            <h3>Models</h3>
-            <p class="mm">Atom runs <b>openai/gpt-oss-120b</b> for drafting worksheets and <b>openai/gpt-oss-20b</b> as a router that asks the ten interview questions and compresses your answers so the 120B call stays lean. Requests go through Atom's Cloudflare Worker &mdash; the Groq key and payload encryption key are held server-side as secrets, never in your browser.</p>
-            <div class="toggle"><span>Groq key</span><span class="sw on">Server-held</span></div>
+            <h3>Atom engine</h3>
+            <p class="mm">Atom runs a two-stage engine: a lightweight interview stage and a heavier drafting stage. All requests go through Atom's secure backend &mdash; API and payload encryption keys are held server-side, never in your browser.</p>
+            <div class="toggle"><span>Inference backend</span><span class="sw on">Server-held</span></div>
             <div class="toggle"><span>Payload encryption key</span><span class="sw on">Server-held</span></div>
           </div>
           <div class="sblock">
-            <h3>Token optimization</h3>
-            <div class="toggle"><span>Use 20B router to compress spec (recommended)</span><span class="sw on" id="tg-compress">On</span></div>
-            <div class="toggle"><span>Cap 120B output tokens per draft</span><span class="sw on" id="tg-cap">4096</span></div>
+            <h3>Draft optimization</h3>
+            <div class="toggle"><span>Compress interview before drafting (recommended)</span><span class="sw on" id="tg-compress">On</span></div>
+            <div class="toggle"><span>Cap draft length</span><span class="sw on" id="tg-cap">Balanced</span></div>
             <div class="toggle"><span>Cache repeat prompts locally</span><span class="sw on" id="tg-cache">On</span></div>
           </div>
           <div class="sblock">
@@ -751,7 +752,7 @@ h2.big .it{font-style:italic;font-weight:300}
       }
     }catch(e){}
   })();
-  // Cloudflare Worker that proxies Groq and holds GROQ_API_KEY + ENCRYPTION_KEY as secrets.
+  // Cloudflare Worker that proxies Atom's inference backend and holds all secrets server-side.
   // Override at build time or via window.ATOM_WORKER_URL.
   var WORKER_URL=(typeof window!=='undefined'&&window.ATOM_WORKER_URL)||'https://atom-edu.pritamavuthu7.workers.dev';
   function get(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
@@ -973,16 +974,15 @@ h2.big .it{font-style:italic;font-weight:300}
   document.getElementById('mk-count').addEventListener('input',function(e){document.getElementById('mk-count-v').textContent=e.target.value+' questions';});
   document.getElementById('mk-detail').addEventListener('input',function(e){document.getElementById('mk-detail-v').textContent=detailLabels[e.target.value];});
 
-  // ---------- Groq via Cloudflare Worker ----------
-  // The Worker holds GROQ_API_KEY and ENCRYPTION_KEY as secrets and returns
-  // an AES-GCM encrypted envelope. We decrypt with a session key negotiated
-  // per sign-in (see /session), so no long-lived secret ever hits the browser.
-  async function callGroq(model,messages,opts){
+  // ---------- Atom engine (via secure backend) ----------
+  // Client sends abstract role names ('router' | 'drafter'); the backend maps
+  // them to concrete models. The API key + encryption key are server-side only.
+  async function callAtom(role,messages,opts){
     var u=currentUser();if(!u)throw new Error('Not signed in.');
-    var body={model:model,messages:messages,temperature:(opts&&opts.temperature!==undefined)?opts.temperature:0.5,max_tokens:(opts&&opts.max_tokens)||2048,email:u.email};
+    var body={role:role,messages:messages,temperature:(opts&&opts.temperature!==undefined)?opts.temperature:0.5,max_tokens:(opts&&opts.max_tokens)||2048,email:u.email};
     if(opts&&opts.response_format)body.response_format=opts.response_format;
-    var r=await fetch(WORKER_URL+'/api/groq',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!r.ok){var t=await r.text();throw new Error('Worker '+r.status+': '+t.slice(0,200));}
+    var r=await fetch(WORKER_URL+'/api/atom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){var t=await r.text();throw new Error('Atom '+r.status+': '+t.slice(0,200));}
     var j=await r.json();
     return j.content;
   }
@@ -1011,11 +1011,11 @@ h2.big .it{font-style:italic;font-weight:300}
 
     iv={active:true,questions:[],answers:[],idx:0,spec:{cls:cls,topic:topic,notes:notes,count:count,detail:detail,detailLabel:detailLabels[detail],types:types,diagrams:mkDiag}};
     document.getElementById('mk-form-wrap').style.display='none';
-    document.getElementById('mk-interview-wrap').innerHTML='<div class="iv-panel"><div class="iv-thinking"><span>The 20B router is drafting your ten questions</span><span class="dots"><span></span><span></span><span></span></span></div></div>';
+    document.getElementById('mk-interview-wrap').innerHTML='<div class="iv-panel"><div class="iv-thinking"><span>Atom is drafting your ten questions</span><span class="dots"><span></span><span></span><span></span></span></div></div>';
 
     try{
       var prompt='You are Atom, a warm veteran teacher-coach. A teacher is about to create a worksheet. Generate EXACTLY 10 short, sharp interview questions to nail the assignment. Base them on the seed below. Each question must be conversational, ONE question, and unlock information the drafter (a big LLM) will need: standard/objective, prerequisite check, student misconceptions to target, preferred stem style, real-world hook, difficulty distribution, scaffolding for struggling students, extension for advanced, diagram/artifact needs, and how the teacher will use it (in-class, homework, assessment). Reply ONLY as JSON: {"questions":[{"q":"...","hint":"why this matters, <=12 words"}]}. No prose, no markdown fence.\n\nSEED:\n'+JSON.stringify(iv.spec,null,2);
-      var out=await callGroq('openai/gpt-oss-20b',[{role:'user',content:prompt}],{temperature:0.4,max_tokens:1200,response_format:{type:'json_object'}});
+      var out=await callAtom('router',[{role:'user',content:prompt}],{temperature:0.4,max_tokens:1200,response_format:{type:'json_object'}});
       var j=parseJSON(out);
       if(!j||!Array.isArray(j.questions)||j.questions.length===0)throw new Error('Interview response malformed.');
       iv.questions=j.questions.slice(0,10);
@@ -1033,7 +1033,7 @@ h2.big .it{font-style:italic;font-weight:300}
     if(!q)return draftWorksheet();
     var pct=Math.round((i/iv.questions.length)*100);
     var html='<div class="iv-panel">'+
-      '<div class="iv-head"><div class="step">Question <span class="it">'+(i+1)+' of '+iv.questions.length+'</span></div><div class="prog">router &middot; gpt-oss-20b</div></div>'+
+      '<div class="iv-head"><div class="step">Question <span class="it">'+(i+1)+' of '+iv.questions.length+'</span></div><div class="prog">Atom &middot; interview</div></div>'+
       '<div class="iv-bar"><div style="width:'+pct+'%"></div></div>'+
       '<div class="iv-q">'+esc(q.q)+'</div>'+
       (q.hint?'<div class="iv-hint">'+esc(q.hint)+'</div>':'')+
@@ -1049,21 +1049,21 @@ h2.big .it{font-style:italic;font-weight:300}
     document.getElementById('iv-next').addEventListener('click',function(){iv.answers[i]=ta.value;iv.idx++;renderInterview();});
   }
 
-  // ---------- drafting via 120B ----------
+  // ---------- worksheet drafting ----------
   async function draftWorksheet(){
-    document.getElementById('mk-interview-wrap').innerHTML='<div class="iv-panel"><div class="iv-thinking"><span>Compressing your ten answers with the 20B router to keep the 120B call lean</span><span class="dots"><span></span><span></span><span></span></span></div></div>';
+    document.getElementById('mk-interview-wrap').innerHTML='<div class="iv-panel"><div class="iv-thinking"><span>Atom is compressing your answers into a tight spec</span><span class="dots"><span></span><span></span><span></span></span></div></div>';
 
     var qa=iv.questions.map(function(q,i){return {q:q.q,a:iv.answers[i]||''};});
     var compressed=null;
     var maxDiagrams=(iv.spec.diagrams==='none')?0:2;
     try{
       var cPrompt='You are a router that compresses a teacher interview into a compact JSON spec for a downstream worksheet-drafting model. Keep only decision-relevant facts. Prefer terse phrases.\n\nAlso design AT MOST '+maxDiagrams+' diagrams for the worksheet. Each diagram must be genuinely useful (not decorative), specific to a concept, and richly labelled. For each diagram, produce a detailed prompt (60-120 words) that specifies: exact objects to draw, spatial layout with coordinates in a 400x260 viewBox, every label text and its position, arrows with directions, axes with units, and any grid or reference lines. AVOID: generic circles, unlabeled shapes, repeated motifs, decorative flourishes. PREFER: real scientific/mathematical figures — free body diagrams with forces & angles, labelled cell/organ cross-sections, circuit schematics with component values, phase diagrams with axes & regions, geometry constructions with points named, graphs with tick marks and shaded regions.\n\nOutput JSON:\n{\n  "objective": "...",\n  "standard": "...",\n  "audience": "...",\n  "misconceptions": [...],\n  "hook": "...",\n  "difficulty_curve": "...",\n  "scaffolds": [...],\n  "extensions": [...],\n  "usage": "...",\n  "diagrams": [\n    { "attach_to_question_topic": "...", "prompt": "detailed SVG-drawing instructions, 60-120 words, includes every label and coordinate" }\n  ]\n}\nReturn diagrams as [] if the spec says none or if none genuinely help.\n\nSEED:\n'+JSON.stringify(iv.spec)+'\n\nQA:\n'+JSON.stringify(qa);
-      var comp=await callGroq('openai/gpt-oss-20b',[{role:'user',content:cPrompt}],{temperature:0.3,max_tokens:1400,response_format:{type:'json_object'}});
+      var comp=await callAtom('router',[{role:'user',content:cPrompt}],{temperature:0.3,max_tokens:1400,response_format:{type:'json_object'}});
       compressed=parseJSON(comp);
       if(compressed&&Array.isArray(compressed.diagrams))compressed.diagrams=compressed.diagrams.slice(0,maxDiagrams);
     }catch(e){compressed={raw_qa:qa,diagrams:[]};}
 
-    document.getElementById('mk-interview-wrap').innerHTML='<div class="iv-panel"><div class="iv-thinking"><span>GPT-OSS 120B is drafting your worksheet</span><span class="dots"><span></span><span></span><span></span></span></div></div>';
+    document.getElementById('mk-interview-wrap').innerHTML='<div class="iv-panel"><div class="iv-thinking"><span>Atom is drafting your worksheet</span><span class="dots"><span></span><span></span><span></span></span></div></div>';
 
     var s=iv.spec;
     var typeNames={mcq:'multiple choice',sa:'short answer',frq:'long free-response'};
@@ -1134,7 +1134,7 @@ h2.big .it{font-style:italic;font-weight:300}
     ].join('\n');
 
     try{
-      var out=await callGroq('openai/gpt-oss-120b',[{role:'user',content:draftPrompt}],{temperature:0.55,max_tokens:6144,response_format:{type:'json_object'}});
+      var out=await callAtom('drafter',[{role:'user',content:draftPrompt}],{temperature:0.55,max_tokens:6144,response_format:{type:'json_object'}});
       var doc=parseJSON(out);
       if(!doc||!Array.isArray(doc.questions))throw new Error('Draft response malformed.');
       doc=repairDoc(doc,maxDiagrams);

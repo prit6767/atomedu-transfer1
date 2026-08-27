@@ -272,6 +272,30 @@ h2.big .it{font-style:italic;font-weight:300}
 .katex{color:var(--ink)}
 .katex-error{color:var(--stamp);border-bottom:1px dotted var(--stamp);font-family:"JetBrains Mono",monospace;font-size:12px}
 
+/* Legal pages */
+.legal{max-width:70ch;font-family:"Inter",sans-serif;font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin-top:24px}
+.legal h3{font-family:"Fraunces",Georgia,serif;font-size:20px;font-weight:500;letter-spacing:-.015em;color:var(--ink);margin:28px 0 8px}
+.legal p{margin:0 0 12px}
+.legal ul{padding-left:22px;margin:0 0 12px}
+.legal li{margin-bottom:8px}
+.legal a{color:var(--stamp);text-decoration:underline;text-underline-offset:2px}
+
+/* Consent checkboxes on signup */
+.consent{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:12.5px;line-height:1.45;color:var(--ink-soft)}
+.consent input[type=checkbox]{margin:2px 0 0;width:16px;height:16px;accent-color:var(--ink);flex-shrink:0}
+.consent a{color:var(--ink);font-weight:600;text-decoration:underline;cursor:pointer}
+.modal .go:disabled{opacity:.45;cursor:not-allowed}
+
+/* Admin dashboard */
+.admin-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+@media(max-width:820px){.admin-cards{grid-template-columns:repeat(2,1fr)}}
+.acard{background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.acard .k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.acard .v{font-family:"Fraunces",Georgia,serif;font-size:34px;line-height:1;letter-spacing:-.02em;margin-top:10px;color:var(--ink)}
+.acard .d{font-size:11.5px;color:var(--muted);margin-top:6px}
+.admin-note{padding:14px 18px;border-radius:12px;background:color-mix(in srgb,var(--ok) 8%,var(--bg-elev));border-left:3px solid var(--ok);font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+.admin-note b{color:var(--ink)}
+
 /* Diagrams: force high-contrast, sharp lines */
 .ws-diagram{margin:14px 0;padding:18px;background:#fff;border:1px solid var(--line-strong);border-radius:10px;display:flex;justify-content:center;color:#0b1226}
 .ws-diagram svg{max-width:100%;height:auto;color:#0b1226;stroke:#0b1226;fill:none}
@@ -384,13 +408,83 @@ h2.big .it{font-style:italic;font-weight:300}
   </div>
 </section>
 
+<section class="section" id="privacy">
+  <div class="wrap">
+    <div class="section-label">Legal</div>
+    <h2 class="big">Privacy <span class="it">policy.</span></h2>
+    <div class="legal">
+      <p><b>Last updated: 2026.</b> Atom Edu is a free tool for teachers. This is the whole policy in plain English.</p>
+      <h3>What we collect</h3>
+      <p>Your name, work email, subject, and password (stored as-is in your own browser's localStorage — never leaves your device). Drafts you approve, students you add, and grades you enter are stored the same way — locally, on your device only. When you generate a worksheet, the interview text and topic you provide are sent to our Cloudflare Worker, which forwards them to Groq to run the GPT-OSS models. We do not persist those requests.</p>
+      <h3>What we don't collect</h3>
+      <p>No analytics. No cookies. No third-party trackers. No student names or grades ever leave your browser. We do not know who you are and we do not track individual accounts.</p>
+      <h3>What we count (aggregate only)</h3>
+      <p>Our admin dashboard tracks the total number of accounts and drafts made across the whole platform — as counts only, never as identifiable data. Emails, names, drafts, students, and grades are not visible to us.</p>
+      <h3>Model calls</h3>
+      <p>Prompts are sent to Groq (which runs open-weight GPT-OSS 20B and 120B). Per Groq's data policy, API prompts are not used to train models. We never send student work — only the teacher-authored spec and interview answers.</p>
+      <h3>Deleting your account</h3>
+      <p>Clear your browser's site data for atom-edu.org and everything is gone. There is no server-side account to delete because we never had one.</p>
+      <h3>Contact</h3>
+      <p>Questions: <span class="mono">privacy@atom-edu.org</span>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="terms">
+  <div class="wrap">
+    <div class="section-label">Legal</div>
+    <h2 class="big">Terms of <span class="it">service.</span></h2>
+    <div class="legal">
+      <p><b>Last updated: 2026.</b></p>
+      <h3>Who can use Atom Edu</h3>
+      <p>Teachers, tutors, and educators at a real school or district (verified only by requiring a .edu or .org email address at sign-up). If you are under 18, do not create an account.</p>
+      <h3>The rule</h3>
+      <p>Atom drafts. You edit. Nothing goes out to students until you approve. You are the sole author of anything you distribute. Atom Edu is a drafting assistant, not a grading or communication service.</p>
+      <h3>What you can do</h3>
+      <p>Generate as many drafts as you want up to the daily cap of 5 assignments per teacher per day. Print them, share them, adapt them, keep them.</p>
+      <h3>What you cannot do</h3>
+      <p>Use the service to send communications to students or families in an automated way. Impersonate another teacher. Scrape the interface. Attempt to bypass the daily cap or the .edu/.org requirement. Use output to defame, harass, or harm.</p>
+      <h3>Content ownership</h3>
+      <p>Every worksheet you approve is yours. You own it. We claim no rights in your drafts, your student roster, or your grades.</p>
+      <h3>Warranty</h3>
+      <p>Atom Edu is provided as-is, free, with no warranty. Model output can be wrong. You are the professional in the loop — review every draft carefully.</p>
+      <h3>Termination</h3>
+      <p>You can stop using the service at any time by clearing your browser data. We reserve the right to disable the shared Groq backend without notice.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="attributions">
+  <div class="wrap">
+    <div class="section-label">Legal</div>
+    <h2 class="big">Attributions.</h2>
+    <div class="legal">
+      <p>Atom Edu stands on the shoulders of open work. Thank you to:</p>
+      <ul>
+        <li><b>OpenAI GPT-OSS 20B &amp; 120B</b> &mdash; open-weight LLMs used for the interview router and worksheet drafter. Licensed under Apache 2.0.</li>
+        <li><b>Groq</b> &mdash; inference platform hosting the GPT-OSS models.</li>
+        <li><b>Cloudflare Workers</b> &mdash; edge runtime that proxies the model calls and holds our secrets.</li>
+        <li><b>KaTeX</b> (MIT license) &mdash; math typesetting.</li>
+        <li><b>Fraunces</b> (SIL Open Font License) by Undercase Type &mdash; display serif.</li>
+        <li><b>Inter</b> (SIL Open Font License) by Rasmus Andersson &mdash; UI sans-serif.</li>
+        <li><b>JetBrains Mono</b> (SIL Open Font License) &mdash; monospace.</li>
+        <li><b>GitHub Pages</b> &mdash; static hosting.</li>
+      </ul>
+      <p>Atom Edu source is public at <a class="mono" href="https://github.com/prit6767/atomedu-transfer1">github.com/prit6767/atomedu-transfer1</a>.</p>
+    </div>
+  </div>
+</section>
+
 <footer class="ft">
   <div class="wrap ft-row">
     <div class="brand"><div class="brand-mark"></div><span>Atom Edu</span></div>
     <div class="ft-links">
       <a href="#how">How it works</a>
       <a href="#inside">Inside</a>
-      <a href="#">Privacy</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#terms">Terms</a>
+      <a href="#attributions">Attributions</a>
+      <a href="mailto:hello@atom-edu.org">Contact</a>
     </div>
     <div>&copy; Atom Edu</div>
   </div>
@@ -417,7 +511,10 @@ h2.big .it{font-style:italic;font-weight:300}
       <label>Password</label>
       <input id="su-pass" type="password" placeholder="At least 6 characters" autocomplete="new-password">
       <div class="err-msg" id="su-pass-err">Password must be at least 6 characters.</div>
-      <button class="go" id="go-signup">Create my workspace</button>
+      <div class="consent"><input type="checkbox" id="su-terms"><label for="su-terms">I agree to the <a href="#terms" onclick="document.getElementById('auth-modal').classList.remove('on')">Terms of Service</a>.</label></div>
+      <div class="consent"><input type="checkbox" id="su-priv"><label for="su-priv">I have read the <a href="#privacy" onclick="document.getElementById('auth-modal').classList.remove('on')">Privacy Policy</a> and understand my data lives only in my browser.</label></div>
+      <div class="consent"><input type="checkbox" id="su-adult"><label for="su-adult">I am 18 or older and a teacher, tutor, or educator.</label></div>
+      <button class="go" id="go-signup" disabled>Create my workspace</button>
       <div class="switch">Already have an account? <a data-goto-signin>Sign in</a></div>
     </div>
     <div id="pane-signin" style="display:none">
@@ -449,6 +546,10 @@ h2.big .it{font-style:italic;font-weight:300}
         <a data-nav="history"><span class="lbl">Assignment history</span></a>
         <a data-nav="students"><span class="lbl">Students &amp; grades</span></a>
         <a data-nav="settings"><span class="lbl">Settings</span></a>
+      </div>
+      <div class="ws-nav-label" id="admin-nav-label" style="display:none">Admin</div>
+      <div class="ws-nav" id="admin-nav" style="display:none">
+        <a data-nav="admin"><span class="lbl">Platform dashboard</span></a>
       </div>
       <div class="ws-teacher"><div class="av" id="av-init">MC</div><div><div class="tn" id="av-name">Ms. Chen</div><div class="ts" id="av-email">signed in</div></div></div>
     </aside>
@@ -589,6 +690,27 @@ h2.big .it{font-style:italic;font-weight:300}
         </div>
       </div>
 
+      <!-- ADMIN (visible only to accounts with role=admin) -->
+      <div class="ws-page" data-page="admin">
+        <div class="ph"><h1>Platform <span class="it">dashboard</span></h1><p>Aggregate-only. No emails, names, drafts, students, or grades are ever visible here — only counts.</p></div>
+        <div class="admin-note"><b>Privacy by design.</b> This dashboard reads localStorage on the admin device only. It shows counts. It never lists individuals.</div>
+        <div class="admin-cards">
+          <div class="acard"><div class="k">Accounts</div><div class="v" id="ad-users">0</div><div class="d">Total teachers signed up on this device</div></div>
+          <div class="acard"><div class="k">Assignments made</div><div class="v" id="ad-assign">0</div><div class="d">Approved drafts, all users</div></div>
+          <div class="acard"><div class="k">Drafts today</div><div class="v" id="ad-today">0</div><div class="d">Combined across all users, today only</div></div>
+          <div class="acard"><div class="k">Diagrams generated</div><div class="v" id="ad-diag">0</div><div class="d">Total SVG diagrams across all worksheets</div></div>
+        </div>
+        <div class="admin-cards">
+          <div class="acard"><div class="k">Students tracked</div><div class="v" id="ad-stu">0</div><div class="d">Roster entries, all teachers combined</div></div>
+          <div class="acard"><div class="k">Grades recorded</div><div class="v" id="ad-grades">0</div><div class="d">Individual grade entries</div></div>
+          <div class="acard"><div class="k">Avg drafts / teacher</div><div class="v" id="ad-avg">0</div><div class="d">Assignments ÷ accounts</div></div>
+          <div class="acard"><div class="k">Schema version</div><div class="v" id="ad-schema">—</div><div class="d">Storage generation on this device</div></div>
+        </div>
+        <div class="approve-bar" style="margin-top:20px">
+          <button id="ad-reset">Wipe all local accounts &amp; data</button>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -604,14 +726,31 @@ h2.big .it{font-style:italic;font-weight:300}
 
   // ---------- storage ----------
   var LS={
-    users:'atom-users',        // {email:{name,pass,cls,createdAt}}
+    schema:'atom-schema',      // bump to wipe on breaking change
+    users:'atom-users',        // {email:{name,pass,cls,role,createdAt}}
     session:'atom-session',    // email
-    assignments:'atom-assign', // [{id,ts,class,topic,spec,html,types,count,detail}]
-    students:'atom-students',  // [{id,name,email}]
+    assignments:'atom-assign', // [{id,ts,class,topic,spec,html,types,count,detail,owner}]
+    students:'atom-students',  // [{id,name,email,owner}]
     grades:'atom-grades',      // {studentId:{assignmentId:score}}
     daily:'atom-daily',        // {date:'YYYY-MM-DD',count:N,email:E}
     cache:'atom-cache'
   };
+  var SCHEMA='5';
+  // On v5 boot: wipe legacy accounts, seed one dev + one admin.
+  (function migrate(){
+    try{
+      var cur=localStorage.getItem(LS.schema);
+      if(cur!==SCHEMA){
+        [LS.users,LS.session,LS.assignments,LS.students,LS.grades,LS.daily].forEach(function(k){localStorage.removeItem(k);});
+        var seed={
+          'dev@atom-edu.org':   {name:'Dev Test',    pass:'devtest2026',   cls:'AP Physics C', role:'user',  createdAt:Date.now()},
+          'admin@atom-edu.org': {name:'Atom Admin',  pass:'atomadmin2026', cls:'—',            role:'admin', createdAt:Date.now()}
+        };
+        localStorage.setItem(LS.users,JSON.stringify(seed));
+        localStorage.setItem(LS.schema,SCHEMA);
+      }
+    }catch(e){}
+  })();
   // Cloudflare Worker that proxies Groq and holds GROQ_API_KEY + ENCRYPTION_KEY as secrets.
   // Override at build time or via window.ATOM_WORKER_URL.
   var WORKER_URL=(typeof window!=='undefined'&&window.ATOM_WORKER_URL)||'https://atom-edu.pritamavuthu7.workers.dev';
@@ -643,7 +782,18 @@ h2.big .it{font-style:italic;font-weight:300}
   document.querySelectorAll('[data-goto-signin]').forEach(function(a){a.addEventListener('click',function(){switchTab('signin');});});
   document.querySelectorAll('[data-goto-signup]').forEach(function(a){a.addEventListener('click',function(){switchTab('signup');});});
 
+  function checkConsent(){
+    var t=document.getElementById('su-terms').checked;
+    var p=document.getElementById('su-priv').checked;
+    var a=document.getElementById('su-adult').checked;
+    document.getElementById('go-signup').disabled=!(t&&p&&a);
+  }
+  ['su-terms','su-priv','su-adult'].forEach(function(id){document.getElementById(id).addEventListener('change',checkConsent);});
   document.getElementById('go-signup').addEventListener('click',function(){
+    var t=document.getElementById('su-terms').checked;
+    var p=document.getElementById('su-priv').checked;
+    var a=document.getElementById('su-adult').checked;
+    if(!(t&&p&&a)){toast('Tick all three consent boxes.','err');return;}
     var name=document.getElementById('su-name').value.trim();
     var email=document.getElementById('su-email').value.trim().toLowerCase();
     var cls=document.getElementById('su-class').value.trim();
@@ -655,7 +805,7 @@ h2.big .it{font-style:italic;font-weight:300}
     document.getElementById('su-pass-err').classList.toggle('on',!okP);
     if(!name||!okE||!okP)return;
     var users=get(LS.users,{});
-    users[email]={name:name,pass:pass,cls:cls||'',createdAt:Date.now()};
+    users[email]={name:name,pass:pass,cls:cls||'',role:'user',consent:{terms:true,privacy:true,adult:true,at:Date.now()},createdAt:Date.now()};
     set(LS.users,users);
     set(LS.session,email);
     closeAuth();
@@ -722,7 +872,29 @@ h2.big .it{font-style:italic;font-weight:300}
     if(page==='students')renderStudents();
     if(page==='settings')fillSettings();
     if(page==='assignment')refreshLimitNote();
+    if(page==='admin')renderAdmin();
     refreshHeader();
+  }
+
+  function renderAdmin(){
+    var users=get(LS.users,{});
+    var uCount=Object.keys(users).length;
+    var assigns=get(LS.assignments,[]);
+    var stus=get(LS.students,[]);
+    var grades=get(LS.grades,{});
+    var today=(function(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})();
+    var d=get(LS.daily,null);
+    var todayCount=(d&&d.date===today)?d.count:0;
+    var diagCount=assigns.reduce(function(a,x){return a+((x.doc&&x.doc.questions)?x.doc.questions.filter(function(q){return !!q.diagram_svg;}).length:0);},0);
+    var gradeCount=Object.values(grades).reduce(function(a,g){return a+Object.keys(g||{}).length;},0);
+    document.getElementById('ad-users').textContent=uCount;
+    document.getElementById('ad-assign').textContent=assigns.length;
+    document.getElementById('ad-today').textContent=todayCount;
+    document.getElementById('ad-diag').textContent=diagCount;
+    document.getElementById('ad-stu').textContent=stus.length;
+    document.getElementById('ad-grades').textContent=gradeCount;
+    document.getElementById('ad-avg').textContent=uCount?(assigns.length/uCount).toFixed(1):'0';
+    document.getElementById('ad-schema').textContent='v'+SCHEMA;
   }
   document.querySelectorAll('[data-nav]').forEach(function(a){a.addEventListener('click',function(){goto(a.getAttribute('data-nav'));});});
 
@@ -739,9 +911,13 @@ h2.big .it{font-style:italic;font-weight:300}
     document.getElementById('av-email').textContent=u.email;
     document.getElementById('av-init').textContent=initials(u.name);
     document.getElementById('ws-class-name').textContent=u.cls||'Your class';
+    var isAdmin=u.role==='admin';
+    document.getElementById('admin-nav-label').style.display=isAdmin?'':'none';
+    document.getElementById('admin-nav').style.display=isAdmin?'':'none';
+    document.getElementById('ws-class-role').textContent=isAdmin?'Admin':'Teacher';
     document.getElementById('landing').classList.add('hidden');
     document.getElementById('workspace').classList.remove('hidden');
-    goto('home');
+    goto(isAdmin?'admin':'home');
   }
   // Signed-in users land on the homepage; nav offers "Open workspace" to return.
   updateNav();
@@ -1158,6 +1334,15 @@ h2.big .it{font-style:italic;font-weight:300}
     users[u.email].cls=document.getElementById('set-class').value.trim();
     set(LS.users,users);enterWorkspace();goto('settings');toast('Saved.','ok');
   });
+
+  // Admin wipe — clears users, sessions, drafts, students, grades, daily counters. Reseeds dev + admin.
+  var adReset=document.getElementById('ad-reset');
+  if(adReset){adReset.addEventListener('click',function(){
+    if(!confirm('This wipes ALL local accounts, drafts, students, and grades on this device. Dev + admin seed accounts will be recreated. Continue?'))return;
+    [LS.users,LS.session,LS.assignments,LS.students,LS.grades,LS.daily].forEach(function(k){localStorage.removeItem(k);});
+    localStorage.removeItem(LS.schema);
+    location.reload();
+  });}
 
   // initial paint
   refreshHeader();

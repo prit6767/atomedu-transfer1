@@ -2,8 +2,10 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Privacy policy, Atom Edu</title>
+<title>Privacy Policy, Atom Edu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +15,7 @@
     --ink: #0b1226; --ink-soft: #2a324a; --muted: #5a6178;
     --line: rgba(11, 18, 38, 0.12);
     --line-strong: rgba(11, 18, 38, 0.22);
-    --stamp: #b7331f;
+    --stamp: #b7331f; --ok: #1e7a4f;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -23,7 +25,7 @@
     -webkit-font-smoothing: antialiased; line-height: 1.55;
   }
   a { color: inherit; }
-  .wrap { max-width: 780px; margin: 0 auto; padding: 0 28px; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 28px; }
 
   nav {
     height: 64px; display: flex; align-items: center; justify-content: space-between;
@@ -35,16 +37,18 @@
     font-weight: 700; font-size: 17px; letter-spacing: -0.01em;
     text-decoration: none; color: var(--ink);
   }
+  nav .links { display: flex; align-items: center; gap: 4px; }
   nav .links a {
     font-size: 13.5px; color: var(--ink-soft); font-weight: 500;
-    padding: 6px 12px; text-decoration: none;
+    padding: 6px 12px; text-decoration: none; border-radius: 999px;
   }
-  nav .links a:hover { color: var(--ink); }
+  nav .links a:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
   nav .cta {
     background: var(--ink); color: var(--bg); border: 1px solid var(--ink);
     padding: 9px 16px; border-radius: 999px; text-decoration: none;
-    font-size: 14px; font-weight: 600;
+    font-size: 14px; font-weight: 600; margin-left: 6px;
   }
+  nav .cta:hover { background: transparent; color: var(--ink); }
 
   main { padding: 60px 0 80px; }
   h1 {
@@ -56,25 +60,58 @@
   h1 .it { font-style: italic; font-weight: 300; }
   .lead {
     font-family: "Inter", sans-serif; font-size: 16px;
-    color: var(--ink-soft); max-width: 65ch; margin: 0 0 40px; line-height: 1.65;
+    color: var(--ink-soft); max-width: 65ch; margin: 0 0 32px; line-height: 1.65;
   }
   .lead b { color: var(--ink); font-weight: 700; }
-  h2 {
-    font-family: "Inter", sans-serif; font-size: 18px; font-weight: 700;
-    color: var(--ink); margin: 30px 0 10px; letter-spacing: -0.005em;
-  }
-  p {
-    font-family: "Inter", sans-serif; font-size: 14.5px;
-    color: var(--ink-soft); line-height: 1.7; margin: 0 0 12px; max-width: 70ch;
-  }
-  p b { color: var(--ink); font-weight: 700; }
-  .tocline {
+  .meta {
     font-family: "Inter", sans-serif; font-size: 12.5px; color: var(--muted);
-    padding: 14px 18px; border-radius: 10px;
+    display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;
+    padding-bottom: 20px; border-bottom: 1px solid var(--line);
+  }
+  .meta b { color: var(--ink); font-weight: 700; }
+  h2 {
+    font-family: "Inter", sans-serif; font-size: 15px; font-weight: 800;
+    color: var(--ink); margin: 40px 0 10px; letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  h2 .num { color: var(--muted); font-weight: 700; margin-right: 8px; }
+  h3 {
+    font-family: "Inter", sans-serif; font-size: 14px; font-weight: 700;
+    color: var(--ink); margin: 22px 0 6px;
+  }
+  p, li {
+    font-family: "Inter", sans-serif; font-size: 14.5px;
+    color: var(--ink-soft); line-height: 1.7; margin: 0 0 12px; max-width: 72ch;
+  }
+  ul { padding-left: 22px; margin: 0 0 12px; }
+  li { margin-bottom: 4px; }
+  p b, li b { color: var(--ink); font-weight: 700; }
+  .callout {
+    font-family: "Inter", sans-serif; font-size: 13px; color: var(--ink);
+    padding: 16px 20px; border-radius: 10px;
+    background: color-mix(in srgb, var(--ok) 7%, var(--bg-elev));
+    border-left: 3px solid var(--ok);
+    margin: 24px 0; line-height: 1.6;
+  }
+  .callout b { color: var(--ok); }
+  .toc {
+    font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted);
+    padding: 18px 22px; border-radius: 10px;
     background: color-mix(in srgb, var(--ink) 4%, var(--bg-elev));
-    border-left: 3px solid var(--ink);
+    border: 1px solid var(--line);
     margin: 30px 0;
   }
+  .toc h4 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); font-weight: 800; margin: 0 0 10px; }
+  .toc ol { margin: 0; padding-left: 22px; column-count: 2; column-gap: 30px; }
+  @media (max-width: 600px) { .toc ol { column-count: 1; } }
+  .toc li { margin-bottom: 4px; font-size: 13px; color: var(--ink-soft); }
+  .toc a { text-decoration: none; }
+  .toc a:hover { color: var(--ink); }
+
+  table.dp { width: 100%; border-collapse: collapse; font-family: "Inter", sans-serif; font-size: 13px; margin: 12px 0 20px; }
+  table.dp th, table.dp td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.dp th { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  table.dp td { color: var(--ink-soft); }
 
   footer {
     border-top: 1px solid var(--line); padding: 30px 0;
@@ -94,44 +131,163 @@
     <a href="/">Home</a>
     <a href="/privacy/">Privacy</a>
     <a href="/terms/">Terms</a>
-    <a class="cta" href="/">Try the workspace</a>
+    <a class="cta" href="/">Back to site</a>
   </div>
 </nav>
 
 <main class="wrap">
-  <h1>Privacy <span class="it">policy.</span></h1>
-  <p class="lead"><b>Last updated: 2026.</b> Atom Edu is a free tool for teachers. This is the whole policy in plain English.</p>
+  <h1>Privacy <span class="it">Policy.</span></h1>
+  <p class="lead">This Privacy Policy explains how Atom Edu ("we," "us," or "our") collects, uses, discloses, and safeguards information when you use our web-based drafting service at atom-edu.org (the "Service"). We designed the Service to keep personal data to an absolute minimum: your drafts and any class notes live in your browser, not on our servers.</p>
+  <div class="meta">
+    <span><b>Effective date:</b> August 1, 2026</span>
+    <span><b>Last updated:</b> August 28, 2026</span>
+  </div>
 
-  <div class="tocline">In one sentence: your drafts and student data live in your browser, not on our servers. What we do keep is a count of drafts and unique teachers, nothing more.</div>
+  <div class="callout">
+    <b>Short version.</b> Your drafts, class notes, and any student information you might type stay in your browser's local storage on your device — we cannot see them and they never leave your device except when you send a prompt to be drafted. When you generate a draft, only the prompt text and the class subject you selected are sent to our AI provider. We keep aggregate counters (total drafts, unique teachers, per-model usage) and a short list of recent activity for operational and safety purposes — no student data, ever.
+  </div>
 
-  <h2>What we collect</h2>
-  <p>Your name, work email, subject, and any drafts you generate are stored as-is in your own browser's localStorage. They never leave your device. When you generate a worksheet, only the prompt you typed and the class context you chose are sent to Atom's inference backend to draft it. We do not persist those requests.</p>
+  <div class="toc">
+    <h4>Contents</h4>
+    <ol>
+      <li><a href="#s1">Who we are</a></li>
+      <li><a href="#s2">Information we collect</a></li>
+      <li><a href="#s3">How we use information</a></li>
+      <li><a href="#s4">Legal bases (GDPR)</a></li>
+      <li><a href="#s5">Sharing and processors</a></li>
+      <li><a href="#s6">Retention</a></li>
+      <li><a href="#s7">Security</a></li>
+      <li><a href="#s8">Your rights</a></li>
+      <li><a href="#s9">Children and student data</a></li>
+      <li><a href="#s10">FERPA</a></li>
+      <li><a href="#s11">California residents (CCPA/CPRA)</a></li>
+      <li><a href="#s12">International transfers</a></li>
+      <li><a href="#s13">Cookies and tracking</a></li>
+      <li><a href="#s14">Do Not Track</a></li>
+      <li><a href="#s15">Changes to this policy</a></li>
+      <li><a href="#s16">Contact</a></li>
+    </ol>
+  </div>
 
-  <h2>What we don't collect</h2>
-  <p>No analytics on the site. No cookies. No third-party trackers. No student names or grades ever leave your browser. We do not know who you are and we do not track individual accounts.</p>
+  <h2 id="s1"><span class="num">1.</span> Who we are</h2>
+  <p>Atom Edu is the operator of the Service and is the data controller for the personal data described in this policy. Contact information is at the bottom.</p>
 
-  <h2>What we count (aggregate only)</h2>
-  <p>Our admin dashboard tracks the total number of teachers who have signed up, the total number of drafts made across the whole platform, per-day totals, per-model totals, and per-school-domain totals. All counts only, never identifiable content. Emails are hashed for the "unique teacher" count and are shown redacted (first two letters plus the domain) in the recent-activity list. Prompts, drafts, students, and grades are never visible to us.</p>
+  <h2 id="s2"><span class="num">2.</span> Information we collect</h2>
+  <table class="dp">
+    <thead><tr><th>Category</th><th>Examples</th><th>Where it lives</th></tr></thead>
+    <tbody>
+      <tr><td><b>Account profile</b></td><td>Name, work email, subject/grade, optional voice sample</td><td>Your browser's <code>localStorage</code>. Not on our servers.</td></tr>
+      <tr><td><b>Drafts and class notes</b></td><td>Prompts, generated drafts, class list, notes, approval status</td><td>Your browser's <code>localStorage</code>. Not on our servers.</td></tr>
+      <tr><td><b>Prompt data (transient)</b></td><td>The prompt text and class subject you send to draft, plus your email for eligibility</td><td>Sent through our edge worker to our AI provider for that single request. Not persisted.</td></tr>
+      <tr><td><b>Aggregate counters</b></td><td>Total drafts, per-day totals, per-model totals, per-school-domain totals, error counts, unique teacher count</td><td>Cloudflare KV. Numbers only; no draft content.</td></tr>
+      <tr><td><b>Recent activity (limited)</b></td><td>Your email, tool used (e.g. "Rubric"), success/error flag, timestamp — kept only for the last 20 drafts platform-wide</td><td>Cloudflare KV. Rotates as new drafts come in.</td></tr>
+      <tr><td><b>Unique-teacher list</b></td><td>Your email address, once, for the unique-teacher count</td><td>Cloudflare KV.</td></tr>
+      <tr><td><b>Rate-limit tokens</b></td><td>Per-email, per-day draft count for the capped model tier</td><td>Cloudflare KV, expires after 48 hours.</td></tr>
+      <tr><td><b>Server logs</b></td><td>IP address, user-agent, request path, response status — standard for hosting</td><td>Cloudflare, retained per Cloudflare's standard log policy (typically short-lived).</td></tr>
+    </tbody>
+  </table>
+  <p>We do not knowingly collect, store, or transmit any personally identifiable information about students. If you type student information into a prompt, that text is sent to the AI provider for that request, but it is not written to our storage. <b>We strongly recommend you do not include real student names, IDs, grades, or other identifying information in prompts.</b></p>
 
-  <h2>Model calls</h2>
-  <p>Every draft you generate goes through a large language model, currently Groq. The prompt you type and the class context you attached are the only things sent. Student work you upload for adaptation stays on your device and is not sent unless you explicitly ask Atom to work on it. When it is sent, it is sent for that one call and is not stored on our side and is not used to train any model, ours or a provider's.</p>
+  <h2 id="s3"><span class="num">3.</span> How we use information</h2>
+  <ul>
+    <li>To operate the Service: verify your eligibility, transmit your prompt to the AI provider, and return the draft to you.</li>
+    <li>To enforce fair use: apply per-user daily caps on high-cost model tiers, detect abuse, and prevent bypass attempts.</li>
+    <li>To improve the Service: aggregate counters help us decide which features to build, which models to keep, and which schools we serve.</li>
+    <li>To communicate about the Service: reply to your emails and, rarely, notify users of material changes or outages.</li>
+    <li>To comply with law: respond to lawful requests, protect our rights, and enforce our <a href="/terms/">Terms of Service</a>.</li>
+  </ul>
+  <p>We do <b>not</b> use your prompts or drafts to train any AI model, and our AI provider is under a commercial obligation not to train on your inputs. We do not sell your personal information and we do not share it with advertisers.</p>
 
-  <h2>Deletion</h2>
-  <p>To delete everything, clear your browser storage for atom-edu.org. That is the whole delete flow, because there is nothing on our side to erase for you. Your account has no server-side row to remove.</p>
+  <h2 id="s4"><span class="num">4.</span> Legal bases (GDPR)</h2>
+  <p>If you are in the European Economic Area, the United Kingdom, or Switzerland, our legal bases for processing your personal data are:</p>
+  <ul>
+    <li><b>Performance of a contract</b> (Art. 6(1)(b) GDPR) — to provide the Service you requested.</li>
+    <li><b>Legitimate interests</b> (Art. 6(1)(f)) — to keep aggregate counters, detect abuse, secure the Service, and improve reliability. We have assessed that these interests do not override your rights and freedoms.</li>
+    <li><b>Consent</b> (Art. 6(1)(a)) — where applicable, and you may withdraw consent at any time.</li>
+    <li><b>Legal obligation</b> (Art. 6(1)(c)) — to respond to lawful requests.</li>
+  </ul>
 
-  <h2>Children</h2>
-  <p>Atom Edu is for teachers, not students. Students never sign in. We do not knowingly collect data from anyone under 13.</p>
+  <h2 id="s5"><span class="num">5.</span> Sharing and processors</h2>
+  <p>We use a small set of trusted service providers to run the Service. Each acts as a data processor on our behalf.</p>
+  <table class="dp">
+    <thead><tr><th>Processor</th><th>Purpose</th><th>What they receive</th></tr></thead>
+    <tbody>
+      <tr><td><b>Cloudflare, Inc.</b></td><td>Edge compute, KV storage, DNS, CDN</td><td>Requests to the Service, aggregate counters, transient rate-limit keys, standard server logs.</td></tr>
+      <tr><td><b>Groq, Inc.</b></td><td>Large language model inference</td><td>The prompt text and system instructions for each draft request. Groq does not train on inputs.</td></tr>
+      <tr><td><b>GitHub, Inc.</b></td><td>Static site hosting via GitHub Pages</td><td>Requests to public pages and standard server logs.</td></tr>
+    </tbody>
+  </table>
+  <p>We may also disclose information (a) with your consent, (b) to comply with law or a valid legal process, (c) to protect our rights, property, or safety, or the rights, property, or safety of others, or (d) in connection with a merger, acquisition, or sale of assets — subject to a substantially similar privacy commitment.</p>
 
-  <h2>Changes</h2>
-  <p>If this policy changes, the "Last updated" date at the top changes with it, and the change is called out on the workspace home page the first time you visit after it happens.</p>
+  <h2 id="s6"><span class="num">6.</span> Retention</h2>
+  <ul>
+    <li><b>Local browser data</b> (profile, drafts, classes) is kept until you clear your browser storage or use "Sign out." You control this entirely.</li>
+    <li><b>Prompt data</b> is not retained on our servers. It exists only for the duration of a single draft request.</li>
+    <li><b>Aggregate counters</b> are retained indefinitely; they contain no personal data.</li>
+    <li><b>Unique-teacher list</b> retains your email until you request deletion or an administrator removes it.</li>
+    <li><b>Recent activity list</b> retains at most the last 20 entries platform-wide and rotates as new drafts come in.</li>
+    <li><b>Rate-limit keys</b> auto-expire after 48 hours.</li>
+    <li><b>Server logs</b> are retained per our hosting provider's standard log policy.</li>
+  </ul>
 
-  <h2>Contact</h2>
-  <p>Questions or concerns: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
+  <h2 id="s7"><span class="num">7.</span> Security</h2>
+  <p>We use industry-standard technical and organizational measures to protect information, including HTTPS everywhere, secrets stored in encrypted secret managers, minimum-necessary access, and provider-managed infrastructure hardened by Cloudflare and GitHub. Access to admin analytics is protected by a password held by us, and admin actions are gated behind that password check on every request.</p>
+  <p>No method of transmission or storage is 100% secure. If we become aware of a security incident affecting personal data we hold, we will notify affected users and, where applicable, regulators without undue delay.</p>
+
+  <h2 id="s8"><span class="num">8.</span> Your rights</h2>
+  <p>Depending on where you live, you may have the following rights with respect to personal data we hold about you:</p>
+  <ul>
+    <li><b>Access</b> — a copy of the personal data we hold about you.</li>
+    <li><b>Correction</b> — to correct inaccurate data.</li>
+    <li><b>Deletion</b> — to have your data deleted.</li>
+    <li><b>Restriction / Objection</b> — to restrict or object to certain processing, including based on legitimate interests.</li>
+    <li><b>Portability</b> — to receive your data in a portable format.</li>
+    <li><b>Withdraw consent</b> — where processing is based on consent.</li>
+    <li><b>Complaint</b> — to lodge a complaint with your local supervisory authority (EEA/UK residents).</li>
+  </ul>
+  <p>To exercise a right, email us at <a href="mailto:privacy@atom-edu.org">privacy@atom-edu.org</a>. Because most personal data lives only in your browser, deletion is fastest if you first clear your browser storage for atom-edu.org yourself; then contact us to remove your email from our unique-teacher list. We respond within 30 days.</p>
+
+  <h2 id="s9"><span class="num">9.</span> Children and student data</h2>
+  <p>The Service is intended for use by educators aged 18 or older. <b>The Service is not directed to children under 13, and we do not knowingly collect personal information from children under 13.</b> No student sign-in exists. If you believe we have collected information from a child under 13, contact <a href="mailto:privacy@atom-edu.org">privacy@atom-edu.org</a> and we will delete it promptly.</p>
+  <p>You are responsible for not entering student personal data into prompts. If you do so, you represent that you have the legal authority (including any parental consent) to process that data and that doing so complies with your school's and district's policies.</p>
+
+  <h2 id="s10"><span class="num">10.</span> FERPA</h2>
+  <p>The Family Educational Rights and Privacy Act (FERPA, 20 U.S.C. § 1232g) applies to schools that receive U.S. Department of Education funds and to the education records they maintain. Atom Edu is not itself a school or an educational agency and does not maintain student education records. Because we do not collect or store student personal information, we do not receive education records from your school.</p>
+  <p>If, in the course of using the Service, you as a school official disclose personally identifiable information from education records to us — for example, by entering it into a prompt — we act as a "school official" with a "legitimate educational interest" under 34 C.F.R. § 99.31(a)(1)(i)(B) for the purpose of that single drafting request, and: (i) we perform a service the school would otherwise use its own employees to perform; (ii) we are under the direct control of the school with respect to the use and maintenance of that information; and (iii) we do not re-disclose the information or use it for any other purpose. We recommend you do not include such information in prompts.</p>
+
+  <h2 id="s11"><span class="num">11.</span> California residents (CCPA/CPRA)</h2>
+  <p>If you are a California resident, the California Consumer Privacy Act as amended by the California Privacy Rights Act gives you the following rights, subject to certain exceptions:</p>
+  <ul>
+    <li>Right to know what personal information we collect, use, disclose, and sell/share.</li>
+    <li>Right to delete personal information we collect from you.</li>
+    <li>Right to correct inaccurate personal information.</li>
+    <li>Right to opt out of the sale or sharing of personal information for cross-context behavioral advertising. <b>We do not sell or share personal information.</b></li>
+    <li>Right to limit use of sensitive personal information. <b>We do not collect sensitive personal information as defined by the CPRA.</b></li>
+    <li>Right to non-discrimination for exercising these rights.</li>
+  </ul>
+  <p>To exercise these rights, email <a href="mailto:privacy@atom-edu.org">privacy@atom-edu.org</a>. We will verify your request by matching the email on file. You may designate an authorized agent by providing written permission.</p>
+
+  <h2 id="s12"><span class="num">12.</span> International transfers</h2>
+  <p>We are based in the United States and our processors (Cloudflare, Groq, GitHub) operate primarily from the United States. If you access the Service from outside the United States, your information will be transferred to, stored in, and processed in the United States. Where required, we rely on appropriate safeguards, such as the Standard Contractual Clauses adopted by the European Commission, for transfers of personal data out of the EEA, UK, and Switzerland.</p>
+
+  <h2 id="s13"><span class="num">13.</span> Cookies and tracking</h2>
+  <p>The Service does not use cookies for tracking. We do use your browser's <code>localStorage</code> to remember your profile and drafts on your device. We do not embed third-party analytics, advertising pixels, session-replay tools, or fingerprinting scripts.</p>
+
+  <h2 id="s14"><span class="num">14.</span> Do Not Track</h2>
+  <p>Because we do not track users across sites, we treat all traffic the same regardless of Do Not Track signals.</p>
+
+  <h2 id="s15"><span class="num">15.</span> Changes to this policy</h2>
+  <p>We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date above and, for material changes, provide notice through the Service on the next visit. Your continued use after the change constitutes acceptance.</p>
+
+  <h2 id="s16"><span class="num">16.</span> Contact</h2>
+  <p>Privacy questions and rights requests: <a href="mailto:privacy@atom-edu.org">privacy@atom-edu.org</a>.</p>
+  <p>Legal notices: <a href="mailto:legal@atom-edu.org">legal@atom-edu.org</a>.</p>
+  <p>General: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
 </main>
 
 <footer>
   <div class="wrap row">
-    <div>&copy; 2026 Atom Edu. Free forever for teachers.</div>
+    <div>&copy; 2026 Atom Edu. Free for teachers.</div>
     <div class="links">
       <a href="/">Home</a>
       <a href="/privacy/">Privacy</a>

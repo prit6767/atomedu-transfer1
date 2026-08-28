@@ -2,8 +2,10 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Terms of use, Atom Edu</title>
+<title>Terms of Service, Atom Edu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,7 +25,7 @@
     -webkit-font-smoothing: antialiased; line-height: 1.55;
   }
   a { color: inherit; }
-  .wrap { max-width: 780px; margin: 0 auto; padding: 0 28px; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 28px; }
 
   nav {
     height: 64px; display: flex; align-items: center; justify-content: space-between;
@@ -35,16 +37,18 @@
     font-weight: 700; font-size: 17px; letter-spacing: -0.01em;
     text-decoration: none; color: var(--ink);
   }
+  nav .links { display: flex; align-items: center; gap: 4px; }
   nav .links a {
     font-size: 13.5px; color: var(--ink-soft); font-weight: 500;
-    padding: 6px 12px; text-decoration: none;
+    padding: 6px 12px; text-decoration: none; border-radius: 999px;
   }
-  nav .links a:hover { color: var(--ink); }
+  nav .links a:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
   nav .cta {
     background: var(--ink); color: var(--bg); border: 1px solid var(--ink);
     padding: 9px 16px; border-radius: 999px; text-decoration: none;
-    font-size: 14px; font-weight: 600;
+    font-size: 14px; font-weight: 600; margin-left: 6px;
   }
+  nav .cta:hover { background: transparent; color: var(--ink); }
 
   main { padding: 60px 0 80px; }
   h1 {
@@ -56,25 +60,53 @@
   h1 .it { font-style: italic; font-weight: 300; }
   .lead {
     font-family: "Inter", sans-serif; font-size: 16px;
-    color: var(--ink-soft); max-width: 65ch; margin: 0 0 40px; line-height: 1.65;
+    color: var(--ink-soft); max-width: 65ch; margin: 0 0 32px; line-height: 1.65;
   }
   .lead b { color: var(--ink); font-weight: 700; }
-  h2 {
-    font-family: "Inter", sans-serif; font-size: 18px; font-weight: 700;
-    color: var(--ink); margin: 30px 0 10px; letter-spacing: -0.005em;
-  }
-  p {
-    font-family: "Inter", sans-serif; font-size: 14.5px;
-    color: var(--ink-soft); line-height: 1.7; margin: 0 0 12px; max-width: 70ch;
-  }
-  p b { color: var(--ink); font-weight: 700; }
-  .tocline {
+  .meta {
     font-family: "Inter", sans-serif; font-size: 12.5px; color: var(--muted);
-    padding: 14px 18px; border-radius: 10px;
+    display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;
+    padding-bottom: 20px; border-bottom: 1px solid var(--line);
+  }
+  .meta b { color: var(--ink); font-weight: 700; }
+  h2 {
+    font-family: "Inter", sans-serif; font-size: 15px; font-weight: 800;
+    color: var(--ink); margin: 40px 0 10px; letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  h2 .num { color: var(--muted); font-weight: 700; margin-right: 8px; }
+  h3 {
+    font-family: "Inter", sans-serif; font-size: 14px; font-weight: 700;
+    color: var(--ink); margin: 22px 0 6px;
+  }
+  p, li {
+    font-family: "Inter", sans-serif; font-size: 14.5px;
+    color: var(--ink-soft); line-height: 1.7; margin: 0 0 12px; max-width: 72ch;
+  }
+  ul { padding-left: 22px; margin: 0 0 12px; }
+  li { margin-bottom: 4px; }
+  p b, li b { color: var(--ink); font-weight: 700; }
+  .callout {
+    font-family: "Inter", sans-serif; font-size: 13px; color: var(--ink);
+    padding: 16px 20px; border-radius: 10px;
+    background: color-mix(in srgb, var(--stamp) 6%, var(--bg-elev));
+    border-left: 3px solid var(--stamp);
+    margin: 24px 0; line-height: 1.6;
+  }
+  .callout b { color: var(--stamp); }
+  .toc {
+    font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted);
+    padding: 18px 22px; border-radius: 10px;
     background: color-mix(in srgb, var(--ink) 4%, var(--bg-elev));
-    border-left: 3px solid var(--ink);
+    border: 1px solid var(--line);
     margin: 30px 0;
   }
+  .toc h4 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); font-weight: 800; margin: 0 0 10px; }
+  .toc ol { margin: 0; padding-left: 22px; column-count: 2; column-gap: 30px; }
+  @media (max-width: 600px) { .toc ol { column-count: 1; } }
+  .toc li { margin-bottom: 4px; font-size: 13px; color: var(--ink-soft); }
+  .toc a { text-decoration: none; }
+  .toc a:hover { color: var(--ink); }
 
   footer {
     border-top: 1px solid var(--line); padding: 30px 0;
@@ -94,47 +126,137 @@
     <a href="/">Home</a>
     <a href="/privacy/">Privacy</a>
     <a href="/terms/">Terms</a>
-    <a class="cta" href="/">Try the workspace</a>
+    <a class="cta" href="/">Back to site</a>
   </div>
 </nav>
 
 <main class="wrap">
-  <h1>Terms of <span class="it">use.</span></h1>
-  <p class="lead"><b>Last updated: 2026.</b> By using Atom Edu, you agree to the following. Also in plain English.</p>
+  <h1>Terms of <span class="it">Service.</span></h1>
+  <p class="lead">These Terms of Service ("Terms") govern your access to and use of Atom Edu (the "Service"), operated by Atom Edu ("we," "us," or "our"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree, do not use the Service.</p>
+  <div class="meta">
+    <span><b>Effective date:</b> August 1, 2026</span>
+    <span><b>Last updated:</b> August 28, 2026</span>
+  </div>
 
-  <div class="tocline">In one sentence: Atom drafts, you edit, you approve. Everything you make is yours. It's free forever. Use it responsibly.</div>
+  <div class="toc">
+    <h4>Contents</h4>
+    <ol>
+      <li><a href="#s1">Acceptance and eligibility</a></li>
+      <li><a href="#s2">Description of the Service</a></li>
+      <li><a href="#s3">Accounts</a></li>
+      <li><a href="#s4">Your content</a></li>
+      <li><a href="#s5">Acceptable use</a></li>
+      <li><a href="#s6">AI-generated output</a></li>
+      <li><a href="#s7">Third-party services</a></li>
+      <li><a href="#s8">Intellectual property</a></li>
+      <li><a href="#s9">Fees and changes</a></li>
+      <li><a href="#s10">Disclaimer of warranties</a></li>
+      <li><a href="#s11">Limitation of liability</a></li>
+      <li><a href="#s12">Indemnification</a></li>
+      <li><a href="#s13">Termination</a></li>
+      <li><a href="#s14">Governing law and disputes</a></li>
+      <li><a href="#s15">Arbitration and class waiver</a></li>
+      <li><a href="#s16">Changes to these Terms</a></li>
+      <li><a href="#s17">Miscellaneous</a></li>
+      <li><a href="#s18">Contact</a></li>
+    </ol>
+  </div>
 
-  <h2>What Atom is</h2>
-  <p>A free tool that drafts classroom materials for teachers. Atom drafts. You edit. You approve. Nothing goes out to a student, a family, or a gradebook until you say yes.</p>
+  <h2 id="s1"><span class="num">1.</span> Acceptance and eligibility</h2>
+  <p>By creating an account, accessing, or using the Service, you represent that (a) you are at least 18 years of age, (b) you are an educator, instructional coach, administrator, or other adult affiliated with a school or educational organization, and (c) you have the legal capacity to enter into a binding agreement. The Service is not intended for use by children under 13, and no student is permitted to sign in.</p>
+  <p>If you are accessing the Service on behalf of a school, district, or organization, you represent that you have authority to bind that entity to these Terms, and "you" refers to both you and that entity.</p>
 
-  <h2>Who can use it</h2>
-  <p>Teachers, instructional coaches, and other educators, verified by a school (.edu) or organization (.org) email. You are responsible for what you approve and send. Atom is a drafting tool, not a source of truth.</p>
+  <h2 id="s2"><span class="num">2.</span> Description of the Service</h2>
+  <p>Atom Edu is a web-based drafting assistant that helps educators generate first-draft classroom materials — worksheets, quizzes, rubrics, lesson plans, reading passages, slide outlines, and family communications — using large language models. <b>Atom drafts. You edit. You approve.</b> No output is delivered to any student, family member, or gradebook until you take an affirmative action to send or export it.</p>
+  <p>The Service is provided as-is, is under active development, and features may change, be added, or be removed at any time without notice.</p>
 
-  <h2>Your account and content</h2>
-  <p>Your account lives in your browser. The drafts, class information, and notes you make are yours. We do not claim any ownership of what you create with Atom.</p>
+  <h2 id="s3"><span class="num">3.</span> Accounts</h2>
+  <p>To use certain features you must provide a valid email address ending in a recognized educational domain (such as .edu or .org). You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account. Notify us immediately of any unauthorized use.</p>
+  <p>Your account profile and drafts are stored primarily in your browser's local storage on your device; we do not maintain a traditional server-side account record. See the <a href="/privacy/">Privacy Policy</a> for details.</p>
 
-  <h2>What you agree not to do</h2>
-  <p>Do not use Atom to draft anything you would not send with your own name attached. Do not use it to harass, dox, or harm any student, family, colleague, or third party. Do not use it to impersonate anyone. Do not use it to circumvent the daily cap by rotating emails or otherwise abusing the system.</p>
+  <h2 id="s4"><span class="num">4.</span> Your content</h2>
+  <p>"Your Content" means any text, prompt, class description, draft, upload, or other material you input into or generate using the Service. As between you and us, <b>you retain all right, title, and interest in Your Content</b>.</p>
+  <p>By using the Service, you grant us a limited, worldwide, royalty-free, non-exclusive license to process Your Content solely for the purpose of operating and providing the Service to you — including transmitting your prompts to our AI inference provider so they can generate a draft in response. We do not use Your Content to train any AI model, and we do not sell or share Your Content with third parties for their own commercial purposes.</p>
+  <p>You represent and warrant that you have all rights necessary to submit Your Content and that Your Content does not violate any law, contract, or third-party right (including student privacy laws such as FERPA).</p>
 
-  <h2>Cost</h2>
-  <p>Free. Forever. Every feature. Every classroom. Every year you keep teaching. If that ever changes, existing teachers keep the free tier they signed up under.</p>
+  <h2 id="s5"><span class="num">5.</span> Acceptable use</h2>
+  <p>You agree not to use the Service to:</p>
+  <ul>
+    <li>violate any applicable law, regulation, or third-party right;</li>
+    <li>upload, submit, or process personally identifiable information about students (names, grades, IDs, discipline records, health information, disability status, or protected characteristics) — draft your materials with generic references and add student information yourself, offline, after approval;</li>
+    <li>harass, threaten, defame, dox, or discriminate against any student, family, colleague, or third party;</li>
+    <li>impersonate any person or entity or misrepresent your affiliation with any person or entity;</li>
+    <li>generate content that is sexually explicit involving minors, incites violence, or is otherwise unlawful;</li>
+    <li>reverse engineer, decompile, or attempt to extract source code or model weights from the Service;</li>
+    <li>circumvent rate limits, access controls, or the daily draft cap, including by rotating email addresses or using automated scripts;</li>
+    <li>use the Service to build or improve any competing product;</li>
+    <li>interfere with the security, integrity, or performance of the Service or the data of any other user;</li>
+    <li>send the Service any content you would not put your own name on and send under your own professional judgment.</li>
+  </ul>
+  <p>We may suspend or terminate your access at any time for any suspected violation of this section, with or without notice.</p>
 
-  <h2>No warranty</h2>
-  <p>Atom drafts are a starting point. They can be wrong, out of date, or a bad fit for your class. Your judgment, your rubric, and your review are what make an artifact ready. We offer Atom as-is, without warranty of any kind, express or implied, including but not limited to fitness for a particular purpose. We are not liable for any use of Atom's output that is not first reviewed by you.</p>
+  <h2 id="s6"><span class="num">6.</span> AI-generated output</h2>
+  <p>The Service uses large language models to generate drafts. <b>You are solely responsible for reviewing every draft before using, distributing, or acting on it.</b> AI-generated content can be inaccurate, incomplete, biased, out of date, or a poor fit for your class, standards, or students. Do not distribute any output to students, families, colleagues, or administrators without first reviewing it against your professional judgment, applicable curriculum standards, and your school's policies.</p>
+  <p>You may not represent AI-generated output as having been reviewed, endorsed, or authored by Atom Edu.</p>
 
-  <h2>Ending your use</h2>
-  <p>Stop using Atom whenever you want. Clear your browser storage to remove everything. There are no accounts to close and no cancellation flow.</p>
+  <h2 id="s7"><span class="num">7.</span> Third-party services</h2>
+  <p>To provide AI drafting, the Service transmits your prompt and class-context selections to a third-party inference provider (currently Groq, Inc., https://groq.com). Site hosting and edge functions are provided by Cloudflare, Inc. and GitHub, Inc. Your use of the Service through these providers is also subject to their terms and privacy notices, which are incorporated by reference for the portions applicable to your use. We are not responsible for the acts or omissions of these providers, but we choose providers with commercial commitments not to train their models on your inputs.</p>
 
-  <h2>Governing law</h2>
-  <p>These terms are governed by the laws of the state where Atom Edu is registered. Any disputes go there.</p>
+  <h2 id="s8"><span class="num">8.</span> Intellectual property</h2>
+  <p>The Service, including its software, design, branding, text, graphics, and the "Atom Edu" name and logo, is owned by us or our licensors and is protected by copyright, trademark, and other intellectual property laws. Except for the limited rights expressly granted in these Terms, no license is granted to you.</p>
+  <p>You may not remove, alter, or obscure any proprietary notices displayed by the Service. Feedback you provide about the Service is non-confidential, and you grant us a perpetual, irrevocable, royalty-free right to use it without obligation to you.</p>
 
-  <h2>Contact</h2>
-  <p><a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
+  <h2 id="s9"><span class="num">9.</span> Fees and changes</h2>
+  <p>The Service is currently offered free of charge, subject to reasonable usage limits including a daily draft cap on high-cost model tiers. If we later introduce paid features, we will give existing users advance notice and preserve a free tier substantially similar to the current one for individual educator accounts. We may adjust limits, features, or availability at any time.</p>
+
+  <h2 id="s10"><span class="num">10.</span> Disclaimer of warranties</h2>
+  <div class="callout">
+    <b>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED.</b> To the fullest extent permitted by law, we disclaim all warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, non-infringement, quiet enjoyment, accuracy, completeness, and any warranties arising from course of dealing or usage of trade. We do not warrant that the Service will be uninterrupted, error-free, secure, or free of harmful components, or that any output will be accurate, reliable, appropriate for classroom use, or aligned with any curriculum standard.
+  </div>
+
+  <h2 id="s11"><span class="num">11.</span> Limitation of liability</h2>
+  <div class="callout">
+    <b>TO THE FULLEST EXTENT PERMITTED BY LAW, IN NO EVENT WILL WE (INCLUDING OUR OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AFFILIATES, OR LICENSORS) BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES</b>, including without limitation damages for lost profits, lost data, lost goodwill, business interruption, procurement of substitute services, personal injury, emotional distress, or any harm arising from your use of, or inability to use, the Service or any output — even if we have been advised of the possibility of such damages.
+    <br><br>
+    <b>OUR TOTAL AGGREGATE LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THE SERVICE OR THESE TERMS WILL NOT EXCEED ONE HUNDRED U.S. DOLLARS ($100.00).</b> This limitation applies regardless of the legal theory (contract, tort, strict liability, or otherwise) and even if any limited remedy fails of its essential purpose. Some jurisdictions do not allow the exclusion or limitation of certain damages, so some of the above may not apply to you.
+  </div>
+
+  <h2 id="s12"><span class="num">12.</span> Indemnification</h2>
+  <p>You agree to defend, indemnify, and hold harmless Atom Edu and its officers, directors, employees, agents, affiliates, and licensors from and against any and all claims, damages, obligations, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: (a) your use of the Service; (b) Your Content; (c) your violation of these Terms; (d) your violation of any third-party right, including any student privacy law; or (e) your distribution or use of any AI-generated output.</p>
+
+  <h2 id="s13"><span class="num">13.</span> Termination</h2>
+  <p>You may stop using the Service at any time. To delete your account data, clear your browser storage for atom-edu.org. We may suspend or terminate your access, in whole or in part, at any time, for any reason, with or without notice or liability. Sections 4 (Your content, license grant), 6, 8, 10 through 12, 14, 15, and 17 survive termination.</p>
+
+  <h2 id="s14"><span class="num">14.</span> Governing law and disputes</h2>
+  <p>These Terms are governed by the laws of the State of Delaware, United States, without regard to its conflict-of-law rules. Subject to Section 15, you and we agree to submit to the exclusive personal jurisdiction of the state and federal courts located in New Castle County, Delaware, for any dispute not subject to arbitration.</p>
+
+  <h2 id="s15"><span class="num">15.</span> Arbitration and class-action waiver</h2>
+  <p><b>Please read this section carefully. It affects your legal rights.</b></p>
+  <p>Any dispute, claim, or controversy arising out of or relating to the Service or these Terms will be resolved by binding individual arbitration administered by the American Arbitration Association (AAA) under its Consumer Arbitration Rules, and judgment on the award may be entered in any court of competent jurisdiction. The seat of arbitration is Wilmington, Delaware, and the arbitration will be conducted in English.</p>
+  <p><b>You and we each waive any right to a jury trial and any right to participate in a class action, class arbitration, or representative proceeding.</b> The arbitrator may award relief only in favor of the individual party seeking relief and only to the extent necessary to provide relief warranted by that party's individual claim.</p>
+  <p>Exceptions: either party may (a) bring an individual claim in small-claims court in any jurisdiction that offers small-claims relief, or (b) seek injunctive or equitable relief in court to protect intellectual property rights.</p>
+  <p>You may opt out of this arbitration agreement by emailing us at legal@atom-edu.org within 30 days of first accepting these Terms, with the subject line "Arbitration Opt-Out" and stating your account email and intent.</p>
+
+  <h2 id="s16"><span class="num">16.</span> Changes to these Terms</h2>
+  <p>We may update these Terms from time to time. If we make material changes, we will update the "Last updated" date and, where reasonably possible, provide notice through the Service. Your continued use of the Service after changes take effect constitutes acceptance. If you do not agree to updated Terms, stop using the Service.</p>
+
+  <h2 id="s17"><span class="num">17.</span> Miscellaneous</h2>
+  <p><b>Entire agreement.</b> These Terms and the <a href="/privacy/">Privacy Policy</a> constitute the entire agreement between you and us regarding the Service and supersede any prior agreements on the subject.</p>
+  <p><b>Severability.</b> If any provision of these Terms is held to be invalid or unenforceable, the remaining provisions will remain in full force and effect and the invalid provision will be replaced with a valid one that reflects the original intent as closely as possible.</p>
+  <p><b>No waiver.</b> Our failure to enforce any right or provision will not be considered a waiver of such right or provision.</p>
+  <p><b>Assignment.</b> You may not assign or transfer these Terms without our prior written consent. We may assign these Terms without restriction, including to any successor in connection with a merger, acquisition, or sale of assets.</p>
+  <p><b>Force majeure.</b> We will not be liable for any delay or failure to perform resulting from causes outside our reasonable control, including acts of God, war, terrorism, riots, embargoes, acts of civil or military authorities, fire, floods, accidents, network infrastructure failures, strikes, or shortages of transportation, facilities, fuel, energy, labor, or materials.</p>
+  <p><b>No agency.</b> No agency, partnership, joint venture, or employment is created by these Terms.</p>
+  <p><b>Export control.</b> You agree to comply with all applicable export and sanctions laws in your use of the Service.</p>
+  <p><b>U.S. government users.</b> The Service is a "commercial item" as defined at 48 C.F.R. §2.101 and is licensed to U.S. government end users only as a commercial item with only those rights granted to all other end users under these Terms.</p>
+
+  <h2 id="s18"><span class="num">18.</span> Contact</h2>
+  <p>Questions about these Terms may be sent to <a href="mailto:legal@atom-edu.org">legal@atom-edu.org</a>. General questions: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
 </main>
 
 <footer>
   <div class="wrap row">
-    <div>&copy; 2026 Atom Edu. Free forever for teachers.</div>
+    <div>&copy; 2026 Atom Edu. Free for teachers.</div>
     <div class="links">
       <a href="/">Home</a>
       <a href="/privacy/">Privacy</a>

@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Atom Edu, admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -103,8 +105,11 @@
   .pill.err { color: var(--stamp); background: color-mix(in srgb, var(--stamp) 12%, transparent); }
 
   .hidden { display: none !important; }
-  .stripe { font-family: "Inter", sans-serif; font-size: 12px; color: var(--muted); margin-top: 30px; padding: 14px 18px; border-radius: 10px; background: color-mix(in srgb, var(--ink) 4%, transparent); }
-  .stripe b { color: var(--ink); }
+  .scroll-box { max-height: 280px; overflow-y: auto; }
+  .scroll-box table thead th { position: sticky; top: 0; background: var(--bg-elev); z-index: 1; }
+  .del-btn { font-family: "Inter", sans-serif; font-size: 12px; padding: 5px 12px; border-radius: 999px; border: 1px solid color-mix(in srgb, #b7331f 30%, transparent); background: transparent; color: #b7331f; cursor: pointer; font-weight: 600; }
+  .del-btn:hover { background: color-mix(in srgb, #b7331f 10%, transparent); }
+  .del-btn:disabled { opacity: 0.5; cursor: wait; }
 </style>
 </head>
 <body>
@@ -163,16 +168,27 @@
       </div>
       <div class="card">
         <h3>Recent <span class="it">activity</span></h3>
-        <div class="cm">Last 10 drafts. Emails partially redacted.</div>
-        <table>
-          <thead><tr><th>Teacher</th><th>Tool</th><th>Status</th></tr></thead>
-          <tbody id="recent"></tbody>
-        </table>
+        <div class="cm">Last 20 drafts. Emails partially redacted.</div>
+        <div class="scroll-box">
+          <table>
+            <thead><tr><th>Teacher</th><th>Tool</th><th>Status</th></tr></thead>
+            <tbody id="recent"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <div class="stripe">
-      <b>Note.</b> Analytics come from the Worker's KV counters. Nothing here identifies a student. Emails are hashed for storage and shown redacted (first two letters and the domain).
+    <div class="two" style="grid-template-columns: 1fr;">
+      <div class="card">
+        <h3>Teachers <span class="it">signed up</span></h3>
+        <div class="cm">Every unique .edu / .org email. Delete removes them from all counters.</div>
+        <div class="scroll-box">
+          <table>
+            <thead><tr><th>Email</th><th>Domain</th><th style="text-align:right;">Action</th></tr></thead>
+            <tbody id="teachers-list"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </main>
@@ -237,7 +253,7 @@
     document.getElementById('k-errrate').textContent = (er == null ? '0%' : (Math.round(er * 1000) / 10) + '%');
 
     // Sparkline
-    drawSpark(d.weekly || [0,0,0,0,0,0,0]);
+    drawSpark(d.weekly || [0,0,0,0,0,0,0], d.weeklyLabels || ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']);
 
     // Model bars
     renderBars('models', d.models || {}, 'req');
@@ -257,7 +273,45 @@
     if(!tbody.children.length){
       tbody.innerHTML = '<tr><td colspan="3" style="color:var(--muted);font-style:italic;">No drafts yet.</td></tr>';
     }
+
+    // Teachers list with delete
+    var tbox = document.getElementById('teachers-list');
+    tbox.innerHTML = '';
+    var emails = (d.emailsList || []).slice().sort();
+    emails.forEach(function(email){
+      var domain = (email.split('@')[1] || '');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + email + '</td>' +
+        '<td style="color:var(--muted);">' + domain + '</td>' +
+        '<td style="text-align:right;"><button class="del-btn" data-email="' + email + '">Delete</button></td>';
+      tbox.appendChild(tr);
+    });
+    if(!tbox.children.length){
+      tbox.innerHTML = '<tr><td colspan="3" style="color:var(--muted);font-style:italic;">No teachers yet.</td></tr>';
+    }
+    tbox.querySelectorAll('.del-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){ deleteUser(btn.getAttribute('data-email'), btn); });
+    });
+
     document.getElementById('ts').textContent = new Date().toLocaleTimeString();
+  }
+
+  async function deleteUser(email, btn){
+    if(!window.confirm('Delete ' + email + '? They will be removed from the teacher count and recent activity.')) return;
+    btn.disabled = true; btn.textContent = 'Deleting…';
+    try {
+      var res = await fetch(WORKER_URL + '/api/admin/delete-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwCache, email: email })
+      });
+      if(!res.ok){ btn.disabled = false; btn.textContent = 'Delete'; alert('Delete failed: ' + res.status); return; }
+      await loadStats();
+    } catch(e){
+      btn.disabled = false; btn.textContent = 'Delete';
+      alert('Network error.');
+    }
   }
 
   function fmt(n){ return (n || 0).toLocaleString(); }
@@ -284,7 +338,7 @@
       el.appendChild(row);
     });
   }
-  function drawSpark(vals){
+  function drawSpark(vals, labels){
     var svg = document.getElementById('spark');
     svg.innerHTML = '';
     var w = 700, h = 140, pad = 12;
@@ -301,7 +355,7 @@
     svg.insertAdjacentHTML('beforeend', '<path d="' + path + '" fill="none" stroke="#0b1226" stroke-width="2"/>');
     pts.forEach(function(p, i){
       svg.insertAdjacentHTML('beforeend', '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3" fill="#0b1226"/>');
-      svg.insertAdjacentHTML('beforeend', '<text x="' + p[0] + '" y="' + (h - 2) + '" text-anchor="middle" fill="#5a6178" font-family="Inter,sans-serif" font-size="10">' + ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i] + '</text>');
+      svg.insertAdjacentHTML('beforeend', '<text x="' + p[0] + '" y="' + (h - 2) + '" text-anchor="middle" fill="#5a6178" font-family="Inter,sans-serif" font-size="10">' + (labels[i] || '') + '</text>');
     });
   }
 </script>

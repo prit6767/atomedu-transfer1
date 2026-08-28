@@ -3,11 +3,7 @@ with open('/tmp/atom/logo-light-sm.b64') as f: light_b64 = f.read().strip()
 
 SEND_TO = ''
 
-CONTROL_NOTE = r'''
-<div class="control-note">
-  <b>You are writing this.</b> Atom drafts. You edit or rewrite. Nothing goes out until you say yes.
-</div>
-'''
+CONTROL_NOTE = ''
 
 PAGE_HOME = r'''
 <div class="ws-page on" data-page="home">
@@ -23,9 +19,9 @@ PAGE_HOME = r'''
 
   <div class="empty" id="home-empty" style="display:none;">
     <div class="empty-icon">&#43;</div>
-    <div class="empty-title">Draft your <span class="it">first thing.</span></div>
+    <div class="empty-title">Nothing here <span class="it">yet.</span></div>
     <div class="empty-body">Every draft you make with Atom lands here. Nothing goes out until you approve it. Start with an assignment, a quiz, a note home, or anything else in the "New draft" menu.</div>
-    <button class="btn empty-cta" data-empty-cta>Draft your first thing <span class="arrow">&rarr;</span></button>
+    <button class="btn empty-cta" data-empty-cta>Start a draft <span class="arrow">&rarr;</span></button>
   </div>
 </div>
 '''
@@ -78,7 +74,7 @@ def clean_maker(page, title, italic, sub, approve):
   ''' + CONTROL_NOTE + '''
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want. For example: 6 question worksheet on photosynthesis for period 3">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -93,13 +89,13 @@ def clean_maker(page, title, italic, sub, approve):
 
 PAGE_ASSIGNMENT = clean_maker('assignment', 'Assignment', 'maker', 'A printable worksheet ready for handout.', 'Approve')
 PAGE_QUIZ = clean_maker('quiz', 'Quiz &amp; test', 'builder', 'Mix multiple choice, short answer, and diagrams. Includes an answer key.', 'Approve')
-PAGE_RUBRIC = clean_maker('rubric', 'Rubric', 'builder', 'Rows tied to a standard. Attach to any assignment.', 'Approve &amp; save')
+PAGE_RUBRIC = clean_maker('rubric', 'Rubric', 'builder', 'Rows tied to a standard. Attach to any assignment.', 'Approve')
 PAGE_LESSON = clean_maker('lesson', 'Lesson', 'planner', 'One class, or a whole unit.', 'Approve')
 PAGE_PASSAGES = clean_maker('passages', 'Reading', 'passages', 'Leveled to your class. Questions attached.', 'Approve')
 PAGE_SLIDES = clean_maker('slides', 'Slides &amp;', 'boards', 'Slides for the projector, notes for the board.', 'Approve')
 PAGE_DOCS = clean_maker('docs', 'Docs &amp;', 'handouts', 'Family letters, syllabi, permission slips, newsletters.', 'Approve')
 PAGE_NOTES = clean_maker('notes', 'Notes', 'home', 'You write the message. Atom checks tone and drafts a translation.', 'Approve')
-PAGE_DIFF = clean_maker('diff', 'Differentia', 'tion', 'Same assignment, adapted for reading level, IEP, or your ELL group.', 'Approve all three')
+PAGE_DIFF = clean_maker('diff', 'Differentia', 'tion', 'Same assignment, adapted for reading level, IEP, or your ELL group.', 'Approve')
 
 PAGE_STANDARDS = r'''
 <div class="ws-page" data-page="standards">
@@ -302,7 +298,7 @@ STYLES = r'''
   .ws-nav a.on { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); font-weight: 600; }
   .ws-teacher { margin-top: 24px; padding: 10px; border-radius: 10px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); }
   .ws-teacher-info { flex: 1; min-width: 0; }
-  .signout { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 6px 10px; border-radius: 6px; font-size: 14px; }
+  .signout { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 6px 10px; border-radius: 6px; font-size: 11.5px; font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.04em; }
   .signout:hover { background: color-mix(in srgb, var(--stamp) 12%, transparent); color: var(--stamp); }
 
   /* New draft menu */
@@ -330,6 +326,8 @@ STYLES = r'''
   .ws-main { padding: 28px 40px 80px; font-family: "Inter", sans-serif; }
   @media (max-width: 700px) { .ws-main { padding: 24px 20px 60px; } }
   .ws-top { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 16px; }
+  .phil-pill { font-family: "Inter", sans-serif; font-size: 12px; color: var(--muted); padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 4%, transparent); letter-spacing: 0.02em; }
+  .phil-pill b { color: var(--ink); font-weight: 700; }
   .ws-top .actions { display: flex; gap: 8px; }
   .ws-top .actions button { font-family: "Inter", sans-serif; font-size: 13px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; font-weight: 500; }
   .ws-top .actions button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 600; }
@@ -361,6 +359,7 @@ STYLES = r'''
   .qrow .qa button.approve { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   @media (max-width: 700px) { .qrow { grid-template-columns: 1fr; gap: 8px; } }
   .cchip { display: inline-block; margin-left: 6px; font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink-soft); vertical-align: 1px; }
+  .cls-prefix { font-family: "Inter", sans-serif; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--stamp); margin-right: 6px; }
 
   .grid-label { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin: 8px 0 14px; }
   .tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
@@ -745,7 +744,7 @@ MODAL = r'''
       <div class="modal-err" id="si-err"></div>
       <button class="go" id="si-go">Sign in</button>
       <div class="fine">Sign in works on any browser where you set up before. New device? Just <a href="#" data-switch-tab="signup">sign up</a> again.</div>
-      <div class="admin-shortcut"><a href="#" id="admin-login">Test as admin</a></div>
+      <div class="admin-shortcut" id="admin-shortcut" style="display:none;"><a href="#" id="admin-login">Test as admin</a></div>
     </div>
   </div>
 </div>
@@ -767,7 +766,7 @@ MODAL = r'''
     <div class="ai-foot">
       <button class="ai-regen" id="ai-regen">Regenerate</button>
       <button class="ai-copy" id="ai-copy">Copy</button>
-      <button class="ai-approve" id="ai-approve">Approve &amp; save</button>
+      <button class="ai-approve" id="ai-approve">Approve</button>
       <button class="ai-use" id="ai-use">Save as draft</button>
     </div>
   </div>
@@ -779,18 +778,12 @@ SIDEBAR = r'''
   <div class="ws-brand" data-nav="home"><div class="brand-mark"></div><span>Atom Edu</span></div>
   <div class="ws-class" id="ws-class-toggle">
     <div>
-      <div class="cn" id="ws-class-name">6th grade Science</div>
-      <div class="cp">Period 3</div>
+      <div class="cn" id="ws-class-name">Your class</div>
+      <div class="cp" id="ws-class-sub"></div>
     </div>
-    <div class="chev">&#9662;</div>
+    <div class="chev" id="ws-class-chev">&#9662;</div>
   </div>
-  <div class="class-list" id="class-list">
-    <div class="cl-row on"><div class="cl-n"><b>Period 3</b><div class="cl-m">Science, honors</div></div></div>
-    <div class="cl-row"><div class="cl-n"><b>Period 1</b><div class="cl-m">Science</div></div></div>
-    <div class="cl-row"><div class="cl-n"><b>Period 2</b><div class="cl-m">Science</div></div></div>
-    <div class="cl-row"><div class="cl-n"><b>Period 5</b><div class="cl-m">Science</div></div></div>
-    <div class="cl-row add">+ Add a class</div>
-  </div>
+  <div class="class-list" id="class-list"></div>
 
   <div class="ws-nav-label">Workspace</div>
   <div class="ws-nav">
@@ -822,7 +815,7 @@ SIDEBAR = r'''
     <a data-nav="settings"><span class="lbl">Settings</span></a>
   </div>
 
-  <div class="ws-teacher" id="ws-teacher"><div class="av" id="av-init">MC</div><div class="ws-teacher-info"><div class="tn" id="av-name">Ms. Chen</div><div class="ts">Signed in</div></div><button class="signout" id="signout" title="Sign out">&#x21E5;</button></div>
+  <div class="ws-teacher" id="ws-teacher"><div class="av" id="av-init">MC</div><div class="ws-teacher-info"><div class="tn" id="av-name">Ms. Chen</div><div class="ts">Signed in</div></div><button class="signout" id="signout" title="Sign out">Sign out</button></div>
 </aside>
 '''
 
@@ -832,7 +825,7 @@ WORKSPACE = r'''
     ''' + SIDEBAR + r'''
     <main class="ws-main">
       <div class="ws-top">
-        <div></div>
+        <div class="phil-pill" title="Atom's promise">Atom drafts. <b>You approve.</b></div>
         <div class="actions">
           <div class="new-wrap">
             <button class="primary" id="new-draft-btn">+ New draft</button>
@@ -848,7 +841,6 @@ WORKSPACE = r'''
               <a data-nav="diff">Differentiation</a>
             </div>
           </div>
-          <button class="theme-toggle" data-tt style="font-size:12px;">Theme</button>
         </div>
       </div>
       ''' + all_pages + r'''
@@ -931,6 +923,12 @@ SCRIPT = r'''
       try {
         localStorage.setItem('atom-user', JSON.stringify({name:name, cls:cls, email:email || ''}));
         if(email) localStorage.setItem('atom-email', email);
+        var existing = JSON.parse(localStorage.getItem('atom-classes') || '[]');
+        if(!existing.length && cls){
+          existing = [{ name: cls }];
+          localStorage.setItem('atom-classes', JSON.stringify(existing));
+        }
+        localStorage.setItem('atom-active-class', cls || (existing[0] && existing[0].name) || '');
       } catch(e){}
       renderAll();
     }
@@ -952,6 +950,12 @@ SCRIPT = r'''
       enterWorkspace(ADMIN_NAME, ADMIN_CLS, ADMIN_EMAIL);
     }
     var adminBtn = document.getElementById('admin-login');
+    var adminShortcut = document.getElementById('admin-shortcut');
+    // Show "Test as admin" only when ?admin=1 is in the URL. Keeps it hidden from real teachers.
+    var urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('admin') === '1' && adminShortcut){
+      adminShortcut.style.display = 'block';
+    }
     if(adminBtn){ adminBtn.addEventListener('click', function(e){ e.preventDefault(); loginAsAdmin(); }); }
     // Store known users by email (localStorage-only per browser).
     function saveKnownUser(u){
@@ -1147,13 +1151,93 @@ SCRIPT = r'''
       renderClasses();
       renderSettings();
     }
+    function loadClasses(){
+      try {
+        var arr = JSON.parse(localStorage.getItem('atom-classes') || '[]');
+        if(Array.isArray(arr) && arr.length) return arr;
+      } catch(e){}
+      // Fallback: single class from atom-user
+      try {
+        var u = JSON.parse(localStorage.getItem('atom-user') || 'null');
+        if(u && u.cls) return [{ name: u.cls }];
+      } catch(e){}
+      return [];
+    }
+    function saveClasses(list){
+      try { localStorage.setItem('atom-classes', JSON.stringify(list)); } catch(e){}
+    }
+    function activeClassName(){
+      try {
+        var c = localStorage.getItem('atom-active-class');
+        if(c) return c;
+        var list = loadClasses();
+        return list[0] ? list[0].name : '';
+      } catch(e){ return ''; }
+    }
     function renderClasses(){
       var box = document.getElementById('classes-list');
-      if(!box) return;
-      var cls = document.getElementById('ws-class-name').textContent || 'My class';
-      box.innerHTML =
-        '<div class="tool"><div class="ic">1</div><div class="tt">' + escapeHTML(cls) + '</div><div class="td">Your class.</div></div>' +
-        '<div class="tool"><div class="ic">+</div><div class="tt">Add a class</div><div class="td">Start a new class.</div></div>';
+      var list = loadClasses();
+      if(box){
+        var html = list.map(function(c, i){
+          return '<div class="tool" data-set-class="' + escapeHTML(c.name) + '"><div class="ic">' + (i+1) + '</div><div class="tt">' + escapeHTML(c.name) + '</div><div class="td">Your class.</div></div>';
+        }).join('');
+        html += '<div class="tool" data-add-class><div class="ic">+</div><div class="tt">Add a class</div><div class="td">Start a new class.</div></div>';
+        box.innerHTML = html;
+        box.querySelectorAll('[data-set-class]').forEach(function(el){
+          el.addEventListener('click', function(){
+            var name = el.getAttribute('data-set-class');
+            try { localStorage.setItem('atom-active-class', name); } catch(e){}
+            document.getElementById('ws-class-name').textContent = name;
+            renderClassSwitcher();
+            renderAll();
+          });
+        });
+        var addBtn = box.querySelector('[data-add-class]');
+        if(addBtn) addBtn.addEventListener('click', promptAddClass);
+      }
+      renderClassSwitcher();
+    }
+    function renderClassSwitcher(){
+      var list = loadClasses();
+      var name = activeClassName() || (list[0] && list[0].name) || 'Your class';
+      var nameEl = document.getElementById('ws-class-name');
+      var subEl = document.getElementById('ws-class-sub');
+      var chevEl = document.getElementById('ws-class-chev');
+      var listEl = document.getElementById('class-list');
+      if(nameEl) nameEl.textContent = name;
+      if(subEl) subEl.textContent = list.length > 1 ? (list.length + ' classes') : '';
+      if(chevEl) chevEl.style.display = list.length > 1 ? '' : 'none';
+      if(listEl){
+        if(list.length <= 1){ listEl.innerHTML = ''; listEl.classList.remove('on'); }
+        else {
+          listEl.innerHTML = list.map(function(c){
+            return '<div class="cl-row' + (c.name === name ? ' on':'') + '" data-set-class="' + escapeHTML(c.name) + '"><div class="cl-n"><b>' + escapeHTML(c.name) + '</b></div></div>';
+          }).join('') + '<div class="cl-row add" data-add-class>+ Add a class</div>';
+          listEl.querySelectorAll('[data-set-class]').forEach(function(el){
+            el.addEventListener('click', function(e){
+              e.stopPropagation();
+              var n = el.getAttribute('data-set-class');
+              try { localStorage.setItem('atom-active-class', n); } catch(e){}
+              if(nameEl) nameEl.textContent = n;
+              listEl.classList.remove('on');
+              renderClassSwitcher();
+              renderAll();
+            });
+          });
+          var add = listEl.querySelector('[data-add-class]');
+          if(add) add.addEventListener('click', function(e){ e.stopPropagation(); promptAddClass(); });
+        }
+      }
+    }
+    function promptAddClass(){
+      var name = prompt('What is the class called? For example: "Period 1, Science"');
+      if(!name) return;
+      var list = loadClasses();
+      list.push({ name: name.trim() });
+      saveClasses(list);
+      try { localStorage.setItem('atom-active-class', name.trim()); } catch(e){}
+      renderClasses();
+      renderAll();
     }
     function renderSettings(){
       try {
@@ -1228,24 +1312,24 @@ SCRIPT = r'''
       }
     }
     function qrowHTML(d){
-      var cls = d.class ? ' <span class="cchip">' + escapeHTML(d.class) + '</span>' : '';
+      var clsPrefix = d.class ? '<span class="cls-prefix">' + escapeHTML(d.class) + '</span> ' : '';
       return '<div class="qrow" data-id="' + d.id + '">' +
         '<div>' +
-          '<div class="qi"><span class="tag">' + escapeHTML(tagFor(d.type)) + '</span>' + escapeHTML(d.title || 'Untitled') + cls + '</div>' +
+          '<div class="qi"><span class="tag">' + escapeHTML(tagFor(d.type)) + '</span>' + clsPrefix + escapeHTML(d.title || 'Untitled') + '</div>' +
           '<div class="qs">Draft ready</div>' +
         '</div>' +
         '<div class="qa"><button class="js-open">Open &amp; edit</button><button class="approve">Approve</button></div>' +
       '</div>';
     }
     function rrowHTML(d){
-      var cls = d.class ? ' <span class="cchip">' + escapeHTML(d.class) + '</span>' : '';
+      var clsPrefix = d.class ? '<span class="cls-prefix">' + escapeHTML(d.class) + '</span> ' : '';
       var statusCls = d.status === 'sent' ? 'st-out' : d.status === 'awaiting' ? 'st-review' : 'st-draft';
       var statusText = d.status === 'sent' ? 'Sent' : d.status === 'awaiting' ? 'Awaiting yes' : 'Draft';
       var meta = d.status === 'sent'
         ? 'Approved ' + timeAgo(d.approvedAt || d.createdAt)
         : 'Created ' + timeAgo(d.createdAt);
       return '<div class="rrow" data-id="' + d.id + '">' +
-        '<div><div class="name">' + escapeHTML(d.title || 'Untitled') + cls + '</div><div class="meta">' + meta + '</div></div>' +
+        '<div><div class="name">' + clsPrefix + escapeHTML(d.title || 'Untitled') + '</div><div class="meta">' + meta + '</div></div>' +
         '<div class="status ' + statusCls + '">' + statusText + '</div>' +
       '</div>';
     }

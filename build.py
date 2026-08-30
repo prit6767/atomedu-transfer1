@@ -853,7 +853,7 @@ WORKSPACE = r'''
 SCRIPT = r'''
 <script>
   var WORKER_URL = 'https://atom-edu.pritamavuthu7.workers.dev';
-  var DEFAULT_MODEL = 'openai/gpt-oss-20b';
+  var DEFAULT_MODEL = 'llama-3.3-70b-versatile';
   (function(){
     var root = document.documentElement;
     function apply(mode){

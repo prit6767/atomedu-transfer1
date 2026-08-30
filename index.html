@@ -1,7 +1,5 @@
 <title>Atom Edu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -204,9 +202,6 @@
   .qrow .qa { display: flex; gap: 6px; }
   .qrow .qa button { font-family: "Inter", sans-serif; font-size: 12px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; font-weight: 600; }
   .qrow .qa button.approve { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-  .qrow .qa button.js-del, .rrow .js-del { width: 26px; height: 26px; padding: 0; border-radius: 50%; font-size: 16px; line-height: 1; color: var(--muted); border: 1px solid transparent; background: transparent; cursor: pointer; }
-  .qrow .qa button.js-del:hover, .rrow .js-del:hover { color: #b7331f; border-color: color-mix(in srgb, #b7331f 30%, transparent); background: color-mix(in srgb, #b7331f 8%, transparent); }
-  .rrow-right { display: flex; align-items: center; gap: 10px; }
   @media (max-width: 700px) { .qrow { grid-template-columns: 1fr; gap: 8px; } }
   .cchip { display: inline-block; margin-left: 6px; font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink-soft); vertical-align: 1px; }
   .cls-prefix { font-family: "Inter", sans-serif; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--stamp); margin-right: 6px; }
@@ -437,8 +432,6 @@
     border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; font-weight: 600;
   }
   .ai-foot .ai-use { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-  .ai-foot .ai-delete { margin-right: auto; color: #b7331f; border-color: color-mix(in srgb, #b7331f 30%, transparent); }
-  .ai-foot .ai-delete:hover { background: color-mix(in srgb, #b7331f 10%, transparent); }
   .ai-foot button:disabled { opacity: 0.5; cursor: not-allowed; }
   .ask-go:disabled { opacity: 0.6; cursor: wait; }
 
@@ -499,6 +492,7 @@
       <button class="btn" data-signup>Get started <span class="arrow">&rarr;</span></button>
       <a class="btn ghost" href="#how">See how it works</a>
     </div>
+    <div class="fine">Free forever. No card.</div>
   </div>
 </section>
 
@@ -611,7 +605,6 @@
     </div>
     <textarea class="ai-body" id="ai-body" placeholder="Waiting for Atom&hellip;"></textarea>
     <div class="ai-foot">
-      <button class="ai-delete" id="ai-delete" style="display:none;">Delete draft</button>
       <button class="ai-regen" id="ai-regen">Regenerate</button>
       <button class="ai-copy" id="ai-copy">Copy</button>
       <button class="ai-approve" id="ai-approve">Approve</button>
@@ -728,6 +721,7 @@
 
 <div class="ws-page" data-page="assignment">
   <div class="ph"><h1>Assignment <span class="it">maker</span></h1><p>A printable worksheet ready for handout.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -739,11 +733,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="quiz">
   <div class="ph"><h1>Quiz &amp; test <span class="it">builder</span></h1><p>Mix multiple choice, short answer, and diagrams. Includes an answer key.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -755,11 +750,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="rubric">
   <div class="ph"><h1>Rubric <span class="it">builder</span></h1><p>Rows tied to a standard. Attach to any assignment.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -771,11 +767,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="lesson">
   <div class="ph"><h1>Lesson <span class="it">planner</span></h1><p>One class, or a whole unit.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -787,11 +784,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="passages">
   <div class="ph"><h1>Reading <span class="it">passages</span></h1><p>Leveled to your class. Questions attached.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -803,11 +801,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="slides">
   <div class="ph"><h1>Slides &amp; <span class="it">boards</span></h1><p>Slides for the projector, notes for the board.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -819,11 +818,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="docs">
   <div class="ph"><h1>Docs &amp; <span class="it">handouts</span></h1><p>Family letters, syllabi, permission slips, newsletters.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -835,11 +835,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="notes">
   <div class="ph"><h1>Notes <span class="it">home</span></h1><p>You write the message. Atom checks tone and drafts a translation.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -851,11 +852,12 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="diff">
   <div class="ph"><h1>Differentia <span class="it">tion</span></h1><p>Same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
+  
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
@@ -867,7 +869,7 @@
     <div class="empty-title" style="font-size:22px;">Nothing drafted <span class="it">yet.</span></div>
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
-  <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+  <div class="approve-bar"><button>Cancel</button><button class="primary">{approve}</button></div>
 </div>
 
 <div class="ws-page" data-page="standards">
@@ -915,7 +917,7 @@
 
 <script>
   var WORKER_URL = 'https://atom-edu.pritamavuthu7.workers.dev';
-  var DEFAULT_MODEL = 'openai/gpt-oss-20b';
+  var DEFAULT_MODEL = 'llama-3.3-70b-versatile';
   (function(){
     var root = document.documentElement;
     function apply(mode){
@@ -1380,7 +1382,7 @@
           '<div class="qi"><span class="tag">' + escapeHTML(tagFor(d.type)) + '</span>' + clsPrefix + escapeHTML(d.title || 'Untitled') + '</div>' +
           '<div class="qs">Draft ready</div>' +
         '</div>' +
-        '<div class="qa"><button class="js-open">Open &amp; edit</button><button class="approve">Approve</button><button class="js-del" title="Delete draft" aria-label="Delete draft">&times;</button></div>' +
+        '<div class="qa"><button class="js-open">Open &amp; edit</button><button class="approve">Approve</button></div>' +
       '</div>';
     }
     function rrowHTML(d){
@@ -1392,7 +1394,7 @@
         : 'Created ' + timeAgo(d.createdAt);
       return '<div class="rrow" data-id="' + d.id + '">' +
         '<div><div class="name">' + clsPrefix + escapeHTML(d.title || 'Untitled') + '</div><div class="meta">' + meta + '</div></div>' +
-        '<div class="rrow-right"><div class="status ' + statusCls + '">' + statusText + '</div><button class="js-del" title="Delete draft" aria-label="Delete draft">&times;</button></div>' +
+        '<div class="status ' + statusCls + '">' + statusText + '</div>' +
       '</div>';
     }
     function timeAgo(ts){
@@ -1405,22 +1407,13 @@
       return days + (days===1?' day ago':' days ago');
     }
 
-    function confirmDelete(d){
-      var t = (d && d.title) ? d.title : 'this draft';
-      return window.confirm('Delete "' + t + '"? This cannot be undone.');
-    }
     function wireQrow(container){
       container.querySelectorAll('.qrow').forEach(function(row){
         var id = row.getAttribute('data-id');
         var openBtn = row.querySelector('.js-open');
         var approveBtn = row.querySelector('.approve');
-        var delBtn = row.querySelector('.js-del');
         if(openBtn){ openBtn.addEventListener('click', function(){ openDraft(id); }); }
         if(approveBtn){ approveBtn.addEventListener('click', function(){ approveDraft(id, row); }); }
-        if(delBtn){ delBtn.addEventListener('click', function(e){
-          e.stopPropagation();
-          if(confirmDelete(findDraft(id))){ deleteDraft(id); showToast('Draft deleted.'); }
-        }); }
       });
     }
     function wireRrow(container){
@@ -1428,11 +1421,6 @@
         var id = row.getAttribute('data-id');
         row.style.cursor = 'pointer';
         row.addEventListener('click', function(){ openDraft(id); });
-        var delBtn = row.querySelector('.js-del');
-        if(delBtn){ delBtn.addEventListener('click', function(e){
-          e.stopPropagation();
-          if(confirmDelete(findDraft(id))){ deleteDraft(id); showToast('Draft deleted.'); }
-        }); }
       });
     }
     function approveDraft(id, row){
@@ -1465,27 +1453,12 @@
     var aiCopy = document.getElementById('ai-copy');
     var aiRegen = document.getElementById('ai-regen');
     var aiClose = document.getElementById('ai-close');
-    var aiDelete = document.getElementById('ai-delete');
-    if(aiDelete){
-      aiDelete.addEventListener('click', function(){
-        if(!currentDraftId) return;
-        var d = findDraft(currentDraftId);
-        if(!d) return;
-        if(!confirmDelete(d)) return;
-        deleteDraft(currentDraftId);
-        showToast('Draft deleted.');
-        closeAIModal();
-      });
-    }
     var lastAIRequest = null;
     var currentDraftId = null;
     var lastApprovedId = null;
 
-    function openAIModal(){
-      aiModal.classList.add('on');
-      if(aiDelete) aiDelete.style.display = currentDraftId ? '' : 'none';
-    }
-    function closeAIModal(){ aiModal.classList.remove('on'); currentDraftId = null; if(aiDelete) aiDelete.style.display = 'none'; }
+    function openAIModal(){ aiModal.classList.add('on'); }
+    function closeAIModal(){ aiModal.classList.remove('on'); currentDraftId = null; }
     aiClose.addEventListener('click', closeAIModal);
     aiModal.addEventListener('click', function(e){ if(e.target === aiModal) closeAIModal(); });
 

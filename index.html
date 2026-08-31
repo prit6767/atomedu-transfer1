@@ -755,7 +755,7 @@
   <div class="ph"><h1>Assignment <span class="it">maker</span></h1><p>A printable worksheet ready for handout.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. 10 questions on fractions, mixed difficulty, for a 20-minute class">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -771,7 +771,7 @@
   <div class="ph"><h1>Quiz &amp; test <span class="it">builder</span></h1><p>Mix multiple choice, short answer, and diagrams. Includes an answer key.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. 15-point quiz on the water cycle, multiple choice and short answer">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -787,7 +787,7 @@
   <div class="ph"><h1>Rubric <span class="it">builder</span></h1><p>Rows tied to a standard. Attach to any assignment.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. rubric for a persuasive essay, tied to CCSS W.5.1">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -803,7 +803,7 @@
   <div class="ph"><h1>Lesson <span class="it">planner</span></h1><p>One class, or a whole unit.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. 50-minute lesson introducing photosynthesis with a lab activity">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -819,7 +819,7 @@
   <div class="ph"><h1>Reading <span class="it">passages</span></h1><p>Leveled to your class. Questions attached.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. 5th-grade passage about the American Revolution, 500 words">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -835,7 +835,7 @@
   <div class="ph"><h1>Slides &amp; <span class="it">boards</span></h1><p>Slides for the projector, notes for the board.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. 10-slide deck on plate tectonics for 7th grade Earth Science">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -851,7 +851,7 @@
   <div class="ph"><h1>Docs &amp; <span class="it">handouts</span></h1><p>Family letters, syllabi, permission slips, newsletters.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. class syllabus for 8th grade English, or a field trip permission slip">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -867,7 +867,7 @@
   <div class="ph"><h1>Notes <span class="it">home</span></h1><p>You write the message. Atom checks tone and drafts a translation.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="e.g. positive note about Maria improving in math, or a behavior concern">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -883,7 +883,7 @@
   <div class="ph"><h1>Differentia <span class="it">tion</span></h1><p>Same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
-    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Say what you want to make.">
+    <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Paste or describe the assignment you want adapted for different levels">
       <button class="ask-go">Draft it &rarr;</button>
     </div>
   </div>
@@ -1532,19 +1532,39 @@
       aiUse.disabled = true; aiApprove.disabled = true; aiCopy.disabled = true; aiRegen.disabled = false;
     }
 
+    function aiConfig(page){
+      var cfg = {
+        assignment: { temp: 0.4, tokens: 2048 },
+        quiz:       { temp: 0.3, tokens: 2048 },
+        rubric:     { temp: 0.3, tokens: 1536 },
+        lesson:     { temp: 0.45, tokens: 3072 },
+        passages:   { temp: 0.6, tokens: 2560 },
+        slides:     { temp: 0.5, tokens: 3584 },
+        docs:       { temp: 0.5, tokens: 2048 },
+        notes:      { temp: 0.6, tokens: 1024 },
+        diff:       { temp: 0.4, tokens: 3072 }
+      };
+      return cfg[page] || cfg.assignment;
+    }
+
     function systemPromptFor(page){
       var teacherCls = document.getElementById('ws-class-name').textContent || 'a class';
-      var base = 'You are Atom, a drafting assistant for teachers. Draft a first version the teacher will edit. Be clear, warm, plain, no purple prose. Never claim to have final authority. The teacher is teaching: ' + teacherCls + '. Start the response with a short, plain title on the first line (no markdown, no quotes), then a blank line, then the body. ';
+      var gradeMatch = teacherCls.match(/(\d+)\s*(?:st|nd|rd|th)?\s*grade/i) || teacherCls.match(/grade\s*(\d+)/i);
+      var gradeHint = gradeMatch ? ' Target vocabulary and sentence complexity for grade ' + gradeMatch[1] + '.' : '';
+      var voiceEl = document.getElementById('set-voice');
+      var voiceSample = voiceEl ? voiceEl.value.trim() : '';
+      var voiceHint = voiceSample ? ' Match this writing style: "' + voiceSample.substring(0, 500) + '"' : '';
+      var base = 'You are Atom, a drafting assistant for teachers. Draft a first version the teacher will edit. Be clear, warm, plain, no purple prose. Never use em dashes or en dashes. Never claim to have final authority. The teacher is teaching: ' + teacherCls + '.' + gradeHint + voiceHint + ' Start the response with a short, plain title on the first line (no markdown, no quotes), then a blank line, then the body. ';
       var by = {
-        assignment: 'Draft a printable worksheet. Include a title, numbered questions with point values in parentheses, and a mix of multiple choice and short answer as requested.',
-        quiz: 'Draft a quiz with numbered questions, point values in parentheses, and an answer key at the end. Multiple choice options should be labeled 1-4.',
-        rubric: 'Draft a rubric with rows and four levels (1 Beginning, 2 Developing, 3 Meeting, 4 Exceeding). Tie each row to a standard if given.',
-        lesson: 'Draft a lesson plan with a warm up, mini lesson, guided practice, independent practice, and exit ticket. Include time budgets and materials.',
-        passages: 'Draft a reading passage at the requested Lexile level with 3 to 5 comprehension questions after it.',
+        assignment: 'Draft a printable worksheet. Include a descriptive title, clear directions at the top (1 to 2 sentences), then 8 to 15 numbered questions with point values in parentheses. Mix question types: multiple choice (label options A B C D), short answer, fill in the blank, and matching as appropriate. Group questions by section if the topic has natural parts. Include an estimated completion time at the top (e.g. "Time: about 25 minutes"). End with a bonus or extension question for early finishers. Keep language at the grade level of the class.',
+        quiz: 'Draft a quiz. Start with a header block: quiz title, class name, date line, student name line, and total points. Then numbered questions with point values in parentheses. Use a mix of: multiple choice (label options A B C D, only one correct), true or false, short answer, and one extended response worth more points. Aim for 10 to 20 questions unless the teacher specifies otherwise. After the last question, add a section break line, then a complete answer key with brief explanations for each answer. For multiple choice, note why the correct answer is right.',
+        rubric: 'Draft a rubric as a table. Columns: Criterion, Beginning (1), Developing (2), Meeting (3), Exceeding (4). Each row is one skill or standard. Write 1 to 2 sentences per cell describing what student work looks like at that level, using observable verbs (identifies, explains, analyzes, evaluates). Include 4 to 6 rows. If the teacher names standards, tie each row to one. Add a total points row at the bottom. Keep descriptors specific and measurable, not vague ("uses evidence from the text" not "does a good job").',
+        lesson: 'Draft a detailed lesson plan. Use these sections and include a time estimate for each: Objective (1 to 2 sentences, student-facing "I can" statement), Standards (if known), Materials (bulleted list), Warm Up (5 to 7 min, a hook question or quick review), Mini Lesson (10 to 15 min, direct instruction with key vocabulary bolded), Guided Practice (10 to 15 min, teacher-led activity with check-for-understanding prompts), Independent Practice (15 to 20 min, what students do on their own, include success criteria), Exit Ticket (3 to 5 min, 1 to 2 questions that check the objective), Differentiation (brief notes for advanced, on-level, and struggling learners). Total should fit a standard class period (45 to 55 minutes).',
+        passages: 'Draft a reading passage on the requested topic. Write 300 to 600 words of original prose at the appropriate reading level for the class. Use clear paragraph breaks. Include grade-appropriate vocabulary with context clues built in. After the passage, write 5 comprehension questions in this order: 1 recall (find it in the text), 1 vocabulary in context, 1 inference, 1 main idea or summary, 1 opinion or text-to-self connection. Number the questions. After all questions, provide a brief answer key.',
         slides: 'Draft the full slide deck, not just topics. For each slide write: the slide title, then 3 to 5 complete bullet points that spell out the actual content students should see (full sentences, real explanations, examples, or key terms with their definitions), then a line beginning "Speaker notes:" with what the teacher should say out loud. Label each slide "Slide N: Title". Aim for 8 to 12 slides and keep the language clear and classroom ready.',
-        docs: 'Draft the requested document in the teacher voice. Plain, warm, second person.',
-        notes: 'Draft or improve a note home to a family. Warm, specific, not alarmed unless the situation warrants it.',
-        diff: 'Adapt the assignment three ways: on grade, scaffolded, and ELL with sentence frames.'
+        docs: 'Draft the requested document (syllabus, newsletter, permission slip, class letter, or handout). Use a professional but warm tone in second person ("you" / "your child"). Include all standard sections the document type requires. For a syllabus: course overview, grading policy, materials, expectations, contact info placeholders. For a newsletter: greeting, highlights, upcoming dates, reminders, sign-off. For a permission slip: activity description, date, what to bring, liability line, signature and date blanks. Keep it to one page of content when printed.',
+        notes: 'Draft a note home to a family. Keep it under 200 words. Open with a warm greeting using the family name placeholder "[Family Name]". State the purpose in the first sentence. Be specific about what happened or what is needed, but stay neutral and supportive. Never sound alarmed unless the teacher says the situation is serious. Include any action items or next steps clearly. Close with an invitation to reach out and a warm sign-off. If the teacher asks for a positive note, lead with the specific praise and be genuine.',
+        diff: 'Take the assignment the teacher describes and produce three complete versions under clear headings. "On Grade Level": the standard version with grade-appropriate vocabulary and full expectations. "Scaffolded (Below Grade / IEP)": reduce the number of questions by about a third, simplify vocabulary, add word banks, provide sentence starters for open-ended questions, and break multi-step problems into smaller parts. "ELL Support": keep the same content and rigor as on-grade but add sentence frames for every open-ended response, include a key vocabulary list with simple definitions at the top, use shorter sentences, and add visual cue placeholders (e.g. "[diagram here]") where helpful. Each version should be complete and ready to print on its own.'
       };
       return base + (by[page] || by.assignment);
     }
@@ -1561,11 +1581,12 @@
       document.getElementById('ai-sub').textContent = 'Edit anything before you save.';
       openAIModal();
       currentDraftId = null;
+      var cfg = aiConfig(page);
       var payload = {
         model: DEFAULT_MODEL,
         email: email,
-        temperature: 0.5,
-        max_tokens: 2048,
+        temperature: cfg.temp,
+        max_tokens: cfg.tokens,
         messages: [
           { role: 'system', content: systemPromptFor(page) },
           { role: 'user', content: userText || 'Draft a first version.' }

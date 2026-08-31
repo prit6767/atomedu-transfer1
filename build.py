@@ -1425,7 +1425,7 @@ SCRIPT = r'''
         rubric: 'Draft a rubric with rows and four levels (1 Beginning, 2 Developing, 3 Meeting, 4 Exceeding). Tie each row to a standard if given.',
         lesson: 'Draft a lesson plan with a warm up, mini lesson, guided practice, independent practice, and exit ticket. Include time budgets and materials.',
         passages: 'Draft a reading passage at the requested Lexile level with 3 to 5 comprehension questions after it.',
-        slides: 'Draft an outline for a slide deck. One line per slide: title and one bullet.',
+        slides: 'Draft the full slide deck, not just topics. For each slide write: the slide title, then 3 to 5 complete bullet points that spell out the actual content students should see (full sentences, real explanations, examples, or key terms with their definitions), then a line beginning "Speaker notes:" with what the teacher should say out loud. Label each slide "Slide N: Title". Aim for 8 to 12 slides and keep the language clear and classroom ready.',
         docs: 'Draft the requested document in the teacher voice. Plain, warm, second person.',
         notes: 'Draft or improve a note home to a family. Warm, specific, not alarmed unless the situation warrants it.',
         diff: 'Adapt the assignment three ways: on grade, scaffolded, and ELL with sentence frames.'

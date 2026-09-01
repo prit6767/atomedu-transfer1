@@ -1698,32 +1698,27 @@
             aiExportPptx.disabled = false;
             return;
           }
-          if(sd.status === 'completed' || sd.status === 'done'){
-            var dlUrl = sd.file_url || sd.file_path || sd.download_url || sd.url || (sd.data && (sd.data.file_url || sd.data.download_url || sd.data.url || sd.data.file_path)) || '';
+          if(sd.status === 'completed' || sd.status === 'done' || sd.status === 'success'){
+            var d = sd.data || {};
+            var dlUrl = d.path || d.file_url || d.download_url || d.url || d.file_path || sd.path || '';
+            var editUrl = d.edit_path || '';
             if(dlUrl){
               aiExportPptx.textContent = 'Download slideshow';
               aiExportPptx.disabled = false;
               aiExportPptx.onclick = function(){ window.open(dlUrl, '_blank'); };
-              showToast('Slideshow ready! Click to download.');
+              window.open(dlUrl, '_blank');
+              showToast('Slideshow ready! Downloading now.');
+            } else if(editUrl){
+              aiExportPptx.textContent = 'Open slideshow';
+              aiExportPptx.disabled = false;
+              aiExportPptx.onclick = function(){ window.open(editUrl, '_blank'); };
+              window.open(editUrl, '_blank');
+              showToast('Slideshow ready!');
             } else {
-              var pid = sd.presentation_id || sd.id || (sd.data && (sd.data.presentation_id || sd.data.id)) || '';
-              if(pid){
-                aiExportPptx.textContent = 'Open in Presenton';
-                aiExportPptx.disabled = false;
-                aiExportPptx.onclick = function(){ window.open('https://presenton.ai/presentation/' + pid, '_blank'); };
-                showToast('Slideshow ready!');
-              } else {
-                aiExportPptx.textContent = 'Export slideshow';
-                aiExportPptx.disabled = false;
-                showToast('Slideshow generated but no download link found.');
-              }
+              aiExportPptx.textContent = 'Export slideshow';
+              aiExportPptx.disabled = false;
+              showToast('Slideshow generated but no link found.');
             }
-            return;
-          }
-          if(sd.status === 'failed'){
-            showToast('Slideshow generation failed. Try again.');
-            aiExportPptx.textContent = 'Export slideshow';
-            aiExportPptx.disabled = false;
             return;
           }
           var dots = '.'.repeat((i % 3) + 1);

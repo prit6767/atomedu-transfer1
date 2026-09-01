@@ -105,11 +105,12 @@
   .provider-row .pchip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); }
   .provider-row .pchip .pi { width: 18px; height: 18px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 11px; }
 
-  .inside-list { margin-top: 44px; border-top: 1px solid var(--line); }
-  .inside-row { display: grid; grid-template-columns: 240px 1fr; gap: 28px; padding: 20px 4px; border-bottom: 1px solid var(--line); align-items: baseline; }
-  @media (max-width: 640px) { .inside-row { grid-template-columns: 1fr; gap: 6px; padding: 18px 2px; } }
-  .inside-row h3 { font-family: "Fraunces", Georgia, serif; font-size: 21px; font-weight: 400; letter-spacing: -0.015em; margin: 0; color: var(--ink); }
-  .inside-row p { font-family: "Inter", sans-serif; font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .inside-grid { margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 46px 54px; }
+  @media (max-width: 860px) { .inside-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 44px; } }
+  @media (max-width: 540px) { .inside-grid { grid-template-columns: 1fr; gap: 34px; } }
+  .inside-cell .num { display: block; font-family: "Inter", sans-serif; font-size: 12px; letter-spacing: 0.16em; color: var(--stamp); font-weight: 700; margin-bottom: 13px; }
+  .inside-cell h3 { font-family: "Fraunces", Georgia, serif; font-size: 23px; font-weight: 400; letter-spacing: -0.02em; margin: 0 0 8px; color: var(--ink); line-height: 1.1; }
+  .inside-cell p { font-family: "Inter", sans-serif; font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; max-width: 34ch; }
 
   .parentco { border-top: 1px solid var(--line); padding: 90px 0; }
   .parentco-head { text-align: center; max-width: 640px; margin: 0 auto 44px; }
@@ -123,14 +124,10 @@
   .parentco-link { display: block; text-align: center; margin-top: 28px; font-family: "Inter", sans-serif; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); text-decoration: none; transition: color .15s ease; }
   .parentco-link:hover { color: var(--ink); }
 
-  .free { padding: 96px 0; text-align: center; border-top: 1px solid var(--line); }
-  .free .huge { font-size: clamp(56px, 12vw, 160px); line-height: 0.9; letter-spacing: -0.05em; font-weight: 400; margin: 0; }
-  .free .huge .it { font-style: italic; font-weight: 300; }
-  .free .caption { font-family: "Inter", sans-serif; font-size: 15px; color: var(--ink-soft); max-width: 44ch; margin: 22px auto 0; line-height: 1.55; }
-
-  .end { padding: 100px 0 90px; text-align: center; border-top: 1px solid var(--line); }
-  .end .tag { font-size: clamp(44px, 7vw, 84px); line-height: 1; letter-spacing: -0.035em; font-weight: 400; margin: 0 0 32px; }
-  .end .tag .it { font-style: italic; font-weight: 300; }
+  .closing { padding: 112px 0; text-align: center; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--ink) 3%, var(--bg)); }
+  .closing-kicker { color: var(--stamp); font-family: "Inter", sans-serif; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; margin-bottom: 18px; }
+  .closing-head { font-size: clamp(40px, 6.2vw, 74px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 400; margin: 0 0 30px; }
+  .closing-head .it { font-style: italic; font-weight: 300; }
 
   .partners { border-top: 1px solid var(--line); padding: 60px 0 70px; text-align: center; font-family: "Inter", sans-serif; }
   .partners-kicker { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 28px; }
@@ -140,15 +137,20 @@
   .partner-name { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 500; letter-spacing: -0.015em; }
   .partner-role { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
 
-  .ft { border-top: 1px solid var(--line); background: color-mix(in srgb, var(--ink) 3%, var(--bg)); padding: 40px 0 28px; font-family: "Inter", sans-serif; color: var(--muted); font-size: 13px; }
-  .ft-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
-  .ft a { color: var(--muted); }
-  .ft a:hover { color: var(--ink); }
-  .ft-links { display: flex; gap: 20px; flex-wrap: wrap; }
-  .ft-corp { text-align: right; }
-  .ft-sub { font-size: 12px; margin-top: 4px; }
-  .ft-sub a { text-decoration: underline; text-underline-offset: 2px; }
-  .kicker { color: var(--stamp); font-family: "Inter", sans-serif; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px; }
+  .ft { border-top: 1px solid var(--line); background: var(--bg); padding: 60px 0 30px; font-family: "Inter", sans-serif; color: var(--muted); font-size: 13px; }
+  .ft-top { display: flex; justify-content: space-between; gap: 48px; flex-wrap: wrap; padding-bottom: 44px; }
+  .ft-brand { max-width: 300px; }
+  .ft-brand .brand { margin-bottom: 12px; }
+  .ft-tag { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
+  .ft-cols { display: flex; gap: 64px; flex-wrap: wrap; }
+  .ft-col { display: flex; flex-direction: column; gap: 11px; }
+  .ft-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 3px; }
+  .ft-col a { font-size: 13.5px; color: var(--ink-soft); text-decoration: none; cursor: pointer; }
+  .ft-col a:hover { color: var(--ink); }
+  .ft-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+  .ft-bottom a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+  .ft-bottom a:hover { color: var(--ink); }
+  @media (max-width: 640px) { .ft-top { flex-direction: column; gap: 32px; } .ft-cols { gap: 40px; } }
 
 
   /* workspace */
@@ -509,8 +511,6 @@
     <div class="nav-right">
       <a class="nav-link" href="#how">How it works</a>
       <a class="nav-link" href="#inside">Inside</a>
-      <a class="nav-link" href="/terms/#privacy">Privacy</a>
-      <a class="nav-link" href="/terms/">Terms</a>
       <button class="nav-link ghost" data-signin>Sign in</button>
       <button class="nav-cta" data-signup>Get started</button>
     </div>
@@ -519,7 +519,6 @@
 
 <section class="hero" id="top">
   <div class="wrap">
-    <div class="eyebrow"><span class="dot"></span>For teachers</div>
     <h1 class="headline">Atom drafts. <span class="it">You approve.</span> Every time.</h1>
     <p class="lede sans">Atom drafts the worksheet, the quiz, the rubric, the note home. You edit and approve every piece. Nothing goes out until you say yes.</p>
     <div class="cta-row">
@@ -545,31 +544,17 @@
   <div class="wrap">
     <div class="section-label">Inside the workspace</div>
     <h2 class="big">Everything a teacher makes, <span class="it">in one place.</span></h2>
-    <div class="inside-list">
-      <div class="inside-row"><h3>Assignments</h3><p>Printable worksheets with name, date, period, and point values.</p></div>
-      <div class="inside-row"><h3>Quizzes and tests</h3><p>Multiple choice, short answer, and diagrams, with an answer key at the end.</p></div>
-      <div class="inside-row"><h3>Rubrics</h3><p>Rows tied to a standard. Attach one to any assignment you make.</p></div>
-      <div class="inside-row"><h3>Slides and boards</h3><p>Full slides for the projector, with speaker notes for the board.</p></div>
-      <div class="inside-row"><h3>Docs and handouts</h3><p>Family letters, syllabi, permission slips, and newsletters.</p></div>
-      <div class="inside-row"><h3>Reading passages</h3><p>Leveled to your class, with comprehension questions attached.</p></div>
-      <div class="inside-row"><h3>Lesson plans</h3><p>One class period, or a full unit, with time budgets and materials.</p></div>
-      <div class="inside-row"><h3>Notes home</h3><p>You write it. Atom checks the tone and drafts a translation.</p></div>
-      <div class="inside-row"><h3>Differentiation</h3><p>The same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
+    <div class="inside-grid">
+      <div class="inside-cell"><span class="num">01</span><h3>Assignments</h3><p>Printable worksheets with name, date, period, and point values.</p></div>
+      <div class="inside-cell"><span class="num">02</span><h3>Quizzes and tests</h3><p>Multiple choice, short answer, and diagrams, with an answer key.</p></div>
+      <div class="inside-cell"><span class="num">03</span><h3>Rubrics</h3><p>Rows tied to a standard. Attach one to any assignment you make.</p></div>
+      <div class="inside-cell"><span class="num">04</span><h3>Slides and boards</h3><p>Full slides for the projector, with speaker notes for the board.</p></div>
+      <div class="inside-cell"><span class="num">05</span><h3>Docs and handouts</h3><p>Family letters, syllabi, permission slips, and newsletters.</p></div>
+      <div class="inside-cell"><span class="num">06</span><h3>Reading passages</h3><p>Leveled to your class, with comprehension questions attached.</p></div>
+      <div class="inside-cell"><span class="num">07</span><h3>Lesson plans</h3><p>One class period, or a full unit, with time budgets and materials.</p></div>
+      <div class="inside-cell"><span class="num">08</span><h3>Notes home</h3><p>You write it. Atom checks the tone and drafts a translation.</p></div>
+      <div class="inside-cell"><span class="num">09</span><h3>Differentiation</h3><p>The same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
     </div>
-  </div>
-</section>
-
-<section class="free">
-  <div class="wrap">
-    <div class="kicker">A promise</div>
-    <h2 class="huge">Free, <span class="it">forever.</span></h2>
-  </div>
-</section>
-
-<section class="end">
-  <div class="wrap">
-    <h2 class="tag">Atom drafts. <span class="it">You approve.</span> Every time.</h2>
-    <button class="btn" data-signup>Get started <span class="arrow">&rarr;</span></button>
   </div>
 </section>
 
@@ -584,25 +569,62 @@
       <div class="note-kicker">Leadership note</div>
       <h3 class="note-title">A word from DocuPeer</h3>
       <div class="note-by">Rahul Awasthi, Co-Founder &amp; CEO &nbsp;&middot;&nbsp; Aryan Patel, Co-Founder &amp; COO</div>
-      <p class="note-body">DocuPeer builds tools that put good work within reach of the people who need it, with no paywall standing in front. Atom Edu is part of that. We own it together, fifty and fifty, and we run it on a promise we do not intend to break: it stays free for teachers. Rahul sets the direction of the company. Aryan runs how it operates day to day. Between the two of us the deal is simple. Atom drafts, the teacher approves, and none of that ever costs a classroom a cent. If Atom ever stops putting teachers first, that is on us to fix, and we will.</p>
+      <p class="note-body">DocuPeer builds tools that put good work within reach of the people who need it, with no paywall standing in front. Atom Edu is part of that. We own it together, fifty and fifty, and the two of us make one promise we do not intend to break: Atom Edu stays one hundred percent free for teachers, always. We steer the company from the very top and set that direction. The day to day we entrust to people we believe in: Pritam Avuthu, Co-CEO, and Akshaj Sanikommu, Co-CEO, who run Atom Edu day to day. Atom drafts, the teacher approves, and none of it ever costs a classroom a cent.</p>
     </div>
     <a class="parentco-link" href="https://docupeer.org" target="_blank" rel="noopener">Visit DocuPeer &rarr;</a>
   </div>
 </section>
 
-<footer class="ft">
-  <div class="wrap ft-row">
-    <div class="brand"><div class="brand-mark"></div><span>Atom Edu</span></div>
-    <div class="ft-links">
-      <a href="#how">How it works</a>
-      <a href="#inside">Inside</a>
-      <a href="/terms/#privacy">Privacy</a>
-      <a href="/terms/">Terms</a>
-      <a href="mailto:hello@atom-edu.org">Contact</a>
+<section class="partners">
+  <div class="wrap">
+    <div class="section-label">Our partners</div>
+    <div class="partner-row">
+      <a class="partner-card" href="https://docupeer.org" target="_blank" rel="noopener">
+        <img src="/docupeer-logo.png" alt="DocuPeer" class="partner-logo">
+        <div class="partner-name">DocuPeer</div>
+        <div class="partner-role">Parent company</div>
+      </a>
     </div>
-    <div class="ft-corp">
-      <div>&copy; Atom Edu</div>
-      <div class="ft-sub">A subsidiary of <a href="https://docupeer.org" target="_blank" rel="noopener">Docupeer</a>.</div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <div class="closing-kicker">Free, forever</div>
+    <h2 class="closing-head">Atom drafts. <span class="it">You approve.</span> Every time.</h2>
+    <button class="btn" data-signup>Get started <span class="arrow">&rarr;</span></button>
+  </div>
+</section>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="brand"><div class="brand-mark"></div><span>Atom Edu</span></div>
+        <p class="ft-tag">Free drafting tools for teachers. Atom drafts, you approve everything before it reaches a student.</p>
+      </div>
+      <div class="ft-cols">
+        <div class="ft-col">
+          <div class="ft-h">Product</div>
+          <a href="#how">How it works</a>
+          <a href="#inside">Inside</a>
+          <a data-signup>Get started</a>
+        </div>
+        <div class="ft-col">
+          <div class="ft-h">Legal</div>
+          <a href="/terms/">Terms</a>
+          <a href="/terms/#privacy">Privacy</a>
+        </div>
+        <div class="ft-col">
+          <div class="ft-h">Company</div>
+          <a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a>
+          <a href="mailto:hello@atom-edu.org">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <div>&copy; 2026 Atom Edu</div>
+      <div>A subsidiary of <a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a>.</div>
     </div>
   </div>
 </footer>

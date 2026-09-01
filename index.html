@@ -699,6 +699,7 @@
       <button class="ai-copy" id="ai-copy">Copy</button>
       <button class="ai-copy" id="ai-translate">Translate</button>
       <button class="ai-export-pptx" id="ai-export-pptx" style="display:none;">Export slideshow</button>
+      <button class="ai-copy" id="ai-gslides" style="display:none;">Create in Google Slides</button>
       <button class="ai-approve" id="ai-approve">Approve</button>
       <button class="ai-use" id="ai-use">Save as draft</button>
     </div>
@@ -1761,12 +1762,34 @@
 
     var aiExportPptx = document.getElementById('ai-export-pptx');
 
+    var aiGslides = document.getElementById('ai-gslides');
     function showExportBtn(){
-      if(lastAIRequest && lastAIRequest.page === 'slides'){
-        aiExportPptx.style.display = '';
-      } else {
-        aiExportPptx.style.display = 'none';
-      }
+      var isSlides = !!(lastAIRequest && lastAIRequest.page === 'slides');
+      aiExportPptx.style.display = isSlides ? '' : 'none';
+      if(aiGslides) aiGslides.style.display = isSlides ? '' : 'none';
+    }
+    if(aiGslides){
+      aiGslides.addEventListener('click', async function(){
+        var content = aiBody.value || '';
+        if(!content.trim()){ showToast('No draft to send to Google Slides.'); return; }
+        var title = (titleFrom(content, lastAIRequest && lastAIRequest.userText) || 'Slides from Atom Edu');
+        aiGslides.disabled = true;
+        var oldTxt = aiGslides.textContent;
+        aiGslides.textContent = 'Connecting to Google...';
+        try {
+          var res = await fetch(WORKER_URL + '/api/google/prepare', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: content, title: title })
+          });
+          var data = await res.json();
+          if(!res.ok || !data.authUrl){ showToast((data && data.error) || 'Could not start Google sign in.'); aiGslides.disabled = false; aiGslides.textContent = oldTxt; return; }
+          window.location.href = data.authUrl;
+        } catch(e){
+          showToast('Network error connecting to Google.');
+          aiGslides.disabled = false; aiGslides.textContent = oldTxt;
+        }
+      });
     }
 
     aiExportPptx.addEventListener('click', async function(){
@@ -2030,6 +2053,23 @@
     document.querySelectorAll('.sblock textarea, .frow input').forEach(function(el){
       // no-op, just to let them focus
     });
+
+    // Notice when returning from a Google Slides attempt that did not complete
+    (function(){
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var g = params.get('gslides');
+        if(g){
+          var msg = g === 'denied' ? 'Google sign in was cancelled.'
+                  : g === 'expired' ? 'That took too long, please try Create in Google Slides again.'
+                  : 'Could not create the Google Slides deck. Please try again.';
+          setTimeout(function(){ showToast(msg); }, 400);
+          params.delete('gslides');
+          var qs = params.toString();
+          history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : ''));
+        }
+      } catch(e){}
+    })();
 
     // Nav scrollspy + active-on-click (rounded active state)
     (function(){

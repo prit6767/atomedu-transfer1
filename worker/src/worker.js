@@ -78,6 +78,14 @@ export default {
         return await handlePresentonStatus(request, env, origin, allowed);
       }
 
+      if (url.pathname === "/api/google/prepare" && request.method === "POST") {
+        return await handleGooglePrepare(request, env, origin, allowed);
+      }
+
+      if (url.pathname === "/api/google/callback" && request.method === "GET") {
+        return await handleGoogleCallback(request, env, url);
+      }
+
       return json({ error: "Not found" }, origin, allowed, 404);
     } catch (e) {
       return json({ error: e.message || String(e) }, origin, allowed, 500);
@@ -214,6 +222,163 @@ async function handlePresentonStatus(request, env, origin, allowed) {
   }
 
   return json(data, origin, allowed);
+}
+
+const GOOGLE_REDIRECT = "https://atom-edu.pritamavuthu7.workers.dev/api/google/callback";
+const SITE_URL = "https://atom-edu.org";
+
+async function handleGooglePrepare(request, env, origin, allowed) {
+  if (!env.GOOGLE_CLIENT_ID) return json({ error: "Server missing GOOGLE_CLIENT_ID" }, origin, allowed, 500);
+  if (!env.RATE_KV) return json({ error: "KV not bound" }, origin, allowed, 500);
+  const body = await request.json();
+  const content = (body.content || "").toString();
+  if (!content.trim()) return json({ error: "content required" }, origin, allowed, 400);
+  const title = (body.title || "Slides from Atom Edu").toString().slice(0, 120);
+
+  const sid = crypto.randomUUID().replace(/-/g, "");
+  await env.RATE_KV.put("gsld:" + sid, JSON.stringify({ content: content.slice(0, 16000), title }), { expirationTtl: 600 });
+
+  const p = new URLSearchParams({
+    client_id: env.GOOGLE_CLIENT_ID,
+    redirect_uri: GOOGLE_REDIRECT,
+    response_type: "code",
+    scope: "https://www.googleapis.com/auth/drive.file openid https://www.googleapis.com/auth/userinfo.email",
+    access_type: "online",
+    include_granted_scopes: "true",
+    prompt: "consent",
+    state: sid,
+  });
+  return json({ authUrl: "https://accounts.google.com/o/oauth2/v2/auth?" + p.toString() }, origin, allowed);
+}
+
+function redirectTo(u) {
+  return new Response(null, { status: 302, headers: { Location: u } });
+}
+
+async function handleGoogleCallback(request, env, url) {
+  const err = url.searchParams.get("error");
+  if (err) return redirectTo(SITE_URL + "/?gslides=denied");
+  const code = url.searchParams.get("code");
+  const sid = url.searchParams.get("state");
+  if (!code || !sid) return redirectTo(SITE_URL + "/?gslides=error");
+  if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET || !env.RATE_KV) return redirectTo(SITE_URL + "/?gslides=error");
+
+  try {
+    // Exchange code for an access token
+    const tokRes = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: env.GOOGLE_CLIENT_ID,
+        client_secret: env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: GOOGLE_REDIRECT,
+        grant_type: "authorization_code",
+      }).toString(),
+    });
+    const tok = await tokRes.json();
+    if (!tokRes.ok || !tok.access_token) return redirectTo(SITE_URL + "/?gslides=error");
+    const token = tok.access_token;
+
+    // Fetch the stored draft
+    const raw = await env.RATE_KV.get("gsld:" + sid);
+    if (!raw) return redirectTo(SITE_URL + "/?gslides=expired");
+    await env.RATE_KV.delete("gsld:" + sid);
+    const { content, title } = JSON.parse(raw);
+
+    const parsed = parseSlides(content, title);
+
+    // Create the presentation
+    const createRes = await fetch("https://slides.googleapis.com/v1/presentations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+      body: JSON.stringify({ title: parsed.title }),
+    });
+    const pres = await createRes.json();
+    if (!createRes.ok || !pres.presentationId) return redirectTo(SITE_URL + "/?gslides=error");
+    const pid = pres.presentationId;
+    const defaultSlideId = (pres.slides && pres.slides[0] && pres.slides[0].objectId) || null;
+
+    // Build batchUpdate requests
+    const requests = [];
+    parsed.slides.forEach(function (s, i) {
+      const sid2 = "slide_" + i;
+      requests.push({
+        createSlide: {
+          objectId: sid2,
+          slideLayoutReference: { predefinedLayout: "TITLE_AND_BODY" },
+          placeholderIdMappings: [
+            { layoutPlaceholder: { type: "TITLE", index: 0 }, objectId: sid2 + "_t" },
+            { layoutPlaceholder: { type: "BODY", index: 0 }, objectId: sid2 + "_b" },
+          ],
+        },
+      });
+      if (s.title) requests.push({ insertText: { objectId: sid2 + "_t", text: s.title } });
+      if (s.body) requests.push({ insertText: { objectId: sid2 + "_b", text: s.body } });
+    });
+    // Remove the blank default slide
+    if (defaultSlideId) requests.push({ deleteObject: { objectId: defaultSlideId } });
+
+    if (requests.length) {
+      await fetch("https://slides.googleapis.com/v1/presentations/" + pid + ":batchUpdate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({ requests }),
+      });
+    }
+
+    return redirectTo("https://docs.google.com/presentation/d/" + pid + "/edit");
+  } catch (e) {
+    return redirectTo(SITE_URL + "/?gslides=error");
+  }
+}
+
+function parseSlides(content, fallbackTitle) {
+  const lines = content.replace(/\r/g, "").split("\n");
+  let deckTitle = fallbackTitle || "Slides";
+  let started = false;
+  const slides = [];
+  let cur = null;
+  let skipRest = false;
+  const slideRe = /^\s*slide\s*\d+\s*[:\-\.]\s*(.+)$/i;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    const m = trimmed.match(slideRe);
+    if (m) {
+      cur = { title: m[1].trim(), bodyLines: [] };
+      slides.push(cur);
+      skipRest = false;
+      started = true;
+      continue;
+    }
+    if (!started) {
+      // first non-empty line before any "Slide N:" is the deck title
+      if (trimmed && deckTitle === (fallbackTitle || "Slides")) { deckTitle = trimmed.slice(0, 120); }
+      continue;
+    }
+    if (!cur) continue;
+    if (/^\s*speaker notes\s*:?/i.test(trimmed)) { skipRest = true; continue; }
+    if (skipRest) continue;
+    if (!trimmed) { cur.bodyLines.push(""); continue; }
+    const clean = trimmed.replace(/^[-*\u2022]\s*/, "");
+    cur.bodyLines.push(clean);
+  }
+
+  // Fallback: no "Slide N:" markers found, make one slide from the whole thing
+  if (!slides.length) {
+    const nonEmpty = lines.map(function (l) { return l.trim(); }).filter(Boolean);
+    deckTitle = nonEmpty[0] ? nonEmpty[0].slice(0, 120) : deckTitle;
+    slides.push({ title: deckTitle, bodyLines: nonEmpty.slice(1) });
+  }
+
+  const out = slides.map(function (s) {
+    let body = s.bodyLines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    if (body.length > 1800) body = body.slice(0, 1800);
+    return { title: (s.title || "").slice(0, 200), body };
+  });
+  return { title: deckTitle, slides: out };
 }
 
 function pickTool(messages) {

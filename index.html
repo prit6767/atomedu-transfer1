@@ -467,6 +467,18 @@
   .ai-foot button:disabled { opacity: 0.5; cursor: not-allowed; }
   .ask-go:disabled { opacity: 0.6; cursor: wait; }
 
+  /* Full-screen editable draft view */
+  #ai-modal.modal-veil { padding: 0; align-items: stretch; justify-content: stretch; background: var(--bg); }
+  #ai-modal .modal { max-width: none; width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; border: none; padding: 0; display: flex; flex-direction: column; background: var(--bg); }
+  #ai-modal .ai-head { padding: 18px 28px; border-bottom: 1px solid var(--line); align-items: center; flex: 0 0 auto; }
+  #ai-modal .ai-head h3 { margin-bottom: 2px; }
+  #ai-modal .ai-state { padding: 16px 28px; flex: 0 0 auto; }
+  #ai-modal textarea.ai-body { flex: 1 1 auto; height: auto; min-height: 0; max-height: none; margin: 0; border-radius: 0; border: none; background: var(--bg); padding: 34px max(28px, calc(50vw - 430px)); }
+  #ai-modal .ai-foot { padding: 14px 28px; border-top: 1px solid var(--line); flex: 0 0 auto; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+  .ai-foot button { border-radius: 10px; white-space: nowrap; }
+  @media (max-width: 640px){ #ai-modal .ai-foot { justify-content: center; } #ai-modal textarea.ai-body { padding: 22px 20px; } }
+
+
   /* toast */
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -1214,13 +1226,38 @@
       var el = document.getElementById(id);
       if(el) el.addEventListener('keydown', function(e){ if(e.key === 'Enter') document.getElementById('go').click(); });
     });
-    try {
-      var u = JSON.parse(localStorage.getItem('atom-user') || 'null');
-      if(u && u.name){
-        // Restore the session straight into the workspace, no re-sign-in on reload.
-        enterWorkspace(u.name, u.cls || '6th grade Science', u.email || '');
-      }
-    } catch(e){}
+    (function(){
+      // LTI 1.3 launch: swap the one-time ticket for a session (keeps PII out of the URL).
+      try {
+        var lp = new URLSearchParams(window.location.search);
+        var ticket = lp.get('lti');
+        if(ticket){
+          fetch(WORKER_URL + '/lti/session', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticket: ticket })
+          }).then(function(r){ return r.json(); }).then(function(d){
+            if(d && d.name){
+              try {
+                if(d.session) localStorage.setItem('atom-lti-session', d.session);
+                if(d.email) localStorage.setItem('atom-email', d.email);
+              } catch(e){}
+              if(d.email){ saveKnownUser({ name: d.name, email: d.email, cls: d.ctx || 'My class' }); }
+              enterWorkspace(d.name, d.ctx || 'My class', d.email || '');
+            }
+          }).catch(function(){}).then(function(){
+            lp.delete('lti');
+            var qs = lp.toString();
+            history.replaceState({}, '', window.location.pathname + (qs ? ('?' + qs) : ''));
+          });
+          return; // skip the normal restore on an LTI launch
+        }
+      } catch(e){}
+      // Normal restore straight into the workspace, no re-sign-in on reload.
+      try {
+        var u = JSON.parse(localStorage.getItem('atom-user') || 'null');
+        if(u && u.name){ enterWorkspace(u.name, u.cls || '6th grade Science', u.email || ''); }
+      } catch(e){}
+    })();
 
     // Toast
     var toast = document.getElementById('toast');
@@ -1685,8 +1722,10 @@
     }
 
     async function callAI(page, userText, systemOverride){
+      var ltiSession = null;
+      try { ltiSession = localStorage.getItem('atom-lti-session'); } catch(e){}
       var email = getUserEmail();
-      if(!email){
+      if(!email && !ltiSession){
         setAIError('Please sign in with a .edu or .org email first.');
         openAIModal();
         return;
@@ -1699,7 +1738,8 @@
       var cfg = aiConfig(page);
       var payload = {
         model: DEFAULT_MODEL,
-        email: email,
+        email: email || '',
+        lti_session: ltiSession || undefined,
         temperature: cfg.temp,
         max_tokens: cfg.tokens,
         messages: [

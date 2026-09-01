@@ -86,6 +86,25 @@ export default {
         return await handleGoogleCallback(request, env, url);
       }
 
+      if (url.pathname === "/lti/jwks" && request.method === "GET") {
+        return await handleLtiJwks(env, origin, allowed);
+      }
+      if (url.pathname === "/lti/login") {
+        return await handleLtiLogin(request, env, url);
+      }
+      if (url.pathname === "/lti/launch" && request.method === "POST") {
+        return await handleLtiLaunch(request, env, url);
+      }
+      if (url.pathname === "/lti/session" && request.method === "POST") {
+        return await handleLtiSession(request, env, origin, allowed);
+      }
+      if (url.pathname === "/lti/register") {
+        return await handleLtiRegister(request, env, url);
+      }
+      if (url.pathname === "/lti/config" && request.method === "GET") {
+        return handleLtiConfig(env, url);
+      }
+
       return json({ error: "Not found" }, origin, allowed, 404);
     } catch (e) {
       return json({ error: e.message || String(e) }, origin, allowed, 500);
@@ -100,15 +119,21 @@ async function handleGroq(request, env, origin, allowed) {
     return json({ error: "Bad request" }, origin, allowed, 400);
   }
   const cap = parseInt(env.DAILY_CAP || "5", 10);
-  const email = (body.email || "").toLowerCase();
-  if (!email || !/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/.test(email)) {
+  let ltiOk = false, ltiPayload = null;
+  if (body.lti_session) {
+    ltiPayload = await verifyToolJwt(env, body.lti_session);
+    if (ltiPayload && ltiPayload.lti) ltiOk = true;
+  }
+  const email = (body.email || (ltiPayload && ltiPayload.email) || "").toLowerCase();
+  if (!ltiOk && (!email || !/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/.test(email))) {
     return json({ error: "email required and must be .edu or .org" }, origin, allowed, 403);
   }
   const day = new Date().toISOString().slice(0, 10);
-  const domain = email.split("@")[1] || "unknown";
+  const rlId = email || ("lti:" + ((ltiPayload && ltiPayload.sub) || "anon"));
+  const domain = email.split("@")[1] || (ltiOk ? "lti" : "unknown");
 
   if (body.model === "openai/gpt-oss-120b" && env.RATE_KV) {
-    const key = `rl:${email}:${day}`;
+    const key = `rl:${rlId}:${day}`;
     const cur = parseInt((await env.RATE_KV.get(key)) || "0", 10);
     if (cur >= cap) return json({ error: "Daily cap reached", cap }, origin, allowed, 429);
     await env.RATE_KV.put(key, String(cur + 1), { expirationTtl: 172800 });
@@ -139,7 +164,7 @@ async function handleGroq(request, env, origin, allowed) {
 
   if (env.RATE_KV) {
     await trackDraft(env.RATE_KV, {
-      email,
+      email: email || rlId,
       domain,
       day,
       model: body.model,
@@ -530,3 +555,433 @@ function bytesToB64(bytes) {
   for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
   return btoa(s);
 }
+
+// ===================== LTI 1.3 (Advantage) =====================
+// Atom Edu as a certified-grade LTI 1.3 tool.
+//   GET/POST /lti/login     OIDC third-party login initiation
+//   POST     /lti/launch    Launch (validates id_token) + Deep Linking response
+//   GET      /lti/jwks      Tool public JWKS (RSA key auto-generated in KV)
+//   POST     /lti/session   Exchange one-time launch ticket for session (no PII in URL)
+//   GET/POST /lti/register  Dynamic Registration (1EdTech) for one-click install
+//   GET      /lti/config    Canvas LTI JSON config (manual install)
+// No new secrets required. Tool RSA key + platform registrations live in KV.
+
+const LTI = {
+  tool_title: "Atom Edu",
+  tool_desc: "Free AI workbench for teachers: assignments, quizzes, rubrics, lessons, slides, translations.",
+};
+
+function ltiUrls(env) {
+  const base = (env.WORKER_URL || "https://atom-edu.pritamavuthu7.workers.dev").replace(/\/+$/, "");
+  const site = (env.SITE_URL || "https://atom-edu.org").replace(/\/+$/, "");
+  return { base, site, login: base + "/lti/login", launch: base + "/lti/launch", jwks: base + "/lti/jwks", register: base + "/lti/register" };
+}
+
+// Known Canvas platform endpoints so a manual Developer Key install works with
+// no Dynamic Registration round-trip.
+function canvasDefaults(issuer) {
+  const iss = (issuer || "").replace(/\/+$/, "");
+  const hosts = {
+    "https://canvas.instructure.com": "https://sso.canvaslms.com",
+    "https://canvas.beta.instructure.com": "https://sso.beta.canvaslms.com",
+    "https://canvas.test.instructure.com": "https://sso.test.canvaslms.com",
+  };
+  const sso = hosts[iss];
+  if (!sso) return null;
+  return {
+    issuer: iss,
+    authorization_endpoint: sso + "/api/lti/authorize_redirect",
+    jwks_uri: sso + "/api/lti/security/jwks",
+    token_endpoint: sso + "/login/oauth2/token",
+  };
+}
+
+// ---- Tool key (RSA, RS256) -------------------------------------------------
+async function getToolKey(env) {
+  if (!env.RATE_KV) throw new Error("KV not bound");
+  const raw = await env.RATE_KV.get("lti:key");
+  if (raw) return JSON.parse(raw);
+  const pair = await crypto.subtle.generateKey(
+    { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+    true, ["sign", "verify"]
+  );
+  const priv = await crypto.subtle.exportKey("jwk", pair.privateKey);
+  const pub = await crypto.subtle.exportKey("jwk", pair.publicKey);
+  const kid = "atom-" + hex(crypto.getRandomValues(new Uint8Array(8)));
+  priv.kid = kid; priv.alg = "RS256"; priv.use = "sig";
+  pub.kid = kid; pub.alg = "RS256"; pub.use = "sig";
+  const rec = { kid, priv, pub };
+  await env.RATE_KV.put("lti:key", JSON.stringify(rec));
+  return rec;
+}
+async function toolSignKey(env) {
+  const rec = await getToolKey(env);
+  const key = await crypto.subtle.importKey("jwk", rec.priv, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
+  return { key, kid: rec.kid };
+}
+async function handleLtiJwks(env, origin, allowed) {
+  const rec = await getToolKey(env);
+  return json({ keys: [rec.pub] }, origin, allowed);
+}
+
+// ---- base64url + hex helpers ----------------------------------------------
+function hex(bytes) { let s = ""; for (let i = 0; i < bytes.length; i++) s += bytes[i].toString(16).padStart(2, "0"); return s; }
+function b64urlFromBytes(bytes) { let s = ""; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+function b64urlToBytes(b) { let s = b.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; const bin = atob(s); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+function b64urlEncodeStr(str) { return b64urlFromBytes(new TextEncoder().encode(str)); }
+function b64urlDecodeStr(b) { return new TextDecoder().decode(b64urlToBytes(b)); }
+
+// ---- JWT sign / verify -----------------------------------------------------
+async function signJwt(env, payload, extraHeader) {
+  const { key, kid } = await toolSignKey(env);
+  const header = Object.assign({ alg: "RS256", typ: "JWT", kid }, extraHeader || {});
+  const h = b64urlEncodeStr(JSON.stringify(header));
+  const p = b64urlEncodeStr(JSON.stringify(payload));
+  const data = new TextEncoder().encode(h + "." + p);
+  const sig = await crypto.subtle.sign({ name: "RSASSA-PKCS1-v1_5" }, key, data);
+  return h + "." + p + "." + b64urlFromBytes(new Uint8Array(sig));
+}
+async function verifyToolJwt(env, token) {
+  try {
+    const rec = await getToolKey(env);
+    const parts = String(token).split(".");
+    if (parts.length !== 3) return null;
+    const key = await crypto.subtle.importKey("jwk", rec.pub, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
+    const data = new TextEncoder().encode(parts[0] + "." + parts[1]);
+    const ok = await crypto.subtle.verify({ name: "RSASSA-PKCS1-v1_5" }, key, b64urlToBytes(parts[2]), data);
+    if (!ok) return null;
+    const payload = JSON.parse(b64urlDecodeStr(parts[1]));
+    if (payload.exp && Date.now() / 1000 > payload.exp) return null;
+    return payload;
+  } catch (e) { return null; }
+}
+function decodeJwtParts(token) {
+  const parts = String(token).split(".");
+  if (parts.length !== 3) return null;
+  try {
+    return {
+      header: JSON.parse(b64urlDecodeStr(parts[0])),
+      payload: JSON.parse(b64urlDecodeStr(parts[1])),
+      signingInput: parts[0] + "." + parts[1],
+      sig: b64urlToBytes(parts[2]),
+    };
+  } catch (e) { return null; }
+}
+async function fetchJwksCached(jwksUri, env) {
+  const ck = "lti:pjwks:" + jwksUri;
+  if (env.RATE_KV) {
+    const cached = await env.RATE_KV.get(ck);
+    if (cached) { try { return JSON.parse(cached); } catch (e) {} }
+  }
+  const res = await fetch(jwksUri, { headers: { Accept: "application/json" } });
+  if (!res.ok) return null;
+  const data = await res.json();
+  if (env.RATE_KV) await env.RATE_KV.put(ck, JSON.stringify(data), { expirationTtl: 3600 });
+  return data;
+}
+async function verifyPlatformJwt(token, jwksUri, env) {
+  const dec = decodeJwtParts(token);
+  if (!dec) return { ok: false, error: "malformed id_token" };
+  const jwks = await fetchJwksCached(jwksUri, env);
+  if (!jwks || !jwks.keys) return { ok: false, error: "cannot fetch platform jwks" };
+  const jwk = jwks.keys.find((k) => k.kid === dec.header.kid) || (jwks.keys.length === 1 ? jwks.keys[0] : null);
+  if (!jwk) return { ok: false, error: "no matching platform key" };
+  const key = await crypto.subtle.importKey("jwk", { kty: jwk.kty, n: jwk.n, e: jwk.e, alg: "RS256", ext: true }, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
+  const ok = await crypto.subtle.verify({ name: "RSASSA-PKCS1-v1_5" }, key, dec.sig, new TextEncoder().encode(dec.signingInput));
+  if (!ok) return { ok: false, error: "bad id_token signature" };
+  return { ok: true, payload: dec.payload };
+}
+
+// ---- Platform registration store ------------------------------------------
+async function getRegistration(env, issuer, clientId) {
+  if (env.RATE_KV) {
+    const raw = await env.RATE_KV.get("lti:reg:" + issuer);
+    if (raw) {
+      try {
+        const map = JSON.parse(raw);
+        if (clientId && map[clientId]) return map[clientId];
+        const keys = Object.keys(map);
+        if (!clientId && keys.length === 1) return map[keys[0]];
+      } catch (e) {}
+    }
+  }
+  const def = canvasDefaults(issuer);
+  if (def && clientId) {
+    return { issuer, client_id: clientId, authorization_endpoint: def.authorization_endpoint, jwks_uri: def.jwks_uri, token_endpoint: def.token_endpoint };
+  }
+  return null;
+}
+async function saveRegistration(env, reg) {
+  if (!env.RATE_KV) return;
+  const raw = await env.RATE_KV.get("lti:reg:" + reg.issuer);
+  let map = {};
+  if (raw) { try { map = JSON.parse(raw); } catch (e) {} }
+  map[reg.client_id] = reg;
+  await env.RATE_KV.put("lti:reg:" + reg.issuer, JSON.stringify(map));
+}
+
+// ---- OIDC login initiation -------------------------------------------------
+async function readParams(request, url) {
+  if (request.method === "POST") {
+    const ct = request.headers.get("Content-Type") || "";
+    if (ct.includes("application/json")) {
+      const b = await request.json().catch(() => ({}));
+      return new URLSearchParams(Object.entries(b).map(([k, v]) => [k, String(v)]));
+    }
+    const form = await request.formData().catch(() => null);
+    const p = new URLSearchParams();
+    if (form) for (const [k, v] of form) p.set(k, String(v));
+    return p;
+  }
+  return url.searchParams;
+}
+async function handleLtiLogin(request, env, url) {
+  const params = await readParams(request, url);
+  const issuer = (params.get("iss") || "").replace(/\/+$/, "");
+  const loginHint = params.get("login_hint") || "";
+  const targetLinkUri = params.get("target_link_uri") || ltiUrls(env).launch;
+  const ltiMessageHint = params.get("lti_message_hint") || "";
+  const clientId = params.get("client_id") || "";
+  const deploymentId = params.get("lti_deployment_id") || params.get("deployment_id") || "";
+  if (!issuer) return htmlErr("Missing issuer (iss).", 400);
+  const reg = await getRegistration(env, issuer, clientId);
+  if (!reg) return htmlErr("This platform (" + esc(issuer) + ") is not registered with Atom Edu. Install via Dynamic Registration, or add a Developer Key and relaunch.", 400);
+  const state = "st_" + hex(crypto.getRandomValues(new Uint8Array(16)));
+  const nonce = "no_" + hex(crypto.getRandomValues(new Uint8Array(16)));
+  if (env.RATE_KV) {
+    await env.RATE_KV.put("lti:state:" + state, JSON.stringify({ nonce, issuer, client_id: reg.client_id, deployment_id: deploymentId, target_link_uri: targetLinkUri, ts: Date.now() }), { expirationTtl: 600 });
+  }
+  const auth = new URLSearchParams({
+    scope: "openid", response_type: "id_token", response_mode: "form_post", prompt: "none",
+    client_id: reg.client_id, redirect_uri: ltiUrls(env).launch, login_hint: loginHint, state, nonce,
+  });
+  if (ltiMessageHint) auth.set("lti_message_hint", ltiMessageHint);
+  return redirectTo(reg.authorization_endpoint + "?" + auth.toString());
+}
+
+// ---- Launch (resource link + deep linking) --------------------------------
+async function handleLtiLaunch(request, env, url) {
+  const ct = request.headers.get("Content-Type") || "";
+  let idToken = "", state = "";
+  if (ct.includes("application/x-www-form-urlencoded") || ct.includes("multipart/form-data")) {
+    const form = await request.formData();
+    idToken = form.get("id_token") || "";
+    state = form.get("state") || "";
+  } else {
+    idToken = url.searchParams.get("id_token") || "";
+    state = url.searchParams.get("state") || "";
+  }
+  if (!idToken || !state) return htmlErr("Missing id_token or state.", 400);
+
+  let st = null;
+  if (env.RATE_KV) {
+    const raw = await env.RATE_KV.get("lti:state:" + state);
+    if (raw) { try { st = JSON.parse(raw); } catch (e) {} await env.RATE_KV.delete("lti:state:" + state); }
+  }
+  if (!st) return htmlErr("Invalid or expired launch (state). Please relaunch from your LMS.", 400);
+
+  const reg = await getRegistration(env, st.issuer, st.client_id);
+  if (!reg) return htmlErr("Platform not registered.", 400);
+
+  const v = await verifyPlatformJwt(idToken, reg.jwks_uri, env);
+  if (!v.ok) return htmlErr("Launch verification failed: " + esc(v.error), 401);
+  const p = v.payload;
+
+  const now = Math.floor(Date.now() / 1000);
+  if (p.iss !== st.issuer) return htmlErr("Issuer mismatch.", 401);
+  const aud = Array.isArray(p.aud) ? p.aud : [p.aud];
+  if (!aud.includes(reg.client_id)) return htmlErr("Audience mismatch.", 401);
+  if (Array.isArray(p.aud) && p.aud.length > 1 && p.azp && p.azp !== reg.client_id) return htmlErr("azp mismatch.", 401);
+  if (typeof p.exp === "number" && now > p.exp + 60) return htmlErr("id_token expired.", 401);
+  if (typeof p.iat === "number" && p.iat > now + 300) return htmlErr("id_token issued in the future.", 401);
+  if (!p.nonce || p.nonce !== st.nonce) return htmlErr("Nonce mismatch.", 401);
+  if (env.RATE_KV) {
+    const nk = "lti:nonce:" + p.nonce;
+    if (await env.RATE_KV.get(nk)) return htmlErr("Replay detected (nonce reused).", 401);
+    await env.RATE_KV.put(nk, "1", { expirationTtl: 600 });
+  }
+
+  const C = "https://purl.imsglobal.org/spec/lti/claim/";
+  const msgType = p[C + "message_type"];
+  const version = p[C + "version"] || "1.3.0";
+  if (String(version).indexOf("1.3") !== 0) return htmlErr("Unsupported LTI version.", 401);
+  const deploymentId = p[C + "deployment_id"] || st.deployment_id || "";
+  if (deploymentId && (!reg.deployment_ids || reg.deployment_ids.indexOf(deploymentId) < 0)) {
+    reg.deployment_ids = (reg.deployment_ids || []).concat([deploymentId]);
+    await saveRegistration(env, reg);
+  }
+
+  if (msgType === "LtiDeepLinkingRequest") {
+    return await ltiDeepLinkResponse(env, p, reg, deploymentId);
+  }
+
+  const custom = p[C + "custom"] || {};
+  const name = p.name || [p.given_name, p.family_name].filter(Boolean).join(" ").trim() || custom.person_name_full || "Teacher";
+  const email = p.email || custom.person_email || "";
+  const ctx = p[C + "context"] || {};
+  const contextTitle = ctx.title || custom.context_title || "My class";
+  const roles = p[C + "roles"] || [];
+
+  const session = await signJwt(env, {
+    iss: "atom-edu", sub: (email || "lti:" + (p.sub || "user")).toLowerCase(),
+    name, email, ctx: contextTitle, lti: true, iat: now, exp: now + 60 * 60 * 12,
+  });
+
+  // Keep PII out of the URL: stash launch data, hand the SPA a one-time ticket.
+  const ticket = "tk_" + hex(crypto.getRandomValues(new Uint8Array(16)));
+  if (env.RATE_KV) {
+    await env.RATE_KV.put("lti:tkt:" + ticket, JSON.stringify({ name, email, ctx: contextTitle, session, roles }), { expirationTtl: 120 });
+  }
+  return redirectTo(ltiUrls(env).site + "/?lti=" + ticket);
+}
+
+async function handleLtiSession(request, env, origin, allowed) {
+  const body = await request.json().catch(() => ({}));
+  const ticket = (body.ticket || "").toString();
+  if (!ticket || !env.RATE_KV) return json({ error: "invalid ticket" }, origin, allowed, 400);
+  const raw = await env.RATE_KV.get("lti:tkt:" + ticket);
+  if (!raw) return json({ error: "expired" }, origin, allowed, 400);
+  await env.RATE_KV.delete("lti:tkt:" + ticket);
+  return json(JSON.parse(raw), origin, allowed);
+}
+
+async function ltiDeepLinkResponse(env, p, reg, deploymentId) {
+  const DL = "https://purl.imsglobal.org/spec/lti-dl/claim/";
+  const C = "https://purl.imsglobal.org/spec/lti/claim/";
+  const settings = p[DL + "deep_linking_settings"] || {};
+  const returnUrl = settings.deep_link_return_url;
+  if (!returnUrl) return htmlErr("No deep_link_return_url in request.", 400);
+  const now = Math.floor(Date.now() / 1000);
+  const contentItems = [{
+    type: "ltiResourceLink",
+    title: "Atom Edu",
+    text: "Open Atom Edu to draft assignments, quizzes, rubrics, lessons, and slides.",
+    url: ltiUrls(env).launch,
+    presentation: { documentTarget: "window" },
+  }];
+  const payload = {
+    iss: reg.client_id, aud: reg.issuer, iat: now, exp: now + 600,
+    nonce: "dl_" + hex(crypto.getRandomValues(new Uint8Array(12))),
+    [C + "message_type"]: "LtiDeepLinkingResponse",
+    [C + "version"]: "1.3.0",
+    [C + "deployment_id"]: deploymentId,
+    [DL + "content_items"]: contentItems,
+  };
+  if (settings.data) payload[DL + "data"] = settings.data;
+  const jwt = await signJwt(env, payload);
+  const html = "<!doctype html><html><body onload=\"document.forms[0].submit()\">" +
+    "<form method=\"POST\" action=\"" + esc(returnUrl) + "\">" +
+    "<input type=\"hidden\" name=\"JWT\" value=\"" + esc(jwt) + "\"/>" +
+    "</form><noscript><button type=\"submit\">Return to your course</button></noscript>" +
+    "</body></html>";
+  return new Response(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+
+// ---- Dynamic Registration (1EdTech) ---------------------------------------
+async function handleLtiRegister(request, env, url) {
+  const openidConfigUrl = url.searchParams.get("openid_configuration");
+  const regToken = url.searchParams.get("registration_token") || "";
+  const u = ltiUrls(env);
+  if (!openidConfigUrl) {
+    return htmlPage("Atom Edu — LTI 1.3", "<p>This is the Atom Edu Dynamic Registration endpoint. In your LMS, paste this URL into the LTI 1.3 Dynamic Registration field:</p><p><code>" + esc(u.register) + "</code></p><p>Canvas: Admin &rsaquo; Developer Keys &rsaquo; + LTI Registration &rsaquo; enter this URL.</p>");
+  }
+  const cfgRes = await fetch(openidConfigUrl, { headers: { Accept: "application/json" } });
+  if (!cfgRes.ok) return htmlErr("Could not fetch platform OpenID configuration.", 400);
+  const cfg = await cfgRes.json();
+  const host = new URL(u.site).host;
+  const canvasExt = "https://canvas.instructure.com/lti";
+  const toolReg = {
+    application_type: "web",
+    response_types: ["id_token"],
+    grant_types: ["client_credentials", "implicit"],
+    initiate_login_uri: u.login,
+    redirect_uris: [u.launch],
+    client_name: LTI.tool_title,
+    jwks_uri: u.jwks,
+    logo_uri: u.site + "/favicon.png",
+    token_endpoint_auth_method: "private_key_jwt",
+    scope: [
+      "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+      "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+      "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+      "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+    ].join(" "),
+    "https://purl.imsglobal.org/spec/lti-tool-configuration": {
+      domain: host,
+      target_link_uri: u.launch,
+      claims: ["iss", "sub", "name", "given_name", "family_name", "email"],
+      description: LTI.tool_desc,
+      messages: [
+        { type: "LtiResourceLinkRequest", target_link_uri: u.launch, label: "Atom Edu", placements: ["course_navigation"], [canvasExt + "/course_navigation/default_enabled"]: true, "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": { document_target: "window" } },
+        { type: "LtiDeepLinkingRequest", target_link_uri: u.launch, label: "Add Atom Edu", placements: ["link_selection", "assignment_selection"] },
+      ],
+      custom_parameters: { person_email: "$Person.email.primary", person_name_full: "$Person.name.full", context_title: "$Context.title" },
+    },
+  };
+  const regEndpoint = cfg.registration_endpoint;
+  if (!regEndpoint) return htmlErr("Platform has no registration_endpoint.", 400);
+  const headers = { "Content-Type": "application/json", Accept: "application/json" };
+  if (regToken) headers["Authorization"] = "Bearer " + regToken;
+  const regRes = await fetch(regEndpoint, { method: "POST", headers, body: JSON.stringify(toolReg) });
+  const regBody = await regRes.json().catch(() => ({}));
+  if (!regRes.ok) return htmlErr("Registration failed: " + esc(JSON.stringify(regBody).slice(0, 400)), 400);
+  const issuer = (cfg.issuer || "").replace(/\/+$/, "");
+  const stored = {
+    issuer, client_id: regBody.client_id,
+    authorization_endpoint: cfg.authorization_endpoint,
+    jwks_uri: cfg.jwks_uri,
+    token_endpoint: cfg.token_endpoint,
+    registered_at: Date.now(),
+  };
+  await saveRegistration(env, stored);
+  const html = "<!doctype html><html><body style=\"font-family:system-ui;max-width:640px;margin:60px auto;padding:0 20px;color:#0b1226\">" +
+    "<h2>Atom Edu is registered</h2><p>Registration succeeded. Close this window, then enable Atom Edu in your course placements.</p>" +
+    "<script>if(window.opener){window.opener.postMessage({subject:'org.imsglobal.lti.close'},'*');}else if(window.parent!==window){window.parent.postMessage({subject:'org.imsglobal.lti.close'},'*');}</script>" +
+    "</body></html>";
+  return new Response(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+
+// ---- Canvas manual config JSON --------------------------------------------
+function handleLtiConfig(env, url) {
+  const u = ltiUrls(env);
+  const host = new URL(u.site).host;
+  const cfg = {
+    title: LTI.tool_title,
+    description: LTI.tool_desc,
+    oidc_initiation_url: u.login,
+    target_link_uri: u.launch,
+    public_jwk_url: u.jwks,
+    scopes: [
+      "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+      "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+      "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+      "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+    ],
+    extensions: [{
+      domain: host,
+      platform: "canvas.instructure.com",
+      privacy_level: "public",
+      settings: {
+        text: "Atom Edu",
+        icon_url: u.site + "/favicon.png",
+        placements: [
+          { placement: "course_navigation", message_type: "LtiResourceLinkRequest", target_link_uri: u.launch, text: "Atom Edu", windowTarget: "_blank", default: "enabled", enabled: true },
+          { placement: "link_selection", message_type: "LtiDeepLinkingRequest", target_link_uri: u.launch, text: "Atom Edu", enabled: true },
+          { placement: "assignment_selection", message_type: "LtiDeepLinkingRequest", target_link_uri: u.launch, text: "Atom Edu", enabled: true },
+        ],
+      },
+    }],
+    custom_fields: { person_email: "$Person.email.primary", person_name_full: "$Person.name.full", context_title: "$Context.title" },
+  };
+  return new Response(JSON.stringify(cfg, null, 2), { status: 200, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+}
+
+// ---- tiny HTML helpers -----------------------------------------------------
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function htmlErr(msg, status) {
+  return new Response("<!doctype html><meta charset=utf-8><body style=\"font-family:system-ui;max-width:640px;margin:60px auto;padding:0 20px;color:#0b1226\"><h2>Atom Edu — LTI</h2><p>" + esc(msg) + "</p></body>", { status: status || 400, headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+function htmlPage(title, bodyHtml) {
+  return new Response("<!doctype html><meta charset=utf-8><title>" + esc(title) + "</title><body style=\"font-family:system-ui;max-width:640px;margin:60px auto;padding:0 20px;color:#0b1226\"><h2>" + esc(title) + "</h2>" + bodyHtml + "</body>", { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+

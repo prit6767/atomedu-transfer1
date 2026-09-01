@@ -7,6 +7,8 @@ workers_dev = true
 [vars]
 ALLOWED_ORIGIN = "https://atom-edu.org,https://www.atom-edu.org"
 GOOGLE_CLIENT_ID = "550124493800-3h3411am4rsra5msc3qino23inbfb522.apps.googleusercontent.com"
+WORKER_URL     = "https://atom-edu.pritamavuthu7.workers.dev"
+SITE_URL       = "https://atom-edu.org"
 GROQ_ENDPOINT  = "https://api.groq.com/openai/v1/chat/completions"
 DAILY_CAP      = "5"
 

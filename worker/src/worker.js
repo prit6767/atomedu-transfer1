@@ -191,7 +191,8 @@ async function handlePresentonGenerate(request, env, origin, allowed) {
     await trackDraft(env.RATE_KV, { email, domain, day, model: "presenton", tool: "Slideshow", ok: true });
   }
 
-  return json({ task_id: data.task_id, status: data.status || "processing" }, origin, allowed);
+  // Forward full response so frontend can find the right field
+  return json(data, origin, allowed);
 }
 
 async function handlePresentonStatus(request, env, origin, allowed) {

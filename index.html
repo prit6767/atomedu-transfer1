@@ -1676,8 +1676,10 @@
           body: JSON.stringify({ email: email, content: content, n_slides: 10 })
         });
         var data = await res.json();
-        if(!res.ok){ showToast(data.error || 'Export failed'); aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow'; return; }
-        var taskId = data.task_id;
+        console.log('Presenton generate response:', JSON.stringify(data));
+        if(!res.ok){ showToast(data.error || data.detail || 'Export failed'); aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow'; return; }
+        var taskId = data.task_id || data.taskId || data.id;
+        if(!taskId){ showToast('No task ID returned. Check console for details.'); aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow'; console.error('Full Presenton response:', data); return; }
         aiExportPptx.textContent = 'Generating slides...';
         var maxPolls = 60;
         for(var i = 0; i < maxPolls; i++){

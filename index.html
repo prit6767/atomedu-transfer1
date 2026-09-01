@@ -484,6 +484,10 @@
   .ws-class { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
   .ws-class .chev { color: var(--muted); font-size: 12px; transition: transform .2s ease; }
   .ws-class.open .chev { transform: rotate(180deg); }
+
+    .ai-export-pptx{background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;}
+    .ai-export-pptx:hover{opacity:.9;}
+    .ai-export-pptx:disabled{opacity:.5;cursor:not-allowed;}
 </style>
 
 <div id="landing">
@@ -639,6 +643,7 @@
       <button class="ai-delete" id="ai-delete" style="display:none;">Delete draft</button>
       <button class="ai-regen" id="ai-regen">Regenerate</button>
       <button class="ai-copy" id="ai-copy">Copy</button>
+      <button class="ai-export-pptx" id="ai-export-pptx" style="display:none;">Export slideshow</button>
       <button class="ai-approve" id="ai-approve">Approve</button>
       <button class="ai-use" id="ai-use">Save as draft</button>
     </div>
@@ -1519,11 +1524,13 @@
       aiStatus.textContent = msg || 'Drafting with Atom…';
       aiBody.value = '';
       aiUse.disabled = true; aiApprove.disabled = true; aiCopy.disabled = true; aiRegen.disabled = true;
+      var eb = document.getElementById('ai-export-pptx'); if(eb){ eb.style.display='none'; eb.disabled=false; eb.textContent='Export slideshow'; }
     }
     function setAIDone(content){
       aiState.classList.add('hidden');
       aiBody.value = content || '';
       aiUse.disabled = false; aiApprove.disabled = false; aiCopy.disabled = false; aiRegen.disabled = false;
+      if(typeof showExportBtn === 'function') showExportBtn();
     }
     function setAIError(msg){
       aiState.classList.remove('hidden');
@@ -1644,6 +1651,84 @@
       if(!lastAIRequest) return;
       callAI(lastAIRequest.page, lastAIRequest.userText);
     });
+
+    var aiExportPptx = document.getElementById('ai-export-pptx');
+
+    function showExportBtn(){
+      if(lastAIRequest && lastAIRequest.page === 'slides'){
+        aiExportPptx.style.display = '';
+      } else {
+        aiExportPptx.style.display = 'none';
+      }
+    }
+
+    aiExportPptx.addEventListener('click', async function(){
+      var content = aiBody.value || '';
+      if(!content){ showToast('No draft to export.'); return; }
+      var email = getUserEmail();
+      if(!email){ showToast('Please sign in first.'); return; }
+      aiExportPptx.disabled = true;
+      aiExportPptx.textContent = 'Starting export...';
+      try {
+        var res = await fetch(WORKER_URL + '/api/presenton/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, content: content, n_slides: 10 })
+        });
+        var data = await res.json();
+        if(!res.ok){ showToast(data.error || 'Export failed'); aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow'; return; }
+        var taskId = data.task_id;
+        aiExportPptx.textContent = 'Generating slides...';
+        var maxPolls = 60;
+        for(var i = 0; i < maxPolls; i++){
+          await new Promise(function(r){ setTimeout(r, 3000); });
+          var sr = await fetch(WORKER_URL + '/api/presenton/status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ task_id: taskId })
+          });
+          var sd = await sr.json();
+          if(sd.status === 'completed'){
+            var dlUrl = sd.file_url || sd.file_path || sd.download_url || '';
+            if(dlUrl){
+              aiExportPptx.textContent = 'Download slideshow';
+              aiExportPptx.disabled = false;
+              aiExportPptx.onclick = function(){ window.open(dlUrl, '_blank'); };
+              showToast('Slideshow ready! Click to download.');
+            } else {
+              var pid = sd.presentation_id || '';
+              if(pid){
+                aiExportPptx.textContent = 'Open in Presenton';
+                aiExportPptx.disabled = false;
+                aiExportPptx.onclick = function(){ window.open('https://presenton.ai/presentation/' + pid, '_blank'); };
+                showToast('Slideshow ready!');
+              } else {
+                aiExportPptx.textContent = 'Export slideshow';
+                aiExportPptx.disabled = false;
+                showToast('Slideshow generated but no download link found.');
+              }
+            }
+            return;
+          }
+          if(sd.status === 'failed'){
+            showToast('Slideshow generation failed. Try again.');
+            aiExportPptx.textContent = 'Export slideshow';
+            aiExportPptx.disabled = false;
+            return;
+          }
+          var dots = '.'.repeat((i % 3) + 1);
+          aiExportPptx.textContent = 'Generating slides' + dots;
+        }
+        showToast('Generation timed out. Try again later.');
+        aiExportPptx.textContent = 'Export slideshow';
+        aiExportPptx.disabled = false;
+      } catch(e){
+        showToast('Export error: ' + (e.message || e));
+        aiExportPptx.textContent = 'Export slideshow';
+        aiExportPptx.disabled = false;
+      }
+    });
+
 
     // Ask box "Draft it" button, calls the Worker
     document.querySelectorAll('.ask-go').forEach(function(b){

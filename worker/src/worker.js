@@ -69,6 +69,15 @@ export default {
         return json({ plaintext }, origin, allowed);
       }
 
+
+      if (url.pathname === "/api/presenton/generate" && request.method === "POST") {
+        return await handlePresentonGenerate(request, env, origin, allowed);
+      }
+
+      if (url.pathname === "/api/presenton/status" && request.method === "POST") {
+        return await handlePresentonStatus(request, env, origin, allowed);
+      }
+
       return json({ error: "Not found" }, origin, allowed, 404);
     } catch (e) {
       return json({ error: e.message || String(e) }, origin, allowed, 500);
@@ -135,6 +144,75 @@ async function handleGroq(request, env, origin, allowed) {
     return json({ error: `Groq ${upstream.status}`, detail: String(upstreamJson.error).slice(0, 500) }, origin, allowed, 502);
   }
   return json({ content, usage: upstreamJson.usage || null, model: body.model }, origin, allowed);
+}
+
+
+const PRESENTON_API = "https://api.presenton.ai/api/v3";
+
+async function handlePresentonGenerate(request, env, origin, allowed) {
+  if (!env.PRESENTON_API_KEY) return json({ error: "Server missing PRESENTON_API_KEY" }, origin, allowed, 500);
+  const body = await request.json();
+  const email = (body.email || "").toLowerCase();
+  if (!email || !/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/.test(email)) {
+    return json({ error: "email required and must be .edu or .org" }, origin, allowed, 403);
+  }
+  const content = body.content || "";
+  if (!content) return json({ error: "content required" }, origin, allowed, 400);
+
+  const payload = {
+    content: content,
+    n_slides: body.n_slides || 10,
+    tone: "educational",
+    language: "English",
+    export_as: "pptx",
+    include_title_slide: true,
+    speaker_notes: true,
+    verbosity: "standard"
+  };
+
+  const upstream = await fetch(PRESENTON_API + "/presentation/generate/async", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + env.PRESENTON_API_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await upstream.json();
+  if (!upstream.ok) {
+    return json({ error: "Presenton error", detail: JSON.stringify(data).slice(0, 500) }, origin, allowed, 502);
+  }
+
+  // Track in analytics
+  if (env.RATE_KV) {
+    const day = new Date().toISOString().slice(0, 10);
+    const domain = email.split("@")[1] || "unknown";
+    await trackDraft(env.RATE_KV, { email, domain, day, model: "presenton", tool: "Slideshow", ok: true });
+  }
+
+  return json({ task_id: data.task_id, status: data.status || "processing" }, origin, allowed);
+}
+
+async function handlePresentonStatus(request, env, origin, allowed) {
+  if (!env.PRESENTON_API_KEY) return json({ error: "Server missing PRESENTON_API_KEY" }, origin, allowed, 500);
+  const body = await request.json();
+  const taskId = body.task_id;
+  if (!taskId) return json({ error: "task_id required" }, origin, allowed, 400);
+
+  const upstream = await fetch(PRESENTON_API + "/async-task/status/" + encodeURIComponent(taskId), {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer " + env.PRESENTON_API_KEY,
+    },
+  });
+
+  const data = await upstream.json();
+  if (!upstream.ok) {
+    return json({ error: "Presenton status error", detail: JSON.stringify(data).slice(0, 500) }, origin, allowed, 502);
+  }
+
+  return json(data, origin, allowed);
 }
 
 function pickTool(messages) {

@@ -1673,7 +1673,7 @@
         var res = await fetch(WORKER_URL + '/api/presenton/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, content: content, n_slides: 10 })
+          body: JSON.stringify({ email: email, content: content, n_slides: 5 })
         });
         var data = await res.json();
         console.log('Presenton generate response:', JSON.stringify(data));
@@ -1691,6 +1691,13 @@
           });
           var sd = await sr.json();
           console.log('Presenton status poll ' + i + ':', JSON.stringify(sd));
+          if(sd.status === 'error' || sd.status === 'failed'){
+            var errMsg = (sd.error && (sd.error.detail || sd.error.message || sd.error)) || sd.message || 'Slideshow generation failed.';
+            showToast(String(errMsg).slice(0, 120));
+            aiExportPptx.textContent = 'Export slideshow';
+            aiExportPptx.disabled = false;
+            return;
+          }
           if(sd.status === 'completed' || sd.status === 'done'){
             var dlUrl = sd.file_url || sd.file_path || sd.download_url || sd.url || (sd.data && (sd.data.file_url || sd.data.download_url || sd.data.url || sd.data.file_path)) || '';
             if(dlUrl){

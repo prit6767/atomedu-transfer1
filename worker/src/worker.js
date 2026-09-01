@@ -152,16 +152,16 @@ const PRESENTON_API = "https://api.presenton.ai/api/v3";
 async function handlePresentonGenerate(request, env, origin, allowed) {
   if (!env.PRESENTON_API_KEY) return json({ error: "Server missing PRESENTON_API_KEY" }, origin, allowed, 500);
   const body = await request.json();
-  const email = (body.email || "").toLowerCase();
-  if (!email || !/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/.test(email)) {
-    return json({ error: "email required and must be .edu or .org" }, origin, allowed, 403);
-  }
+  // Anyone can export a slideshow. Email is used only for analytics, not gating.
+  const email = (body.email || "anonymous@atom-edu.org").toLowerCase();
   const content = body.content || "";
   if (!content) return json({ error: "content required" }, origin, allowed, 400);
 
+  // Clamp slide count to protect the credit balance (2 credits/slide).
+  const nSlides = Math.max(3, Math.min(parseInt(body.n_slides || 5, 10) || 5, 8));
   const payload = {
     content: content,
-    n_slides: body.n_slides || 10,
+    n_slides: nSlides,
     tone: "educational",
     language: "English",
     export_as: "pptx",

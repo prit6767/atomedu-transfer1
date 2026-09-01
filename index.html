@@ -1108,10 +1108,8 @@
     try {
       var u = JSON.parse(localStorage.getItem('atom-user') || 'null');
       if(u && u.name){
-        document.getElementById('hello-name').textContent = u.name;
-        document.getElementById('av-name').textContent = u.name;
-        document.getElementById('av-init').textContent = initials(u.name);
-        document.getElementById('ws-class-name').textContent = u.cls || '6th grade Science';
+        // Restore the session straight into the workspace, no re-sign-in on reload.
+        enterWorkspace(u.name, u.cls || '6th grade Science', u.email || '');
       }
     } catch(e){}
 
@@ -1665,8 +1663,7 @@
     aiExportPptx.addEventListener('click', async function(){
       var content = aiBody.value || '';
       if(!content){ showToast('No draft to export.'); return; }
-      var email = getUserEmail();
-      if(!email){ showToast('Please sign in first.'); return; }
+      var email = getUserEmail() || (JSON.parse(localStorage.getItem('atom-user')||'{}').email) || 'teacher@atom-edu.org';
       aiExportPptx.disabled = true;
       aiExportPptx.textContent = 'Starting export...';
       try {

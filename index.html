@@ -499,6 +499,21 @@
   .ws-class .chev { color: var(--muted); font-size: 12px; transition: transform .2s ease; }
   .ws-class.open .chev { transform: rotate(180deg); }
 
+  .tr-controls { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tr-field { display: flex; flex-direction: column; gap: 7px; min-width: 200px; flex: 1; }
+  .tr-field label { font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
+  .tr-field select { font-family: "Inter", sans-serif; font-size: 14px; color: var(--ink); background: var(--bg-elev); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+  .tr-field select:focus { outline: none; border-color: var(--ink); }
+  .tr-source { width: 100%; min-height: 200px; resize: vertical; font-family: "Inter", sans-serif; font-size: 14px; line-height: 1.6; color: var(--ink); background: var(--bg-elev); border: 1px solid var(--line-strong); border-radius: 12px; padding: 14px 16px; margin-top: 6px; }
+  .tr-source:focus { outline: none; border-color: var(--ink); }
+  .tr-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+  .tr-upload { display: inline-flex; align-items: center; gap: 8px; font-family: "Inter", sans-serif; font-size: 13.5px; font-weight: 600; color: var(--ink); background: transparent; border: 1px solid var(--line-strong); border-radius: 999px; padding: 9px 16px; cursor: pointer; transition: background .15s ease; }
+  .tr-upload:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+  .tr-filename { font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #tr-go { margin-left: auto; }
+  #tr-go:disabled { opacity: 0.6; cursor: wait; }
+  .tr-note { font-family: "Inter", sans-serif; font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-top: 18px; padding: 14px 16px; border-radius: 10px; background: color-mix(in srgb, var(--stamp) 7%, var(--bg-elev)); border-left: 3px solid var(--stamp); }
+
     .ai-export-pptx{background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;}
     .ai-export-pptx:hover{opacity:.9;}
     .ai-export-pptx:disabled{opacity:.5;cursor:not-allowed;}
@@ -682,6 +697,7 @@
       <button class="ai-delete" id="ai-delete" style="display:none;">Delete draft</button>
       <button class="ai-regen" id="ai-regen">Regenerate</button>
       <button class="ai-copy" id="ai-copy">Copy</button>
+      <button class="ai-copy" id="ai-translate">Translate</button>
       <button class="ai-export-pptx" id="ai-export-pptx" style="display:none;">Export slideshow</button>
       <button class="ai-approve" id="ai-approve">Approve</button>
       <button class="ai-use" id="ai-use">Save as draft</button>
@@ -725,6 +741,7 @@
   <div class="ws-nav">
     <a data-nav="notes"><span class="lbl">Notes home</span></a>
     <a data-nav="diff"><span class="lbl">Differentiation</span></a>
+    <a data-nav="translate"><span class="lbl">Translate</span></a>
   </div>
 
   <div class="ws-nav-label">You</div>
@@ -752,6 +769,7 @@
               <a data-nav="docs">Doc or handout</a>
               <a data-nav="notes">Note home</a>
               <a data-nav="diff">Differentiation</a>
+              <a data-nav="translate">Translate a document</a>
             </div>
           </div>
         </div>
@@ -924,7 +942,7 @@
 </div>
 
 <div class="ws-page" data-page="diff">
-  <div class="ph"><h1>Differentia <span class="it">tion</span></h1><p>Same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
+  <div class="ph"><h1>Differentia<span class="it">tion</span></h1><p>Same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
   <div class="ask-box">
     <div class="ask-label">What do you want to make?</div>
     <div class="ask-input"><span class="ask-prompt">&#43;</span><input placeholder="Paste or describe the assignment you want adapted for different levels">
@@ -937,6 +955,57 @@
     <div class="empty-body" style="margin-bottom:0;">Type above and click Draft it. Atom will draft a first version for you to edit.</div>
   </div>
   <div class="approve-bar"><button>Cancel</button><button class="primary">Approve</button></div>
+</div>
+
+<div class="ws-page" data-page="translate">
+  <div class="ph"><h1>Translate <span class="it">a document</span></h1><p>Turn any assignment, letter, or handout into another language. You review it before it goes home.</p></div>
+  <div class="tr-controls">
+    <div class="tr-field">
+      <label>Translate into</label>
+      <select id="tr-lang">
+        <option>Spanish</option>
+        <option>Chinese (Simplified)</option>
+        <option>Vietnamese</option>
+        <option>Arabic</option>
+        <option>Tagalog</option>
+        <option>French</option>
+        <option>Haitian Creole</option>
+        <option>Portuguese</option>
+        <option>Russian</option>
+        <option>Korean</option>
+        <option>Hindi</option>
+        <option>Somali</option>
+        <option>Ukrainian</option>
+      </select>
+    </div>
+    <div class="tr-field">
+      <label>Format</label>
+      <select id="tr-format">
+        <option value="target">Translated only</option>
+        <option value="bilingual">Side by side, English and translation</option>
+      </select>
+    </div>
+    <div class="tr-field">
+      <label>Reading level</label>
+      <select id="tr-level">
+        <option value="same">Match the original</option>
+        <option value="simpler">Simplify for families and ELL</option>
+      </select>
+    </div>
+  </div>
+  <div class="ask-box">
+    <div class="ask-label">Paste the text, or upload a file.</div>
+    <textarea id="tr-source" class="tr-source" placeholder="Paste your assignment, quiz, or family letter here. Or upload a PDF, Word, or text file below."></textarea>
+    <div class="tr-actions">
+      <label class="tr-upload">
+        <input type="file" id="tr-file" accept=".pdf,.docx,.txt,.md" hidden>
+        <span id="tr-upload-label">Upload a file</span>
+      </label>
+      <span class="tr-filename" id="tr-filename"></span>
+      <button class="ask-go" id="tr-go">Translate it &rarr;</button>
+    </div>
+  </div>
+  <div class="tr-note">Atom drafts the translation. Have a fluent speaker check it before it goes home. For a Google Doc, open File, then Download, then PDF or Word, and upload that file here.</div>
 </div>
 
 <div class="ws-page" data-page="standards">
@@ -1586,7 +1655,8 @@
         slides:     { temp: 0.5, tokens: 3584 },
         docs:       { temp: 0.5, tokens: 2048 },
         notes:      { temp: 0.6, tokens: 1024 },
-        diff:       { temp: 0.4, tokens: 3072 }
+        diff:       { temp: 0.4, tokens: 3072 },
+        translate:  { temp: 0.2, tokens: 4096 }
       };
       return cfg[page] || cfg.assignment;
     }
@@ -1613,7 +1683,7 @@
       return base + (by[page] || by.assignment);
     }
 
-    async function callAI(page, userText){
+    async function callAI(page, userText, systemOverride){
       var email = getUserEmail();
       if(!email){
         setAIError('Please sign in with a .edu or .org email first.');
@@ -1632,7 +1702,7 @@
         temperature: cfg.temp,
         max_tokens: cfg.tokens,
         messages: [
-          { role: 'system', content: systemPromptFor(page) },
+          { role: 'system', content: systemOverride || systemPromptFor(page) },
           { role: 'user', content: userText || 'Draft a first version.' }
         ]
       };
@@ -1773,6 +1843,7 @@
 
     // Ask box "Draft it" button, calls the Worker
     document.querySelectorAll('.ask-go').forEach(function(b){
+      if(b.id === 'tr-go') return;
       b.addEventListener('click', function(){
         var input = b.parentElement.querySelector('input');
         var text = input ? input.value.trim() : '';
@@ -1782,6 +1853,101 @@
         callAI(pageKey, text);
       });
     });
+
+    // ===== Translate tool =====
+    function trLoadScript(src){
+      return new Promise(function(res, rej){
+        var s = document.createElement('script');
+        s.src = src; s.onload = res;
+        s.onerror = function(){ rej(new Error('Could not load ' + src)); };
+        document.head.appendChild(s);
+      });
+    }
+    var trPdfReady = null, trMammothReady = null;
+    function trEnsurePdf(){
+      if(!trPdfReady){
+        trPdfReady = trLoadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js').then(function(){
+          if(window.pdfjsLib){ window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
+        });
+      }
+      return trPdfReady;
+    }
+    function trEnsureMammoth(){
+      if(!trMammothReady){ trMammothReady = trLoadScript('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js'); }
+      return trMammothReady;
+    }
+    async function trExtractPdf(file){
+      await trEnsurePdf();
+      var buf = await file.arrayBuffer();
+      var pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+      var out = [];
+      for(var i = 1; i <= pdf.numPages; i++){
+        var page = await pdf.getPage(i);
+        var tc = await page.getTextContent();
+        out.push(tc.items.map(function(it){ return it.str; }).join(' '));
+      }
+      return out.join('\n\n');
+    }
+    async function trExtractDocx(file){
+      await trEnsureMammoth();
+      var buf = await file.arrayBuffer();
+      var r = await window.mammoth.extractRawText({ arrayBuffer: buf });
+      return r.value;
+    }
+    var trFile = document.getElementById('tr-file');
+    var trSource = document.getElementById('tr-source');
+    var trFilename = document.getElementById('tr-filename');
+    if(trFile && trSource){
+      trFile.addEventListener('change', async function(){
+        var f = trFile.files && trFile.files[0];
+        if(!f) return;
+        trFilename.textContent = 'Reading ' + f.name + '...';
+        try {
+          var name = f.name.toLowerCase(), text = '';
+          if(name.endsWith('.pdf')) text = await trExtractPdf(f);
+          else if(name.endsWith('.docx')) text = await trExtractDocx(f);
+          else text = await f.text();
+          text = (text || '').trim();
+          if(!text){ trFilename.textContent = f.name + ' has no readable text. It may be a scan. Paste the text instead.'; return; }
+          trSource.value = text;
+          trFilename.textContent = f.name + ' loaded';
+        } catch(e){
+          trFilename.textContent = 'Could not read ' + f.name + '. Paste the text instead.';
+        }
+      });
+    }
+    var trGo = document.getElementById('tr-go');
+    if(trGo){
+      trGo.addEventListener('click', function(){
+        var src = (trSource.value || '').trim();
+        if(!src){ showToast('Paste text or upload a file first.'); return; }
+        if(src.length > 12000){ src = src.slice(0, 12000); showToast('Long document trimmed to keep it fast and free.'); }
+        var lang = document.getElementById('tr-lang').value;
+        var fmt = document.getElementById('tr-format').value;
+        var level = document.getElementById('tr-level').value;
+        var sys = 'You are Atom, translating a classroom document for a teacher. Translate the material into ' + lang + '. ';
+        sys += 'Preserve the structure exactly: keep the title, section headings, question numbers, blanks to fill in, and point values in parentheses. Keep student and teacher names, proper nouns, and any math, symbols, or numbers unchanged. Do not answer the questions and do not add commentary; translate only. Never use em dashes or en dashes. ';
+        sys += (level === 'simpler')
+          ? 'Use simple, everyday language that a family member or an English learner can follow. '
+          : 'Keep the reading level close to the original. ';
+        sys += (fmt === 'bilingual')
+          ? 'Produce a bilingual version: for each line or short block, give the original English first, then the ' + lang + ' translation on the next line, so the reader sees both. '
+          : 'Produce the ' + lang + ' version only. ';
+        sys += 'Start the response with a short plain title on the first line, then a blank line, then the body.';
+        callAI('translate', src, sys);
+      });
+    }
+    // "Translate" button inside the draft modal: push current draft into the Translate tool
+    var aiTranslateBtn = document.getElementById('ai-translate');
+    if(aiTranslateBtn){
+      aiTranslateBtn.addEventListener('click', function(){
+        var body = (aiBody && aiBody.value) ? aiBody.value.trim() : '';
+        if(!body){ showToast('Nothing to translate yet.'); return; }
+        if(trSource){ trSource.value = body; if(trFilename) trFilename.textContent = 'From your current draft'; }
+        closeAIModal();
+        goto('translate');
+      });
+    }
 
     // New draft menu
     var ndBtn = document.getElementById('new-draft-btn');

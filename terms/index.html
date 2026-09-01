@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Terms of use, Atom Edu</title>
+<title>Terms of Use and Privacy Policy, Atom Edu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,9 +23,10 @@
     -webkit-font-smoothing: antialiased; line-height: 1.55;
   }
   a { color: inherit; }
-  .wrap { max-width: 780px; margin: 0 auto; padding: 0 28px; }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 0 28px; }
 
   nav {
+    position: sticky; top: 0; z-index: 20;
     height: 64px; display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--line); background: var(--bg);
     font-family: "Inter", sans-serif;
@@ -35,45 +36,66 @@
     font-weight: 700; font-size: 17px; letter-spacing: -0.01em;
     text-decoration: none; color: var(--ink);
   }
+  nav .links { display: flex; align-items: center; gap: 6px; }
   nav .links a {
     font-size: 13.5px; color: var(--ink-soft); font-weight: 500;
-    padding: 6px 12px; text-decoration: none;
+    padding: 7px 13px; border-radius: 999px; text-decoration: none;
+    transition: background .15s ease, color .15s ease;
   }
-  nav .links a:hover { color: var(--ink); }
+  nav .links a:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+  nav .links a.active { color: var(--ink); background: color-mix(in srgb, var(--ink) 12%, transparent); }
   nav .cta {
     background: var(--ink); color: var(--bg); border: 1px solid var(--ink);
-    padding: 9px 16px; border-radius: 999px; text-decoration: none;
-    font-size: 14px; font-weight: 600;
+    padding: 9px 18px; border-radius: 999px; text-decoration: none;
+    font-size: 13.5px; font-weight: 600; margin-left: 6px;
+    transition: opacity .15s ease, transform .15s ease;
   }
+  nav .cta:hover { opacity: .88; transform: translateY(-1px); background: var(--ink); color: var(--bg); }
 
   main { padding: 60px 0 80px; }
   h1 {
     font-family: "Fraunces", Georgia, serif;
-    font-size: clamp(46px, 6vw, 72px);
+    font-size: clamp(44px, 6vw, 68px);
     letter-spacing: -0.035em; font-weight: 400;
-    margin: 0 0 20px; line-height: 1.02;
+    margin: 0 0 18px; line-height: 1.02;
   }
   h1 .it { font-style: italic; font-weight: 300; }
   .lead {
     font-family: "Inter", sans-serif; font-size: 16px;
-    color: var(--ink-soft); max-width: 65ch; margin: 0 0 40px; line-height: 1.65;
+    color: var(--ink-soft); max-width: 66ch; margin: 0 0 32px; line-height: 1.65;
   }
   .lead b { color: var(--ink); font-weight: 700; }
+  .toc {
+    font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted);
+    display: flex; gap: 18px; flex-wrap: wrap;
+    padding: 16px 20px; border-radius: 12px;
+    background: color-mix(in srgb, var(--ink) 4%, var(--bg-elev));
+    border: 1px solid var(--line); margin: 0 0 48px;
+  }
+  .toc a { color: var(--ink-soft); text-decoration: none; font-weight: 600; }
+  .toc a:hover { color: var(--ink); }
+  .doc-title {
+    font-family: "Fraunces", Georgia, serif; font-size: clamp(30px, 4vw, 40px);
+    font-weight: 400; letter-spacing: -0.025em; margin: 64px 0 6px; line-height: 1.05;
+    padding-top: 20px; border-top: 2px solid var(--ink);
+  }
+  .doc-title .it { font-style: italic; font-weight: 300; }
+  .updated { font-family: "Inter", sans-serif; font-size: 12.5px; color: var(--muted); font-weight: 600; margin: 0 0 26px; letter-spacing: 0.02em; }
   h2 {
-    font-family: "Inter", sans-serif; font-size: 18px; font-weight: 700;
+    font-family: "Inter", sans-serif; font-size: 17px; font-weight: 700;
     color: var(--ink); margin: 30px 0 10px; letter-spacing: -0.005em;
   }
   p {
     font-family: "Inter", sans-serif; font-size: 14.5px;
-    color: var(--ink-soft); line-height: 1.7; margin: 0 0 12px; max-width: 70ch;
+    color: var(--ink-soft); line-height: 1.7; margin: 0 0 12px; max-width: 72ch;
   }
   p b { color: var(--ink); font-weight: 700; }
-  .tocline {
+  .callout {
     font-family: "Inter", sans-serif; font-size: 12.5px; color: var(--muted);
     padding: 14px 18px; border-radius: 10px;
     background: color-mix(in srgb, var(--ink) 4%, var(--bg-elev));
     border-left: 3px solid var(--ink);
-    margin: 30px 0;
+    margin: 22px 0 30px; line-height: 1.6;
   }
 
   footer {
@@ -92,57 +114,133 @@
   <a class="brand" href="/"><span>Atom Edu</span></a>
   <div class="links">
     <a href="/">Home</a>
-    <a href="/privacy/">Privacy</a>
-    <a href="/terms/">Terms</a>
-    <a class="cta" href="/">Try the workspace</a>
+    <a href="#terms" class="active">Terms</a>
+    <a href="#privacy">Privacy</a>
+    <a class="cta" href="/">Open the workspace</a>
   </div>
 </nav>
 
 <main class="wrap">
-  <h1>Terms of <span class="it">use.</span></h1>
-  <p class="lead"><b>Last updated: 2026.</b> By using Atom Edu, you agree to the following. Also in plain English.</p>
+  <h1>Legal.</h1>
+  <p class="lead"><b>These are the Terms of Use and the Privacy Policy for Atom Edu, in one place.</b> Terms come first, the Privacy Policy follows underneath. Both are written in plain English, and both are current as of 2026.</p>
+  <div class="toc">
+    <span>Jump to:</span>
+    <a href="#terms">Terms of Use</a>
+    <a href="#privacy">Privacy Policy</a>
+  </div>
 
-  <div class="tocline">In one sentence: Atom drafts, you edit, you approve. Everything you make is yours. It's free forever. Use it responsibly.</div>
+  <h2 class="doc-title" id="terms">Terms of <span class="it">Use.</span></h2>
+  <p class="updated">Last updated: 2026</p>
 
-  <h2>What Atom is</h2>
-  <p>A free tool that drafts classroom materials for teachers. Atom drafts. You edit. You approve. Nothing goes out to a student, a family, or a gradebook until you say yes.</p>
+  <div class="callout">In one sentence: Atom drafts, you edit, you approve, and the specific materials you approve are yours to use. Atom Edu itself, and everything that runs it, is owned by DocuPeer.</div>
 
-  <h2>Who can use it</h2>
-  <p>Teachers, instructional coaches, and other educators, verified by a school (.edu) or organization (.org) email. You are responsible for what you approve and send. Atom is a drafting tool, not a source of truth.</p>
+  <h2>1. About Atom Edu and these terms</h2>
+  <p>Atom Edu ("Atom Edu," "we," "us," or "our") is a free web tool that drafts classroom materials for teachers. Atom Edu is a product of and is owned and operated by DocuPeer ("DocuPeer"), its parent company. By accessing or using Atom Edu, you agree to these Terms of Use and to the Privacy Policy set out below. If you do not agree, do not use Atom Edu.</p>
 
-  <h2>Your account and content</h2>
-  <p>Your account lives in your browser. The drafts, class information, and notes you make are yours. We do not claim any ownership of what you create with Atom.</p>
+  <h2>2. Who may use Atom Edu</h2>
+  <p>Atom Edu is intended for teachers, instructional coaches, and other educators, identified by a school (.edu) or organization (.org) email address. By using it you represent that you are at least eighteen years old, or the age of majority in your jurisdiction, and that you have the authority to accept these terms. Atom Edu is a tool for educators. Students do not sign in and are not the intended users.</p>
 
-  <h2>What you agree not to do</h2>
-  <p>Do not use Atom to draft anything you would not send with your own name attached. Do not use it to harass, dox, or harm any student, family, colleague, or third party. Do not use it to impersonate anyone. Do not use it to circumvent the daily cap by rotating emails or otherwise abusing the system.</p>
+  <h2>3. What the service does</h2>
+  <p>Atom Edu produces draft materials such as worksheets, quizzes, rubrics, lesson plans, reading passages, slide decks, family notes, and similar documents. Every output is a first draft. You are responsible for reviewing, editing, and approving any material before you use it, share it, or send it to a student, a family, or a gradebook. Nothing Atom drafts is final until you make it final.</p>
 
-  <h2>Cost</h2>
-  <p>Free. Forever. Every feature. Every classroom. Every year you keep teaching. If that ever changes, existing teachers keep the free tier they signed up under.</p>
+  <h2>4. Your account and your drafts</h2>
+  <p>Your account and the drafts you create are stored locally in your own browser, not on our servers. The specific classroom materials that you generate, edit, and approve are yours to use in your teaching. We do not claim ownership of the particular finished materials you approve for your own classroom use.</p>
 
-  <h2>No warranty</h2>
-  <p>Atom drafts are a starting point. They can be wrong, out of date, or a bad fit for your class. Your judgment, your rubric, and your review are what make an artifact ready. We offer Atom as-is, without warranty of any kind, express or implied, including but not limited to fitness for a particular purpose. We are not liable for any use of Atom's output that is not first reviewed by you.</p>
+  <h2>5. Ownership, intellectual property, and patents</h2>
+  <p><b>DocuPeer owns Atom Edu in full.</b> All right, title, and interest in and to Atom Edu and DocuPeer, including all software, source code, models, prompts, designs, layouts, text, graphics, logos, trademarks, trade names, trade dress, know-how, inventions, and all patents, copyrights, and other intellectual property rights in each of them, are and remain the exclusive property of DocuPeer and its licensors. Nothing in these terms transfers any of those rights to you. The rights described in Section 4 are limited to the finished classroom materials you create for your own use and do not include any right in the underlying tool, its models, its templates, or its brand.</p>
+  <p>You are granted a personal, limited, non-exclusive, non-transferable, revocable license to use Atom Edu for lawful educational purposes while these terms are in effect. You may not copy, modify, reverse engineer, decompile, resell, sublicense, scrape, or create derivative works of Atom Edu or any part of it, and you may not use its names, logos, or branding without DocuPeer's prior written permission.</p>
 
-  <h2>Ending your use</h2>
-  <p>Stop using Atom whenever you want. Clear your browser storage to remove everything. There are no accounts to close and no cancellation flow.</p>
+  <h2>6. Acceptable use</h2>
+  <p>You agree not to use Atom Edu to draft anything you would not put your own name to. You will not use it to harass, defame, dox, or harm any student, family, colleague, or third party, to impersonate any person, to break any law, or to infringe anyone's rights. You will not attempt to disrupt or gain unauthorized access to the service, and you will not abuse any usage limits, for example by rotating email addresses to defeat a daily cap.</p>
 
-  <h2>Governing law</h2>
-  <p>These terms are governed by the laws of the state where Atom Edu is registered. Any disputes go there.</p>
+  <h2>7. AI-generated content</h2>
+  <p>Atom Edu uses automated models to produce drafts. Those drafts can be inaccurate, incomplete, out of date, or unsuitable for your class. You are the reviewer of record. Your judgment, your standards, and your approval are what make any material ready for use. You are solely responsible for any material you approve and use.</p>
+
+  <h2>8. Cost</h2>
+  <p>Atom Edu is free to use. If the service ever changes, teachers who have already signed up will keep access to the free tier they signed up under.</p>
+
+  <h2>9. Third-party services</h2>
+  <p>Atom Edu relies on third-party providers to generate drafts and, where you request it, to render slide decks. When you generate a draft, only the prompt you type and the class context you attach are sent to those providers for that single request. Your use of Atom Edu may also be subject to those providers' terms. We are not responsible for third-party services and do not control them.</p>
+
+  <h2>10. Disclaimer of warranties</h2>
+  <p>Atom Edu is provided "as is" and "as available," without warranty of any kind, whether express, implied, or statutory, including without limitation any implied warranties of merchantability, fitness for a particular purpose, title, and non-infringement. We do not warrant that the service will be uninterrupted, error free, or that any draft will be accurate or fit for your purpose.</p>
+
+  <h2>11. Limitation of liability</h2>
+  <p>To the fullest extent permitted by law, DocuPeer and Atom Edu will not be liable for any indirect, incidental, special, consequential, exemplary, or punitive damages, or for any loss of data, goodwill, or other intangible losses, arising out of or relating to your use of, or inability to use, Atom Edu, even if advised of the possibility of such damages. To the fullest extent permitted by law, the total aggregate liability of DocuPeer and Atom Edu for any claim relating to the service will not exceed one hundred United States dollars.</p>
+
+  <h2>12. Indemnification</h2>
+  <p>You agree to indemnify and hold harmless DocuPeer, Atom Edu, and their owners, officers, and agents from any claim, demand, loss, or expense, including reasonable legal fees, arising out of your use of the service, your approved materials, or your breach of these terms.</p>
+
+  <h2>13. Termination</h2>
+  <p>You may stop using Atom Edu at any time. Clearing your browser storage for atom-edu.org removes everything stored on your device. We may suspend or end access to the service, in whole or in part, at any time, with or without notice. Sections that by their nature should survive termination, including ownership, disclaimers, limitation of liability, indemnification, and governing law, will survive.</p>
+
+  <h2>14. Changes to these terms</h2>
+  <p>We may update these terms from time to time. When we do, the "Last updated" date will change. Continuing to use Atom Edu after a change means you accept the updated terms.</p>
+
+  <h2>15. Governing law and venue</h2>
+  <p>These terms and any dispute arising out of or relating to them or to Atom Edu are governed by the laws of the State of Missouri, without regard to its conflict-of-laws rules. You agree that the exclusive venue for any dispute that is not subject to arbitration will be the state or federal courts located in Missouri, and you consent to the personal jurisdiction of those courts.</p>
+
+  <h2>16. Severability and entire agreement</h2>
+  <p>If any provision of these terms is held to be unenforceable, the remaining provisions will remain in full effect. These terms, together with the Privacy Policy below, are the entire agreement between you and DocuPeer regarding Atom Edu and supersede any prior understandings.</p>
+
+  <h2>17. Contact</h2>
+  <p>Questions about these terms: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
+
+  <h2 class="doc-title" id="privacy">Privacy <span class="it">Policy.</span></h2>
+  <p class="updated">Last updated: 2026</p>
+
+  <div class="callout">In one sentence: your drafts and student data live in your browser, not on our servers. What we keep is a count of drafts and unique teachers, nothing more.</div>
+
+  <h2>What we collect</h2>
+  <p>Your name, work email, subject, and any drafts you generate are stored as they are in your own browser's local storage. They stay on your device. When you generate a document, only the prompt you typed and the class context you chose are sent to the inference backend to draft it. We do not keep those requests.</p>
+
+  <h2>What we do not collect</h2>
+  <p>No site analytics. No cookies. No third-party trackers. No student names or grades ever leave your browser. We do not know who you are and we do not track individual accounts.</p>
+
+  <h2>What we count, in aggregate only</h2>
+  <p>Our admin dashboard tracks the total number of teachers who have signed up, the total number of drafts made across the whole platform, per-day totals, per-model totals, and per-school-domain totals. These are counts only, never identifiable content. Emails are hashed for the unique-teacher count and are shown redacted, as the first two letters plus the domain, in the recent-activity list. Prompts, drafts, students, and grades are never visible to us.</p>
+
+  <h2>Model and slideshow calls</h2>
+  <p>Every draft you generate goes through a large language model provider, and slide decks you choose to export are rendered by a presentation provider. The prompt you type and the class context you attach are the only things sent, and only for that single request. Student work you upload for adaptation stays on your device unless you explicitly ask Atom to work on it. When it is sent, it is sent for that one call, is not stored on our side, and is not used to train any model, ours or a provider's.</p>
+
+  <h2>Deletion</h2>
+  <p>To delete everything, clear your browser storage for atom-edu.org. That is the whole deletion process, because there is nothing on our side to erase for you. Your account has no server-side record to remove.</p>
+
+  <h2>Children</h2>
+  <p>Atom Edu is for teachers, not students. Students never sign in. We do not knowingly collect data from anyone under thirteen.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the "Last updated" date changes with it, and the change is noted on the workspace home page the first time you visit after it happens.</p>
 
   <h2>Contact</h2>
-  <p><a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
+  <p>Questions or concerns: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
 </main>
 
 <footer>
   <div class="wrap row">
-    <div>&copy; 2026 Atom Edu. Free forever for teachers.</div>
+    <div>&copy; 2026 Atom Edu. A product of DocuPeer. Free forever for teachers.</div>
     <div class="links">
       <a href="/">Home</a>
-      <a href="/privacy/">Privacy</a>
-      <a href="/terms/">Terms</a>
+      <a href="#terms">Terms</a>
+      <a href="#privacy">Privacy</a>
       <a href="mailto:hello@atom-edu.org">Contact</a>
     </div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav .links a[href^="#"]'));
+  var secs = links.map(function(l){ return document.querySelector(l.getAttribute('href')); }).filter(Boolean);
+  function spy(){
+    var pos = window.scrollY + 140, cur = null;
+    secs.forEach(function(s){ if(s.offsetTop <= pos) cur = s.id; });
+    links.forEach(function(l){ l.classList.toggle('active', l.getAttribute('href') === '#' + cur); });
+  }
+  window.addEventListener('scroll', spy, { passive: true });
+  spy();
+})();
+</script>
 
 </body>
 </html>

@@ -539,6 +539,8 @@
     .presenton-meta{padding:16px 18px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
     .presenton-meta b{font-size:13px;color:var(--ink);}.presenton-meta span{font-size:11px;color:var(--muted);margin-left:8px;}
     .presenton-actions{display:flex;gap:8px;flex-wrap:wrap;}.presenton-actions a,.presenton-actions button{border:1px solid var(--line-strong);border-radius:8px;background:transparent;color:var(--ink);padding:8px 10px;font:600 11px "Inter",sans-serif;text-decoration:none;cursor:pointer;}.presenton-actions .primary{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+    .modal-lg.presenting .ai-foot{display:none;}
+    .modal-lg.presenting .presenton-preview{height:min(62vh,620px);}
     @media(max-width:600px){.presenton-preview{height:220px}.presenton-meta{align-items:flex-start;flex-direction:column;}}
 </style>
 
@@ -1714,6 +1716,7 @@
     function hidePresentonDeck(){
       if(!presentonDeck) return;
       presentonDeck.classList.remove('on');
+      aiModal.querySelector('.modal-lg').classList.remove('presenting');
       presentonPreview.innerHTML = '';
       presentonActions.innerHTML = '';
       aiBody.classList.remove('hidden');
@@ -1738,7 +1741,8 @@
       var data = statusData.data || statusData.result || {};
       var downloadUrl = presentonUrl(data.path || data.file_url || data.download_url || data.url || data.file_path || statusData.path || '');
       var editUrl = presentonUrl(data.edit_path || data.edit_url || data.editor_url || statusData.edit_path || '');
-      var previewUrl = presentonUrl(data.preview_url || data.previewUrl || data.view_url || data.viewUrl || data.presentation_url || editUrl);
+      var presentationId = data.presentation_id || data.presentationId || statusData.presentation_id || '';
+      var previewUrl = presentationId ? WORKER_URL + '/api/presenton/preview?id=' + encodeURIComponent(presentationId) : '';
       var title = titleFrom(content, lastAIRequest && lastAIRequest.userText) || 'Your Presenton deck';
 
       presentonTitle.textContent = title;
@@ -1757,7 +1761,7 @@
         fallback.innerHTML = '<b>Presenton deck ready</b><p>Your PowerPoint is ready. Open it in Presenton or download the finished file below.</p>';
         presentonPreview.appendChild(fallback);
       }
-      addDeckAction('Open in Presenton', editUrl || previewUrl, true);
+      addDeckAction('Open in Presenton', editUrl, true);
       addDeckAction('Download PowerPoint', downloadUrl, false);
       if(aiGslides){
         var googleButton = document.createElement('button');
@@ -1766,14 +1770,10 @@
         googleButton.addEventListener('click', function(){ aiGslides.click(); });
         presentonActions.appendChild(googleButton);
       }
-      var draftButton = document.createElement('button');
-      draftButton.type = 'button';
-      draftButton.textContent = 'Edit text draft';
-      draftButton.addEventListener('click', hidePresentonDeck);
-      presentonActions.appendChild(draftButton);
       aiBody.classList.add('hidden');
       aiState.classList.add('hidden');
       presentonDeck.classList.add('on');
+      aiModal.querySelector('.modal-lg').classList.add('presenting');
       document.getElementById('ai-title').innerHTML = 'Your <span class="it">Presenton deck.</span>';
       document.getElementById('ai-sub').textContent = 'Review the generated deck, then decide where it goes.';
     }

@@ -81,6 +81,10 @@ export default {
         return await handlePresentonStatus(request, env, origin, allowed);
       }
 
+      if (url.pathname === "/api/presenton/preview" && request.method === "GET") {
+        return await handlePresentonPreview(url, env, origin, allowed);
+      }
+
       if (url.pathname === "/api/google/prepare" && request.method === "POST") {
         return await handleGooglePrepare(request, env, origin, allowed);
       }
@@ -252,6 +256,34 @@ async function handlePresentonStatus(request, env, origin, allowed) {
   }
 
   return json(data, origin, allowed);
+}
+
+async function handlePresentonPreview(url, env, origin, allowed) {
+  if (!env.PRESENTON_API_KEY) return json({ error: "Server missing PRESENTON_API_KEY" }, origin, allowed, 500);
+  const presentationId = url.searchParams.get("id") || "";
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(presentationId)) {
+    return json({ error: "Invalid presentation id" }, origin, allowed, 400);
+  }
+
+  // Presenton's editor blocks iframe embedding. Export the already-generated
+  // deck as PDF and stream it from Atom so teachers can review it in place.
+  const exportRes = await fetch(PRESENTON_API + "/presentation/export", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + env.PRESENTON_API_KEY },
+    body: JSON.stringify({ id: presentationId, export_as: "pdf" }),
+  });
+  const exported = await exportRes.json();
+  if (!exportRes.ok || !exported.path) {
+    return json({ error: "Could not prepare presentation preview" }, origin, allowed, 502);
+  }
+
+  const pdfRes = await fetch(exported.path);
+  if (!pdfRes.ok) return json({ error: "Could not load presentation preview" }, origin, allowed, 502);
+  const headers = new Headers(corsHeaders(origin, allowed));
+  headers.set("Content-Type", "application/pdf");
+  headers.set("Content-Disposition", "inline; filename=atom-presentation.pdf");
+  headers.set("Cache-Control", "private, no-store");
+  return new Response(pdfRes.body, { status: 200, headers });
 }
 
 const GOOGLE_REDIRECT = "https://atom-edu.pritamavuthu7.workers.dev/api/google/callback";

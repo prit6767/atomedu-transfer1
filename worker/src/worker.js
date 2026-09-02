@@ -53,6 +53,9 @@ export default {
       if (url.pathname === "/api/admin/stats" && request.method === "POST") {
         return await handleAdminStats(request, env, origin, allowed);
       }
+      if (url.pathname === "/api/admin/delete-user" && request.method === "POST") {
+        return await handleAdminDeleteUser(request, env, origin, allowed);
+      }
 
       if (url.pathname === "/api/encrypt" && request.method === "POST") {
         if (!env.ENCRYPTION_KEY) return json({ error: "Server missing ENCRYPTION_KEY" }, origin, allowed, 500);
@@ -451,7 +454,7 @@ async function trackDraft(kv, e) {
 async function handleAdminStats(request, env, origin, allowed) {
   const { password } = await request.json();
   if (!env.ADMIN_PASSWORD) return json({ error: "Server missing ADMIN_PASSWORD" }, origin, allowed, 500);
-  if (!password || password !== env.ADMIN_PASSWORD) {
+  if (!(await passwordsMatch(password, env.ADMIN_PASSWORD))) {
     return json({ error: "Wrong password" }, origin, allowed, 401);
   }
   if (!env.RATE_KV) return json({ error: "KV not bound" }, origin, allowed, 500);
@@ -489,6 +492,59 @@ async function handleAdminStats(request, env, origin, allowed) {
     totalDrafts, draftsToday, teachers, errorRate,
     weekly, models, domains, recent,
   }, origin, allowed);
+}
+
+async function handleAdminDeleteUser(request, env, origin, allowed) {
+  const { password, email, confirmation } = await request.json();
+  if (!env.ADMIN_PASSWORD) return json({ error: "Server missing ADMIN_PASSWORD" }, origin, allowed, 500);
+  if (!(await passwordsMatch(password, env.ADMIN_PASSWORD))) {
+    return json({ error: "Wrong password" }, origin, allowed, 401);
+  }
+  if (!env.RATE_KV) return json({ error: "KV not bound" }, origin, allowed, 500);
+
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  if (!/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/.test(normalizedEmail)) {
+    return json({ error: "Enter a valid .edu or .org email address" }, origin, allowed, 400);
+  }
+  if (confirmation !== "DELETE") {
+    return json({ error: "Confirmation must be DELETE" }, origin, allowed, 400);
+  }
+
+  const kv = env.RATE_KV;
+  const emails = JSON.parse((await kv.get("stat:emails")) || "[]");
+  const nextEmails = emails.filter((storedEmail) => storedEmail !== normalizedEmail);
+  const recent = JSON.parse((await kv.get("stat:recent")) || "[]");
+  const nextRecent = recent.filter((activity) => activity.email !== normalizedEmail);
+  const rateLimitKeys = await listKeys(kv, "rl:" + normalizedEmail + ":");
+
+  await Promise.all([
+    kv.delete("stat:email:" + normalizedEmail),
+    kv.put("stat:emails", JSON.stringify(nextEmails)),
+    kv.put("stat:recent", JSON.stringify(nextRecent)),
+    ...rateLimitKeys.map((key) => kv.delete(key)),
+  ]);
+
+  return json({ ok: true, deleted: normalizedEmail }, origin, allowed);
+}
+
+async function passwordsMatch(provided, expected) {
+  if (typeof provided !== "string" || typeof expected !== "string") return false;
+  const encoder = new TextEncoder();
+  const a = encoder.encode(provided);
+  const b = encoder.encode(expected);
+  if (a.length !== b.length) return false;
+  return crypto.subtle.timingSafeEqual(a, b);
+}
+
+async function listKeys(kv, prefix) {
+  const keys = [];
+  let cursor;
+  for (;;) {
+    const result = await kv.list({ prefix, cursor });
+    keys.push(...result.keys.map((key) => key.name));
+    if (result.list_complete) return keys;
+    cursor = result.cursor;
+  }
 }
 
 async function pickCounters(kv, prefix) {
@@ -984,4 +1040,3 @@ function htmlErr(msg, status) {
 function htmlPage(title, bodyHtml) {
   return new Response("<!doctype html><meta charset=utf-8><title>" + esc(title) + "</title><body style=\"font-family:system-ui;max-width:640px;margin:60px auto;padding:0 20px;color:#0b1226\"><h2>" + esc(title) + "</h2>" + bodyHtml + "</body>", { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
 }
-

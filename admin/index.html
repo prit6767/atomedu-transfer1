@@ -105,6 +105,17 @@
   .hidden { display: none !important; }
   .stripe { font-family: "Inter", sans-serif; font-size: 12px; color: var(--muted); margin-top: 30px; padding: 14px 18px; border-radius: 10px; background: color-mix(in srgb, var(--ink) 4%, transparent); }
   .stripe b { color: var(--ink); }
+  .danger { margin-top: 34px; padding: 22px 24px; border: 1px solid color-mix(in srgb, var(--stamp) 55%, var(--line)); border-radius: 14px; background: color-mix(in srgb, var(--stamp) 5%, var(--bg-elev)); font-family: "Inter", sans-serif; }
+  .danger h3 { font-family: "Fraunces", Georgia, serif; font-size: 20px; font-weight: 500; margin: 0 0 5px; }
+  .danger p { color: var(--ink-soft); font-size: 12.5px; max-width: 720px; margin: 0 0 16px; line-height: 1.55; }
+  .danger-fields { display: grid; grid-template-columns: 1fr 140px auto; gap: 10px; align-items: end; }
+  .danger label { display: flex; flex-direction: column; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .danger input { padding: 11px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--bg-elev); color: var(--ink); font: 13px "Inter", sans-serif; }
+  .delete-user { padding: 12px 15px; border: 1px solid var(--stamp); border-radius: 8px; background: var(--stamp); color: #fff; font: 700 12px "Inter", sans-serif; cursor: pointer; }
+  .delete-user:disabled { opacity: .55; cursor: wait; }
+  .delete-message { min-height: 18px; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--stamp); }
+  .delete-message.ok { color: var(--ok); }
+  @media (max-width: 640px) { .danger-fields { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -172,8 +183,18 @@
     </div>
 
     <div class="stripe">
-      <b>Note.</b> Analytics come from the Worker's KV counters. Nothing here identifies a student. Emails are hashed for storage and shown redacted (first two letters and the domain).
+      <b>Note.</b> Analytics come from the Worker's KV counters. Nothing here identifies a student. Teacher emails are shown redacted in this dashboard and can be permanently erased below.
     </div>
+    <section class="danger">
+      <h3>Delete a teacher record</h3>
+      <p>Permanent action. This removes the teacher email from analytics, recent activity, and active rate-limit records. Atom Edu does not currently store a separate user account or saved teacher content.</p>
+      <div class="danger-fields">
+        <label>Teacher email<input id="delete-email" type="email" autocomplete="off" placeholder="teacher@school.edu"></label>
+        <label>Type DELETE<input id="delete-confirm" type="text" autocomplete="off" placeholder="DELETE"></label>
+        <button class="delete-user" id="delete-user">Delete record</button>
+      </div>
+      <div class="delete-message" id="delete-message" role="status"></div>
+    </section>
   </div>
 </main>
 
@@ -186,6 +207,7 @@
   var pwCache = '';
 
   document.getElementById('unlock').addEventListener('click', tryUnlock);
+  document.getElementById('delete-user').addEventListener('click', deleteUser);
   pwInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') tryUnlock(); });
   document.getElementById('logout').addEventListener('click', function(e){
     e.preventDefault();
@@ -226,6 +248,41 @@
       dash.classList.remove('hidden');
     } catch(e){
       errEl.textContent = 'Network error. Is the Worker deployed with /api/admin/stats?';
+    }
+  }
+
+  async function deleteUser(){
+    var email = document.getElementById('delete-email').value.trim().toLowerCase();
+    var confirmation = document.getElementById('delete-confirm').value.trim();
+    var message = document.getElementById('delete-message');
+    var button = document.getElementById('delete-user');
+    message.className = 'delete-message';
+    message.textContent = '';
+    if(!email || confirmation !== 'DELETE'){
+      message.textContent = 'Enter a teacher email and type DELETE to confirm.';
+      return;
+    }
+    if(!confirm('Permanently delete the analytics record for ' + email + '? This cannot be undone.')) return;
+    button.disabled = true;
+    button.textContent = 'Deleting…';
+    try {
+      var res = await fetch(WORKER_URL + '/api/admin/delete-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwCache, email: email, confirmation: confirmation })
+      });
+      var data = await res.json();
+      if(!res.ok) throw new Error(data.error || 'Deletion failed');
+      document.getElementById('delete-email').value = '';
+      document.getElementById('delete-confirm').value = '';
+      message.className = 'delete-message ok';
+      message.textContent = 'Deleted record for ' + data.deleted + '.';
+      await loadStats();
+    } catch(e) {
+      message.textContent = e.message || 'Deletion failed.';
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Delete record';
     }
   }
 

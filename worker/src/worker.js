@@ -183,7 +183,9 @@ async function handleGroq(request, env, origin, allowed) {
 }
 
 
-const PRESENTON_API = "https://api.presenton.ai/api/v3";
+// Presenton's documented asynchronous endpoints return a task immediately and
+// provide the finished file plus editor URL through the status endpoint.
+const PRESENTON_API = "https://api.presenton.ai/api/v1/ppt";
 
 async function handlePresentonGenerate(request, env, origin, allowed) {
   if (!env.PRESENTON_API_KEY) return json({ error: "Server missing PRESENTON_API_KEY" }, origin, allowed, 500);
@@ -200,9 +202,9 @@ async function handlePresentonGenerate(request, env, origin, allowed) {
     n_slides: nSlides,
     tone: "educational",
     language: "English",
+    template: "general",
     export_as: "pptx",
     include_title_slide: true,
-    speaker_notes: true,
     verbosity: "standard"
   };
 
@@ -237,7 +239,7 @@ async function handlePresentonStatus(request, env, origin, allowed) {
   const taskId = body.task_id;
   if (!taskId) return json({ error: "task_id required" }, origin, allowed, 400);
 
-  const upstream = await fetch(PRESENTON_API + "/async-task/status/" + encodeURIComponent(taskId), {
+  const upstream = await fetch(PRESENTON_API + "/presentation/status/" + encodeURIComponent(taskId), {
     method: "GET",
     headers: {
       "Authorization": "Bearer " + env.PRESENTON_API_KEY,

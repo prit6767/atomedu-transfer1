@@ -1697,6 +1697,11 @@
       aiBody.value = content || '';
       aiUse.disabled = false; aiApprove.disabled = false; aiCopy.disabled = false; aiRegen.disabled = false;
       if(typeof showExportBtn === 'function') showExportBtn();
+      // A slide request is not finished until the actual Presenton deck is
+      // ready. Keep the text draft as a safe fallback if generation fails.
+      if(lastAIRequest && lastAIRequest.page === 'slides'){
+        setTimeout(function(){ startPresentonExport(true); }, 0);
+      }
     }
     function setAIError(msg){
       hidePresentonDeck();
@@ -1767,6 +1772,7 @@
       draftButton.addEventListener('click', hidePresentonDeck);
       presentonActions.appendChild(draftButton);
       aiBody.classList.add('hidden');
+      aiState.classList.add('hidden');
       presentonDeck.classList.add('on');
       document.getElementById('ai-title').innerHTML = 'Your <span class="it">Presenton deck.</span>';
       document.getElementById('ai-sub').textContent = 'Review the generated deck, then decide where it goes.';
@@ -1921,12 +1927,20 @@
       });
     }
 
-    aiExportPptx.addEventListener('click', async function(){
+    async function startPresentonExport(automatic){
       var content = aiBody.value || '';
       if(!content){ showToast('No draft to export.'); return; }
       var email = getUserEmail() || (JSON.parse(localStorage.getItem('atom-user')||'{}').email) || 'teacher@atom-edu.org';
       aiExportPptx.disabled = true;
-      aiExportPptx.textContent = 'Starting export...';
+      aiExportPptx.textContent = automatic ? 'Creating your presentation...' : 'Starting export...';
+      if(automatic){
+        aiBody.classList.add('hidden');
+        aiState.classList.remove('hidden');
+        aiState.innerHTML = '<div class="ai-spinner"></div><div class="ai-status" id="ai-status">Building your Presenton presentation…</div>';
+        aiStatus = document.getElementById('ai-status');
+        document.getElementById('ai-title').innerHTML = 'Creating your <span class="it">presentation.</span>';
+        document.getElementById('ai-sub').textContent = 'Atom is turning your approved outline into a real slide deck.';
+      }
       try {
         var res = await fetch(WORKER_URL + '/api/presenton/generate', {
           method: 'POST',
@@ -1935,9 +1949,20 @@
         });
         var data = await res.json();
         console.log('Presenton generate response:', JSON.stringify(data));
-        if(!res.ok){ showToast(data.error || data.detail || 'Export failed'); aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow'; return; }
+        if(!res.ok){
+          showToast(data.error || data.detail || 'Export failed');
+          aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow';
+          if(automatic){ aiState.classList.add('hidden'); aiBody.classList.remove('hidden'); document.getElementById('ai-title').innerHTML = 'Your <span class="it">draft.</span>'; document.getElementById('ai-sub').textContent = 'Presenton could not generate the deck. You can edit the draft or try again.'; }
+          return;
+        }
         var taskId = data.task_id || data.taskId || data.id;
-        if(!taskId){ showToast('No task ID returned. Check console for details.'); aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow'; console.error('Full Presenton response:', data); return; }
+        if(!taskId){
+          showToast('No task ID returned. Check console for details.');
+          aiExportPptx.disabled = false; aiExportPptx.textContent = 'Export slideshow';
+          if(automatic){ aiState.classList.add('hidden'); aiBody.classList.remove('hidden'); }
+          console.error('Full Presenton response:', data);
+          return;
+        }
         aiExportPptx.textContent = 'Generating slides...';
         var maxPolls = 60;
         for(var i = 0; i < maxPolls; i++){
@@ -1954,6 +1979,7 @@
             showToast(String(errMsg).slice(0, 120));
             aiExportPptx.textContent = 'Export slideshow';
             aiExportPptx.disabled = false;
+            if(automatic){ aiState.classList.add('hidden'); aiBody.classList.remove('hidden'); }
             return;
           }
           if(sd.status === 'completed' || sd.status === 'done' || sd.status === 'success'){
@@ -1970,12 +1996,15 @@
         showToast('Generation timed out. Try again later.');
         aiExportPptx.textContent = 'Export slideshow';
         aiExportPptx.disabled = false;
+        if(automatic){ aiState.classList.add('hidden'); aiBody.classList.remove('hidden'); }
       } catch(e){
         showToast('Export error: ' + (e.message || e));
         aiExportPptx.textContent = 'Export slideshow';
         aiExportPptx.disabled = false;
+        if(automatic){ aiState.classList.add('hidden'); aiBody.classList.remove('hidden'); }
       }
-    });
+    }
+    aiExportPptx.addEventListener('click', function(){ startPresentonExport(false); });
 
 
     // Ask box "Draft it" button, calls the Worker

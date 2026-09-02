@@ -529,6 +529,17 @@
     .ai-export-pptx{background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;}
     .ai-export-pptx:hover{opacity:.9;}
     .ai-export-pptx:disabled{opacity:.5;cursor:not-allowed;}
+    .presenton-deck{display:none;margin:0 0 18px;border:1px solid var(--line-strong);border-radius:14px;overflow:hidden;background:var(--bg-elev);font-family:"Inter",sans-serif;}
+    .presenton-deck.on{display:block;}
+    .presenton-preview{height:330px;background:color-mix(in srgb,var(--ink) 6%,var(--bg));display:flex;align-items:center;justify-content:center;}
+    .presenton-preview iframe{width:100%;height:100%;border:0;background:#fff;}
+    .presenton-fallback{padding:32px;text-align:center;max-width:440px;}
+    .presenton-fallback b{display:block;font-family:"Fraunces",Georgia,serif;font-size:24px;font-weight:400;margin-bottom:8px;color:var(--ink);}
+    .presenton-fallback p{font-size:13px;line-height:1.55;color:var(--muted);margin:0;}
+    .presenton-meta{padding:16px 18px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+    .presenton-meta b{font-size:13px;color:var(--ink);}.presenton-meta span{font-size:11px;color:var(--muted);margin-left:8px;}
+    .presenton-actions{display:flex;gap:8px;flex-wrap:wrap;}.presenton-actions a,.presenton-actions button{border:1px solid var(--line-strong);border-radius:8px;background:transparent;color:var(--ink);padding:8px 10px;font:600 11px "Inter",sans-serif;text-decoration:none;cursor:pointer;}.presenton-actions .primary{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+    @media(max-width:600px){.presenton-preview{height:220px}.presenton-meta{align-items:flex-start;flex-direction:column;}}
 </style>
 
 <div id="landing">
@@ -705,6 +716,10 @@
       <div class="ai-status" id="ai-status">Drafting with Atom&hellip;</div>
     </div>
     <textarea class="ai-body" id="ai-body" placeholder="Waiting for Atom&hellip;"></textarea>
+    <div class="presenton-deck" id="presenton-deck" aria-live="polite">
+      <div class="presenton-preview" id="presenton-preview"></div>
+      <div class="presenton-meta"><div><b id="presenton-title">Your Presenton deck is ready</b><span id="presenton-detail"></span></div><div class="presenton-actions" id="presenton-actions"></div></div>
+    </div>
     <div class="ai-foot">
       <button class="ai-delete" id="ai-delete" style="display:none;">Delete draft</button>
       <button class="ai-regen" id="ai-regen">Regenerate</button>
@@ -1640,6 +1655,11 @@
     var aiRegen = document.getElementById('ai-regen');
     var aiClose = document.getElementById('ai-close');
     var aiDelete = document.getElementById('ai-delete');
+    var presentonDeck = document.getElementById('presenton-deck');
+    var presentonPreview = document.getElementById('presenton-preview');
+    var presentonTitle = document.getElementById('presenton-title');
+    var presentonDetail = document.getElementById('presenton-detail');
+    var presentonActions = document.getElementById('presenton-actions');
     if(aiDelete){
       aiDelete.addEventListener('click', function(){
         if(!currentDraftId) return;
@@ -1659,11 +1679,12 @@
       aiModal.classList.add('on');
       if(aiDelete) aiDelete.style.display = currentDraftId ? '' : 'none';
     }
-    function closeAIModal(){ aiModal.classList.remove('on'); currentDraftId = null; if(aiDelete) aiDelete.style.display = 'none'; }
+    function closeAIModal(){ aiModal.classList.remove('on'); hidePresentonDeck(); currentDraftId = null; if(aiDelete) aiDelete.style.display = 'none'; }
     aiClose.addEventListener('click', closeAIModal);
     aiModal.addEventListener('click', function(e){ if(e.target === aiModal) closeAIModal(); });
 
     function setAILoading(msg){
+      hidePresentonDeck();
       aiState.classList.remove('hidden');
       aiStatus.textContent = msg || 'Drafting with Atom…';
       aiBody.value = '';
@@ -1671,16 +1692,84 @@
       var eb = document.getElementById('ai-export-pptx'); if(eb){ eb.style.display='none'; eb.disabled=false; eb.textContent='Export slideshow'; }
     }
     function setAIDone(content){
+      hidePresentonDeck();
       aiState.classList.add('hidden');
       aiBody.value = content || '';
       aiUse.disabled = false; aiApprove.disabled = false; aiCopy.disabled = false; aiRegen.disabled = false;
       if(typeof showExportBtn === 'function') showExportBtn();
     }
     function setAIError(msg){
+      hidePresentonDeck();
       aiState.classList.remove('hidden');
       aiStatus.textContent = '';
       aiState.innerHTML = '<div style="color:var(--stamp);font-family:Inter,sans-serif;font-size:13.5px;">' + (msg || 'Something went wrong.') + '</div>';
       aiUse.disabled = true; aiApprove.disabled = true; aiCopy.disabled = true; aiRegen.disabled = false;
+    }
+
+    function hidePresentonDeck(){
+      if(!presentonDeck) return;
+      presentonDeck.classList.remove('on');
+      presentonPreview.innerHTML = '';
+      presentonActions.innerHTML = '';
+      aiBody.classList.remove('hidden');
+    }
+
+    function presentonUrl(value){
+      return typeof value === 'string' && /^https?:\/\//i.test(value) ? value : '';
+    }
+
+    function addDeckAction(label, url, primary){
+      if(!url) return;
+      var link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = label;
+      if(primary) link.className = 'primary';
+      presentonActions.appendChild(link);
+    }
+
+    function showPresentonDeck(statusData, content){
+      var data = statusData.data || statusData.result || {};
+      var downloadUrl = presentonUrl(data.path || data.file_url || data.download_url || data.url || data.file_path || statusData.path || '');
+      var editUrl = presentonUrl(data.edit_path || data.edit_url || data.editor_url || statusData.edit_path || '');
+      var previewUrl = presentonUrl(data.preview_url || data.previewUrl || data.view_url || data.viewUrl || data.presentation_url || editUrl);
+      var title = titleFrom(content, lastAIRequest && lastAIRequest.userText) || 'Your Presenton deck';
+
+      presentonTitle.textContent = title;
+      presentonDetail.textContent = 'Generated by Presenton';
+      presentonPreview.innerHTML = '';
+      presentonActions.innerHTML = '';
+      if(previewUrl){
+        var frame = document.createElement('iframe');
+        frame.src = previewUrl;
+        frame.title = 'Presenton slide deck preview';
+        frame.loading = 'lazy';
+        presentonPreview.appendChild(frame);
+      } else {
+        var fallback = document.createElement('div');
+        fallback.className = 'presenton-fallback';
+        fallback.innerHTML = '<b>Presenton deck ready</b><p>Your PowerPoint is ready. Open it in Presenton or download the finished file below.</p>';
+        presentonPreview.appendChild(fallback);
+      }
+      addDeckAction('Open in Presenton', editUrl || previewUrl, true);
+      addDeckAction('Download PowerPoint', downloadUrl, false);
+      if(aiGslides){
+        var googleButton = document.createElement('button');
+        googleButton.type = 'button';
+        googleButton.textContent = 'Create in Google Slides';
+        googleButton.addEventListener('click', function(){ aiGslides.click(); });
+        presentonActions.appendChild(googleButton);
+      }
+      var draftButton = document.createElement('button');
+      draftButton.type = 'button';
+      draftButton.textContent = 'Edit text draft';
+      draftButton.addEventListener('click', hidePresentonDeck);
+      presentonActions.appendChild(draftButton);
+      aiBody.classList.add('hidden');
+      presentonDeck.classList.add('on');
+      document.getElementById('ai-title').innerHTML = 'Your <span class="it">Presenton deck.</span>';
+      document.getElementById('ai-sub').textContent = 'Review the generated deck, then decide where it goes.';
     }
 
     function aiConfig(page){
@@ -1868,26 +1957,11 @@
             return;
           }
           if(sd.status === 'completed' || sd.status === 'done' || sd.status === 'success'){
-            var d = sd.data || {};
-            var dlUrl = d.path || d.file_url || d.download_url || d.url || d.file_path || sd.path || '';
-            var editUrl = d.edit_path || '';
-            if(dlUrl){
-              aiExportPptx.textContent = 'Download slideshow';
-              aiExportPptx.disabled = false;
-              aiExportPptx.onclick = function(){ window.open(dlUrl, '_blank'); };
-              window.open(dlUrl, '_blank');
-              showToast('Slideshow ready! Downloading now.');
-            } else if(editUrl){
-              aiExportPptx.textContent = 'Open slideshow';
-              aiExportPptx.disabled = false;
-              aiExportPptx.onclick = function(){ window.open(editUrl, '_blank'); };
-              window.open(editUrl, '_blank');
-              showToast('Slideshow ready!');
-            } else {
-              aiExportPptx.textContent = 'Export slideshow';
-              aiExportPptx.disabled = false;
-              showToast('Slideshow generated but no link found.');
-            }
+            aiExportPptx.style.display = 'none';
+            aiExportPptx.disabled = false;
+            aiExportPptx.textContent = 'Export slideshow';
+            showPresentonDeck(sd, content);
+            showToast('Presenton deck ready for review.');
             return;
           }
           var dots = '.'.repeat((i % 3) + 1);

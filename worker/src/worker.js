@@ -119,13 +119,15 @@ export default {
   },
 };
 
+async function kvCount(kv, key) { return parseInt((await kv.get(key)) || "0", 10); }
+async function kvBump(kv, key, ttl) { const n = (parseInt((await kv.get(key)) || "0", 10)) + 1; await kv.put(key, String(n), { expirationTtl: ttl }); return n; }
+
 async function handleGroq(request, env, origin, allowed) {
   if (!env.GROQ_API_KEY) return json({ error: "Server missing GROQ_API_KEY" }, origin, allowed, 500);
   const body = await request.json();
   if (!body || !body.model || !Array.isArray(body.messages)) {
     return json({ error: "Bad request" }, origin, allowed, 400);
   }
-  const cap = parseInt(env.DAILY_CAP || "5", 10);
   let ltiOk = false, ltiPayload = null;
   if (body.lti_session) {
     ltiPayload = await verifyToolJwt(env, body.lti_session);
@@ -139,11 +141,29 @@ async function handleGroq(request, env, origin, allowed) {
   const rlId = email || ("lti:" + ((ltiPayload && ltiPayload.sub) || "anon"));
   const domain = email.split("@")[1] || (ltiOk ? "lti" : "unknown");
 
-  if (body.model === "openai/gpt-oss-120b" && env.RATE_KV) {
-    const key = `rl:${rlId}:${day}`;
-    const cur = parseInt((await env.RATE_KV.get(key)) || "0", 10);
-    if (cur >= cap) return json({ error: "Daily cap reached", cap }, origin, allowed, 429);
-    await env.RATE_KV.put(key, String(cur + 1), { expirationTtl: 172800 });
+  // ---- Cost controls (all tools + models) ----------------------------------
+  const isPremium = body.model === "openai/gpt-oss-120b";
+  const perCap = isPremium ? parseInt(env.DAILY_CAP || "5", 10) : parseInt(env.TEXT_DAILY_CAP || "15", 10);
+  const globalCap = parseInt(env.GLOBAL_DAILY_CAP || "500", 10);
+  const ipCap = parseInt(env.IP_DAILY_CAP || "150", 10);
+  const ip = request.headers.get("CF-Connecting-IP") || "";
+  let remaining = null;
+  if (env.RATE_KV) {
+    if (await kvCount(env.RATE_KV, `rlg:${day}`) >= globalCap) {
+      return json({ error: "Atom is at capacity for today. Please try again tomorrow.", scope: "global" }, origin, allowed, 429);
+    }
+    if (ip && (await kvCount(env.RATE_KV, `rlip:${ip}:${day}`)) >= ipCap) {
+      return json({ error: "Too many requests from this network today. Please try again tomorrow.", scope: "ip" }, origin, allowed, 429);
+    }
+    const teacherKey = `rl:${rlId}:${day}`;
+    const cur = await kvCount(env.RATE_KV, teacherKey);
+    if (cur >= perCap) {
+      return json({ error: "You've used all " + perCap + " of today's drafts. They reset tomorrow.", cap: perCap, scope: "teacher" }, origin, allowed, 429);
+    }
+    await kvBump(env.RATE_KV, teacherKey, 172800);
+    await kvBump(env.RATE_KV, `rlg:${day}`, 172800);
+    if (ip) await kvBump(env.RATE_KV, `rlip:${ip}:${day}`, 172800);
+    remaining = Math.max(0, perCap - (cur + 1));
   }
 
   const upstreamBody = {
@@ -183,7 +203,7 @@ async function handleGroq(request, env, origin, allowed) {
   if (!ok) {
     return json({ error: `Groq ${upstream.status}`, detail: String(upstreamJson.error).slice(0, 500) }, origin, allowed, 502);
   }
-  return json({ content, usage: upstreamJson.usage || null, model: body.model }, origin, allowed);
+  return json({ content, usage: upstreamJson.usage || null, model: body.model, remaining }, origin, allowed);
 }
 
 
@@ -194,21 +214,45 @@ const PRESENTON_API = "https://api.presenton.ai/api/v1/ppt";
 async function handlePresentonGenerate(request, env, origin, allowed) {
   if (!env.PRESENTON_API_KEY) return json({ error: "Server missing PRESENTON_API_KEY" }, origin, allowed, 500);
   const body = await request.json();
-  // Anyone can export a slideshow. Email is used only for analytics, not gating.
-  const email = (body.email || "anonymous@atom-edu.org").toLowerCase();
   const content = body.content || "";
   if (!content) return json({ error: "content required" }, origin, allowed, 400);
 
-  // Clamp slide count to protect the credit balance (2 credits/slide).
-  const nSlides = Math.max(3, Math.min(parseInt(body.n_slides || 5, 10) || 5, 8));
+  // Slideshows cost real credits (2/slide): require a signed-in teacher and cap them.
+  let ltiPayload = null;
+  if (body.lti_session) { ltiPayload = await verifyToolJwt(env, body.lti_session); }
+  const ltiOk = !!(ltiPayload && ltiPayload.lti);
+  const email = (body.email || (ltiPayload && ltiPayload.email) || "").toLowerCase();
+  const emailOk = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.(edu|org)$/.test(email);
+  if (!ltiOk && !emailOk) {
+    return json({ error: "Please sign in with your school email to export a slideshow." }, origin, allowed, 403);
+  }
+  const id = emailOk ? email : ("lti:" + ((ltiPayload && ltiPayload.sub) || "anon"));
+  const day = new Date().toISOString().slice(0, 10);
+  const month = new Date().toISOString().slice(0, 7);
+  const perMonthCap = parseInt(env.SLIDES_MONTHLY_CAP || "3", 10);
+  const globalDayCap = parseInt(env.GLOBAL_SLIDES_DAILY_CAP || "30", 10);
+  if (env.RATE_KV) {
+    if (await kvCount(env.RATE_KV, `slg:${day}`) >= globalDayCap) {
+      return json({ error: "Slideshow exports are at capacity for today. Please try again tomorrow.", scope: "global" }, origin, allowed, 429);
+    }
+    const key = `sl:${id}:${month}`;
+    if (await kvCount(env.RATE_KV, key) >= perMonthCap) {
+      return json({ error: "You've used all " + perMonthCap + " slideshow exports this month. Worksheets, quizzes, and other drafts still work within your daily limit.", cap: perMonthCap, scope: "teacher" }, origin, allowed, 429);
+    }
+    await kvBump(env.RATE_KV, key, 60 * 60 * 24 * 40);
+    await kvBump(env.RATE_KV, `slg:${day}`, 172800);
+  }
+
+  // Credit-safe slide count (default 4, hard max 6).
+  const nSlides = Math.max(3, Math.min(parseInt(body.n_slides || 4, 10) || 4, 6));
   const payload = {
     content: content,
     n_slides: nSlides,
     tone: "educational",
     language: "English",
-    template: "general",
     export_as: "pptx",
     include_title_slide: true,
+    speaker_notes: true,
     verbosity: "standard"
   };
 
@@ -226,14 +270,11 @@ async function handlePresentonGenerate(request, env, origin, allowed) {
     return json({ error: "Presenton error", detail: JSON.stringify(data).slice(0, 500) }, origin, allowed, 502);
   }
 
-  // Track in analytics
   if (env.RATE_KV) {
-    const day = new Date().toISOString().slice(0, 10);
-    const domain = email.split("@")[1] || "unknown";
-    await trackDraft(env.RATE_KV, { email, domain, day, model: "presenton", tool: "Slideshow", ok: true });
+    const domain = email.split("@")[1] || (ltiOk ? "lti" : "unknown");
+    await trackDraft(env.RATE_KV, { email: email || id, domain, day, model: "presenton", tool: "Slideshow", ok: true });
   }
 
-  // Forward full response so frontend can find the right field
   return json(data, origin, allowed);
 }
 

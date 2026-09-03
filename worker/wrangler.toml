@@ -11,6 +11,11 @@ WORKER_URL     = "https://atom-edu.pritamavuthu7.workers.dev"
 SITE_URL       = "https://atom-edu.org"
 GROQ_ENDPOINT  = "https://api.groq.com/openai/v1/chat/completions"
 DAILY_CAP      = "5"
+TEXT_DAILY_CAP = "15"
+SLIDES_MONTHLY_CAP = "3"
+GLOBAL_DAILY_CAP = "500"
+GLOBAL_SLIDES_DAILY_CAP = "30"
+IP_DAILY_CAP   = "150"
 
 # Optional: KV namespace for server-side daily-cap tracking.
 # Create with:  wrangler kv:namespace create RATE_KV

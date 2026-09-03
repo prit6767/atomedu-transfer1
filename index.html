@@ -1855,6 +1855,10 @@
           return;
         }
         setAIDone((data && data.content) || '(empty response)');
+        if(data && typeof data.remaining === 'number'){
+          var subEl = document.getElementById('ai-sub');
+          if(subEl) subEl.textContent = 'Edit anything before you save. ' + data.remaining + ' draft' + (data.remaining === 1 ? '' : 's') + ' left today.';
+        }
       } catch(e){
         setAIError('Network error: ' + (e && e.message ? e.message : String(e)));
       }
@@ -1930,7 +1934,9 @@
     async function startPresentonExport(automatic){
       var content = aiBody.value || '';
       if(!content){ showToast('No draft to export.'); return; }
-      var email = getUserEmail() || (JSON.parse(localStorage.getItem('atom-user')||'{}').email) || 'teacher@atom-edu.org';
+      var ltiSession = null; try { ltiSession = localStorage.getItem('atom-lti-session'); } catch(e){}
+      var email = getUserEmail() || (JSON.parse(localStorage.getItem('atom-user')||'{}').email) || '';
+      if(!email && !ltiSession){ showToast('Sign in with your school email to export a slideshow.'); return; }
       aiExportPptx.disabled = true;
       aiExportPptx.textContent = automatic ? 'Creating your presentation...' : 'Starting export...';
       if(automatic){
@@ -1945,7 +1951,7 @@
         var res = await fetch(WORKER_URL + '/api/presenton/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, content: content, n_slides: 5 })
+          body: JSON.stringify({ email: email, content: content, n_slides: 4, lti_session: ltiSession || undefined })
         });
         var data = await res.json();
         console.log('Presenton generate response:', JSON.stringify(data));

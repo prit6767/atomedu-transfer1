@@ -43,6 +43,9 @@ export default {
           hasGroqKey: !!env.GROQ_API_KEY,
           hasAdminPw: !!env.ADMIN_PASSWORD,
           hasKV: !!env.RATE_KV,
+          hasGoogleId: !!env.GOOGLE_CLIENT_ID,
+          hasGoogleSecret: !!env.GOOGLE_CLIENT_SECRET,
+          hasPresenton: !!env.PRESENTON_API_KEY,
         }, origin, allowed);
       }
 
@@ -91,6 +94,10 @@ export default {
 
       if (url.pathname === "/api/google/callback" && request.method === "GET") {
         return await handleGoogleCallback(request, env, url);
+      }
+
+      if (url.pathname === "/api/google/debug" && request.method === "GET") {
+        return await handleGoogleDebug(request, env, url, origin, allowed);
       }
 
       if (url.pathname === "/lti/jwks" && request.method === "GET") {
@@ -358,21 +365,37 @@ function redirectTo(u) {
   return new Response(null, { status: 302, headers: { Location: u } });
 }
 
+async function gErr(env, step, status, detail) {
+  try {
+    if (env.RATE_KV) await env.RATE_KV.put("gslerr:last", JSON.stringify({ step: step, status: status, detail: String(detail || "").slice(0, 900), ts: Date.now() }), { expirationTtl: 3600 });
+  } catch (e) {}
+  return redirectTo(SITE_URL + "/?gslides=error&why=" + encodeURIComponent(step));
+}
+
+async function handleGoogleDebug(request, env, url, origin, allowed) {
+  const t = url.searchParams.get("t") || "";
+  if (!env.GOOGLE_DEBUG_TOKEN || t !== env.GOOGLE_DEBUG_TOKEN) return json({ error: "forbidden" }, origin, allowed, 403);
+  if (!env.RATE_KV) return json({ error: "no kv" }, origin, allowed, 500);
+  const raw = await env.RATE_KV.get("gslerr:last");
+  return json({ lastError: raw ? JSON.parse(raw) : null }, origin, allowed);
+}
+
 async function handleGoogleCallback(request, env, url) {
   const err = url.searchParams.get("error");
   if (err) return redirectTo(SITE_URL + "/?gslides=denied");
   const code = url.searchParams.get("code");
   const sid = url.searchParams.get("state");
-  if (!code || !sid) return redirectTo(SITE_URL + "/?gslides=error");
-  if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET || !env.RATE_KV) return redirectTo(SITE_URL + "/?gslides=error");
+  if (!code || !sid) return await gErr(env, "params", 0, "missing code or state");
+  if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET || !env.RATE_KV) {
+    return await gErr(env, "config", 0, "id=" + !!env.GOOGLE_CLIENT_ID + " secret=" + !!env.GOOGLE_CLIENT_SECRET + " kv=" + !!env.RATE_KV);
+  }
 
   try {
-    // Exchange code for an access token
     const tokRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        code,
+        code: code,
         client_id: env.GOOGLE_CLIENT_ID,
         client_secret: env.GOOGLE_CLIENT_SECRET,
         redirect_uri: GOOGLE_REDIRECT,
@@ -380,59 +403,58 @@ async function handleGoogleCallback(request, env, url) {
       }).toString(),
     });
     const tok = await tokRes.json();
-    if (!tokRes.ok || !tok.access_token) return redirectTo(SITE_URL + "/?gslides=error");
+    if (!tokRes.ok || !tok.access_token) return await gErr(env, "token", tokRes.status, JSON.stringify(tok));
     const token = tok.access_token;
 
-    // Fetch the stored draft
     const raw = await env.RATE_KV.get("gsld:" + sid);
     if (!raw) return redirectTo(SITE_URL + "/?gslides=expired");
     await env.RATE_KV.delete("gsld:" + sid);
-    const { content, title } = JSON.parse(raw);
+    const parsedRaw = JSON.parse(raw);
+    const parsed = parseSlides(parsedRaw.content, parsedRaw.title);
 
-    const parsed = parseSlides(content, title);
-
-    // Create the presentation
     const createRes = await fetch("https://slides.googleapis.com/v1/presentations", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
       body: JSON.stringify({ title: parsed.title }),
     });
     const pres = await createRes.json();
-    if (!createRes.ok || !pres.presentationId) return redirectTo(SITE_URL + "/?gslides=error");
+    if (!createRes.ok || !pres.presentationId) return await gErr(env, "create", createRes.status, JSON.stringify(pres));
     const pid = pres.presentationId;
     const defaultSlideId = (pres.slides && pres.slides[0] && pres.slides[0].objectId) || null;
 
-    // Build batchUpdate requests
     const requests = [];
-    parsed.slides.forEach(function (s, i) {
-      const sid2 = "slide_" + i;
+    parsed.slides.forEach(function (sl, idx) {
+      const s2 = "slide_" + idx;
       requests.push({
         createSlide: {
-          objectId: sid2,
+          objectId: s2,
           slideLayoutReference: { predefinedLayout: "TITLE_AND_BODY" },
           placeholderIdMappings: [
-            { layoutPlaceholder: { type: "TITLE", index: 0 }, objectId: sid2 + "_t" },
-            { layoutPlaceholder: { type: "BODY", index: 0 }, objectId: sid2 + "_b" },
+            { layoutPlaceholder: { type: "TITLE", index: 0 }, objectId: s2 + "_t" },
+            { layoutPlaceholder: { type: "BODY", index: 0 }, objectId: s2 + "_b" },
           ],
         },
       });
-      if (s.title) requests.push({ insertText: { objectId: sid2 + "_t", text: s.title } });
-      if (s.body) requests.push({ insertText: { objectId: sid2 + "_b", text: s.body } });
+      if (sl.title) requests.push({ insertText: { objectId: s2 + "_t", text: sl.title } });
+      if (sl.body) requests.push({ insertText: { objectId: s2 + "_b", text: sl.body } });
     });
-    // Remove the blank default slide
     if (defaultSlideId) requests.push({ deleteObject: { objectId: defaultSlideId } });
 
     if (requests.length) {
-      await fetch("https://slides.googleapis.com/v1/presentations/" + pid + ":batchUpdate", {
+      const buRes = await fetch("https://slides.googleapis.com/v1/presentations/" + pid + ":batchUpdate", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
-        body: JSON.stringify({ requests }),
+        body: JSON.stringify({ requests: requests }),
       });
+      if (!buRes.ok) {
+        const bu = await buRes.json().catch(function () { return {}; });
+        await gErr(env, "batch", buRes.status, JSON.stringify(bu));
+      }
     }
 
     return redirectTo("https://docs.google.com/presentation/d/" + pid + "/edit");
   } catch (e) {
-    return redirectTo(SITE_URL + "/?gslides=error");
+    return await gErr(env, "exception", 0, e && e.message ? e.message : String(e));
   }
 }
 

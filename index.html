@@ -2299,7 +2299,7 @@
                   : g === 'expired' ? 'That took too long, please try Create in Google Slides again.'
                   : 'Could not create the Google Slides deck. Please try again.';
           setTimeout(function(){ showToast(msg); }, 400);
-          params.delete('gslides');
+          params.delete('gslides'); params.delete('why');
           var qs = params.toString();
           history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : ''));
         }

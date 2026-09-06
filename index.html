@@ -84,24 +84,27 @@
   .hero-studio { width: 100%; min-height: 356px; border: 1px solid var(--line-strong); background: var(--bg-elev); overflow: hidden; }
   .prep-head { min-height: 50px; padding: 0 22px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; font: 800 10px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .prep-head strong { font: 500 19px/1 "Fraunces", Georgia, serif; text-transform: none; letter-spacing: -.03em; color: var(--ink); }
+  .prep-dayname { position: relative; width: 86px; height: 14px; }.prep-dayname span { position: absolute; inset: 0; opacity: 0; animation: plan-name 20s linear infinite; }.prep-dayname .mon{animation-delay:0s}.prep-dayname .tue{animation-delay:4s}.prep-dayname .wed{animation-delay:8s}.prep-dayname .thu{animation-delay:12s}.prep-dayname .fri{animation-delay:16s}
   .week-strip { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid var(--line); }
   .week-day { height: 52px; display: grid; place-items: center; border-right: 1px solid var(--line); position: relative; color: var(--muted); font: 800 10px "Inter", sans-serif; letter-spacing: .1em; text-transform: uppercase; }
-  .week-day:last-child { border-right: 0; }.week-day.active { color: var(--ink); }.week-day.active::after { content: ""; position: absolute; left: 18%; right: 18%; bottom: 0; height: 3px; background: var(--blue); transform: scaleX(0); transform-origin: left; animation: day-select .45s ease .25s forwards; }
-  .prep-body { padding: 24px 22px 22px; position: relative; }
-  .prep-label { color: var(--blue); font: 800 10px "Inter", sans-serif; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 8px; opacity: 0; animation: fade-up .4s ease .45s forwards; }
-  .prep-title { font: 400 29px/1.02 "Fraunces", Georgia, serif; letter-spacing: -.04em; margin: 0 0 20px; opacity: 0; animation: fade-up .4s ease .56s forwards; }
+  .week-day:last-child { border-right: 0; }.week-day::after { content: ""; position: absolute; left: 18%; right: 18%; bottom: 0; height: 3px; background: var(--blue); transform: scaleX(0); transform-origin: left; animation: day-turn 20s linear infinite; }.week-day span { animation: day-name 20s linear infinite; }
+  .week-day.mon::after,.week-day.mon span{animation-delay:0s}.week-day.tue::after,.week-day.tue span{animation-delay:4s}.week-day.wed::after,.week-day.wed span{animation-delay:8s}.week-day.thu::after,.week-day.thu span{animation-delay:12s}.week-day.fri::after,.week-day.fri span{animation-delay:16s}
+  .prep-body { height: 254px; padding: 24px 22px 22px; position: relative; overflow: hidden; }
+  .prep-plan { position: absolute; inset: 24px 22px 22px; opacity: 0; transform: translateY(12px); animation: plan-turn 20s linear infinite; }
+  .prep-plan.mon{animation-delay:0s}.prep-plan.tue{animation-delay:4s}.prep-plan.wed{animation-delay:8s}.prep-plan.thu{animation-delay:12s}.prep-plan.fri{animation-delay:16s}
+  .prep-label { color: var(--blue); font: 800 10px "Inter", sans-serif; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 8px; }
+  .prep-title { font: 400 29px/1.02 "Fraunces", Georgia, serif; letter-spacing: -.04em; margin: 0 0 20px; }
   .prep-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
-  .prep-item { min-height: 43px; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; border-bottom: 1px solid var(--line); font: 600 12px "Inter", sans-serif; color: var(--ink-soft); opacity: 0; transform: translateY(9px); }
-  .prep-item:nth-child(1) { animation: item-in .36s ease .82s forwards; }.prep-item:nth-child(2) { animation: item-in .36s ease 1.08s forwards; }.prep-item:nth-child(3) { animation: item-in .36s ease 1.34s forwards; }
+  .prep-item { min-height: 43px; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; border-bottom: 1px solid var(--line); font: 600 12px "Inter", sans-serif; color: var(--ink-soft); }
   .prep-num { color: var(--muted); font-size: 10px; }.prep-state { color: var(--blue); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
-  .prep-review { display: flex; align-items: center; gap: 9px; margin-top: 17px; color: var(--ink-soft); font: 600 11px "Inter", sans-serif; opacity: 0; animation: review-in .4s ease 2.05s forwards; }
+  .prep-review { display: flex; align-items: center; gap: 9px; margin-top: 17px; color: var(--ink-soft); font: 600 11px "Inter", sans-serif; }
   .prep-check { width: 16px; height: 16px; border: 1px solid var(--blue); display: grid; place-items: center; color: var(--blue); font: 700 11px/1 "Inter", sans-serif; }
-  .prep-sweep { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left; animation: day-select .55s ease 1.78s forwards; }
-  @keyframes day-select { to { transform: scaleX(1); } }
-  @keyframes fade-up { to { opacity: 1; transform: none; } }
-  @keyframes item-in { to { opacity: 1; transform: none; } }
-  @keyframes review-in { to { opacity: 1; } }
-  @media(max-width:880px){.hero .wrap{grid-template-columns:1fr;gap:44px}.hero-copy{max-width:680px}.hero-studio{max-width:680px}h1.headline{max-width:12ch}}@media(max-width:480px){.hero{padding-top:68px}.prep-title{font-size:26px}.prep-head{padding:0 16px}.prep-body{padding-left:16px;padding-right:16px}}@media(prefers-reduced-motion:reduce){.week-day.active::after,.prep-label,.prep-title,.prep-item,.prep-review,.prep-sweep{animation:none;opacity:1;transform:none}}
+  .prep-sweep { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--blue); }
+  @keyframes day-turn { 0%,19.9% { transform:scaleX(1); } 20%,100% { transform:scaleX(0); } }
+  @keyframes day-name { 0%,19.9% { color:var(--ink); } 20%,100% { color:var(--muted); } }
+  @keyframes plan-turn { 0% { opacity:0; transform:translateY(12px); } 2%,19% { opacity:1; transform:none; } 20%,100% { opacity:0; transform:translateY(-10px); } }
+  @keyframes plan-name { 0%,19% { opacity:1; } 20%,100% { opacity:0; } }
+  @media(max-width:880px){.hero .wrap{grid-template-columns:1fr;gap:44px}.hero-copy{max-width:680px}.hero-studio{max-width:680px}h1.headline{max-width:12ch}}@media(max-width:480px){.hero{padding-top:68px}.prep-title{font-size:26px}.prep-head{padding:0 16px}.prep-body{padding-left:16px;padding-right:16px}.prep-plan{inset:24px 16px 22px}}@media(prefers-reduced-motion:reduce){.week-day::after,.week-day span,.prep-dayname span{animation:none}.week-day.mon::after{transform:scaleX(1)}.week-day.mon span{color:var(--ink)}.prep-plan{animation:none;display:none}.prep-plan.mon{display:block;opacity:1;transform:none}.prep-dayname .mon{opacity:1}}
 
   .section { padding: 72px 0; border-top: 1px solid var(--line); }
   .section-label { font-family: "Inter", sans-serif; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
@@ -597,19 +600,16 @@
       </div>
     </div>
     <div class="hero-studio" aria-label="An Atom Edu weekly preparation preview">
-      <div class="prep-head"><span>Your Friday</span><strong>Class prep</strong></div>
+      <div class="prep-head"><span class="prep-dayname"><span class="mon">Your Monday</span><span class="tue">Your Tuesday</span><span class="wed">Your Wednesday</span><span class="thu">Your Thursday</span><span class="fri">Your Friday</span></span><strong>Class prep</strong></div>
       <div class="week-strip" aria-hidden="true">
-        <div class="week-day">Mon</div><div class="week-day">Tue</div><div class="week-day">Wed</div><div class="week-day">Thu</div><div class="week-day active">Fri</div>
+        <div class="week-day mon"><span>Mon</span></div><div class="week-day tue"><span>Tue</span></div><div class="week-day wed"><span>Wed</span></div><div class="week-day thu"><span>Thu</span></div><div class="week-day fri"><span>Fri</span></div>
       </div>
       <div class="prep-body">
-        <div class="prep-label">Biology · Period 3</div>
-        <h2 class="prep-title">Cell transport<br>lab follow-up</h2>
-        <div class="prep-list">
-          <div class="prep-item"><span class="prep-num">01</span><span>Exit-ticket draft</span><span class="prep-state">Ready</span></div>
-          <div class="prep-item"><span class="prep-num">02</span><span>Slides for review</span><span class="prep-state">Ready</span></div>
-          <div class="prep-item"><span class="prep-num">03</span><span>Lab-feedback rubric</span><span class="prep-state">Ready</span></div>
-        </div>
-        <div class="prep-review"><span class="prep-check">✓</span><span>Prepared for your review. Nothing has been sent.</span></div>
+        <div class="prep-plan mon"><div class="prep-label">Algebra · Period 1</div><h2 class="prep-title">Linear equations<br>practice set</h2><div class="prep-list"><div class="prep-item"><span class="prep-num">01</span><span>Problem set</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">02</span><span>Answer key</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">03</span><span>Warm-up prompt</span><span class="prep-state">Ready</span></div></div><div class="prep-review"><span class="prep-check">✓</span><span>Prepared for your review. Nothing has been sent.</span></div></div>
+        <div class="prep-plan tue"><div class="prep-label">English · Period 4</div><h2 class="prep-title">The Crucible<br>seminar day</h2><div class="prep-list"><div class="prep-item"><span class="prep-num">01</span><span>Seminar guide</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">02</span><span>Writing rubric</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">03</span><span>Discussion prompts</span><span class="prep-state">Ready</span></div></div><div class="prep-review"><span class="prep-check">✓</span><span>Prepared for your review. Nothing has been sent.</span></div></div>
+        <div class="prep-plan wed"><div class="prep-label">History · Period 2</div><h2 class="prep-title">The New Deal<br>source workshop</h2><div class="prep-list"><div class="prep-item"><span class="prep-num">01</span><span>Source packet</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">02</span><span>Analysis guide</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">03</span><span>Check-for-understanding</span><span class="prep-state">Ready</span></div></div><div class="prep-review"><span class="prep-check">✓</span><span>Prepared for your review. Nothing has been sent.</span></div></div>
+        <div class="prep-plan thu"><div class="prep-label">Chemistry · Period 5</div><h2 class="prep-title">Reaction rates<br>lab check-in</h2><div class="prep-list"><div class="prep-item"><span class="prep-num">01</span><span>Safety reminder</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">02</span><span>Lab worksheet</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">03</span><span>Exit-ticket draft</span><span class="prep-state">Ready</span></div></div><div class="prep-review"><span class="prep-check">✓</span><span>Prepared for your review. Nothing has been sent.</span></div></div>
+        <div class="prep-plan fri"><div class="prep-label">Biology · Period 3</div><h2 class="prep-title">Cell transport<br>lab follow-up</h2><div class="prep-list"><div class="prep-item"><span class="prep-num">01</span><span>Exit-ticket draft</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">02</span><span>Slides for review</span><span class="prep-state">Ready</span></div><div class="prep-item"><span class="prep-num">03</span><span>Lab-feedback rubric</span><span class="prep-state">Ready</span></div></div><div class="prep-review"><span class="prep-check">✓</span><span>Prepared for your review. Nothing has been sent.</span></div></div>
       </div>
       <div class="prep-sweep" aria-hidden="true"></div>
     </div>

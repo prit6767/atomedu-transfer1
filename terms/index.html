@@ -89,15 +89,20 @@
   .ft-cols { display: flex; gap: 64px; flex-wrap: wrap; }.ft-col { display: flex; flex-direction: column; gap: 11px; }.ft-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 3px; }
   .ft-col a { font-size: 13.5px; color: var(--ink-soft); text-decoration: none; }.ft-col a:hover { color: var(--ink); }
   .ft-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }.ft-bottom a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }.ft-bottom a:hover { color: var(--ink); }
-  @media (max-width: 640px) { .nav-right a:not(.nav-cta) { display: none; }.ft-top { flex-direction: column; gap: 32px; }.ft-cols { gap: 40px; } }
+  /* Shared public-site shell: the clean About-page header and footer. */
+  .nav { height: 70px; border-bottom: 1px solid var(--line); display: flex; align-items: center; background: var(--bg); }
+  .nav-in { height: auto; width: 100%; }.brand { font-size: 20px; font-weight: 800; letter-spacing: -.055em; }.brand-mark { display: none; }.brand span { color: #2f63e9; }
+  .nav-right { gap: 22px; }.nav-link { padding: 0; border-radius: 0; font-size: 13px; font-weight: 600; }.nav-link:hover, .nav-link.active { background: transparent; }.nav-cta { padding: 10px 15px; border-radius: 0; border: 0; font-size: 13px; }
+  .ft { padding: 30px 0; font-size: 12px; }.ft-top { padding: 0; gap: 20px; }.ft-brand, .ft-tag, .ft-col, .ft-h, .ft-bottom { display: none; }.ft-cols { gap: 20px; }.ft-cols a { color: var(--muted); font-size: 12px; }.ft-cols a:hover { color: var(--ink); }
+  @media (max-width: 640px) { .nav-right a:not(.nav-cta) { display: none; }.ft-top { flex-direction: column; gap: 14px; }.ft-cols { gap: 16px; } }
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="wrap nav-in">
-    <a class="brand" href="/"><div class="brand-mark"></div><span>Atom Edu</span></a>
-    <div class="nav-right"><a class="nav-link" href="/#how">How it works</a><a class="nav-link" href="/#inside">Inside</a><a class="nav-link" href="/about/">About</a><a class="nav-link active" href="/terms/">Legal</a><a class="nav-cta" href="/#signup">Get started</a></div>
+    <a class="brand" href="/">atom<span>edu</span></a>
+    <div class="nav-right"><a class="nav-link" href="/">Home</a><a class="nav-link" href="/about/">About</a><a class="nav-link active" href="/terms/">Legal</a><a class="nav-cta" href="/#signup">Get started</a></div>
   </div>
 </nav>
 
@@ -197,7 +202,7 @@
   <p>Questions or concerns: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
 </main>
 
-<footer class="ft"><div class="wrap"><div class="ft-top"><div class="ft-brand"><a class="brand" href="/"><div class="brand-mark"></div><span>Atom Edu</span></a><p class="ft-tag">Free drafting tools for teachers. Atom drafts, you approve everything before it reaches a student.</p></div><div class="ft-cols"><div class="ft-col"><div class="ft-h">Product</div><a href="/#how">How it works</a><a href="/#inside">Inside</a><a href="/#signup">Get started</a></div><div class="ft-col"><div class="ft-h">Legal</div><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a></div><div class="ft-col"><div class="ft-h">Company</div><a href="/about/">About</a><a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a><a href="mailto:hello@atom-edu.org">Contact</a></div></div></div><div class="ft-bottom"><div>&copy; 2026 Atom Edu</div><div>A subsidiary of <a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a>.</div></div></div></footer>
+<footer class="ft"><div class="wrap"><div class="ft-top"><div>&copy; 2026 Atom Edu. A product of DocuPeer. Free forever for teachers.</div><div class="ft-cols"><a href="/">Home</a><a href="/about/">About</a><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="mailto:hello@atom-edu.org">Contact</a></div></div></div></footer>
 
 </body>
 </html>

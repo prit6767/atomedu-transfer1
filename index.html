@@ -77,6 +77,18 @@
   .arrow { display:inline-block; transition: transform .2s ease; }
   .btn:hover .arrow { transform: translateX(3px); }
   .fine { font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted); margin-top: 18px; }
+  /* Atom's public controls use a crisp editorial edge, never pill styling. */
+  button, .btn, .nav-cta, .tr-upload, .prov, .presenton-actions a { border-radius: 0 !important; }
+
+  .hero-studio { position: relative; max-width: 720px; margin-top: 62px; border: 1px solid var(--line-strong); background: var(--bg-elev); display: grid; grid-template-columns: 1.5fr .8fr; min-height: 286px; overflow: hidden; }
+  .studio-paper { padding: 30px 34px; border-right: 1px solid var(--line); position: relative; }
+  .studio-kicker { font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; color: var(--blue); margin-bottom: 18px; }
+  .studio-title { font-family: "Fraunces", Georgia, serif; font-size: 29px; letter-spacing: -.03em; line-height: 1.05; margin: 0 0 19px; }
+  .studio-line { height: 1px; background: var(--line); margin: 11px 0; max-width: 88%; }.studio-line.short { max-width: 56%; }
+  .studio-margin { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--blue); }
+  .studio-review { display: flex; flex-direction: column; justify-content: space-between; padding: 25px 24px; background: color-mix(in srgb, var(--blue) 5%, var(--bg)); }
+  .review-label { font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); font-weight: 800; }.review-note { font-family: "Fraunces", Georgia, serif; font-size: 21px; line-height: 1.15; letter-spacing: -.025em; margin: 16px 0 auto; }.review-note em { font-weight: 300; }.review-approved { border-top: 1px solid var(--line-strong); padding-top: 14px; font-family: "Inter", sans-serif; font-size: 11px; line-height: 1.45; color: var(--ink-soft); }.review-approved b { display: block; color: var(--blue); letter-spacing: .1em; text-transform: uppercase; font-size: 10px; margin-bottom: 5px; }
+  @media(max-width:640px){.hero-studio{grid-template-columns:1fr;margin-top:44px}.studio-paper{border-right:0;border-bottom:1px solid var(--line)}.studio-review{min-height:180px}.studio-title{font-size:25px}}
 
   .section { padding: 72px 0; border-top: 1px solid var(--line); }
   .section-label { font-family: "Inter", sans-serif; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
@@ -99,13 +111,6 @@
   .provider-row .pl { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-right: 8px; }
   .provider-row .pchip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); }
   .provider-row .pchip .pi { width: 18px; height: 18px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 11px; }
-
-  .inside-grid { margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 46px 54px; }
-  @media (max-width: 860px) { .inside-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 44px; } }
-  @media (max-width: 540px) { .inside-grid { grid-template-columns: 1fr; gap: 34px; } }
-  .inside-cell .num { display: block; font-family: "Inter", sans-serif; font-size: 12px; letter-spacing: 0.16em; color: var(--stamp); font-weight: 700; margin-bottom: 13px; }
-  .inside-cell h3 { font-family: "Fraunces", Georgia, serif; font-size: 23px; font-weight: 400; letter-spacing: -0.02em; margin: 0 0 8px; color: var(--ink); line-height: 1.1; }
-  .inside-cell p { font-family: "Inter", sans-serif; font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; max-width: 34ch; }
 
   .parentco { border-top: 1px solid var(--line); padding: 90px 0; }
   .parentco-head { text-align: center; max-width: 640px; margin: 0 auto 44px; }
@@ -576,6 +581,10 @@
       <button class="btn" data-signup>Get started <span class="arrow">&rarr;</span></button>
       <a class="btn ghost" href="#how">See how it works</a>
     </div>
+    <div class="hero-studio" aria-label="Atom Edu teacher review preview">
+      <div class="studio-paper"><div class="studio-margin"></div><div class="studio-kicker">Draft workspace</div><h2 class="studio-title">Evidence and reasoning<br>Exit ticket</h2><div class="studio-line"></div><div class="studio-line"></div><div class="studio-line short"></div></div>
+      <div class="studio-review"><div class="review-label">Teacher review</div><p class="review-note">“Make question 3 more <em>open-ended.</em>”</p><div class="review-approved"><b>Ready when you are</b>Nothing is shared until you approve it.</div></div>
+    </div>
   </div>
 </section>
 
@@ -591,24 +600,6 @@
   </div>
 </section>
 
-<section class="section" id="inside">
-  <div class="wrap">
-    <div class="section-label">Inside the workspace</div>
-    <h2 class="big">Everything a teacher makes, <span class="it">in one place.</span></h2>
-    <div class="inside-grid">
-      <div class="inside-cell"><span class="num">01</span><h3>Assignments</h3><p>Printable worksheets with name, date, period, and point values.</p></div>
-      <div class="inside-cell"><span class="num">02</span><h3>Quizzes and tests</h3><p>Multiple choice, short answer, and diagrams, with an answer key.</p></div>
-      <div class="inside-cell"><span class="num">03</span><h3>Rubrics</h3><p>Rows tied to a standard. Attach one to any assignment you make.</p></div>
-      <div class="inside-cell"><span class="num">04</span><h3>Slides and boards</h3><p>Full slides for the projector, with speaker notes for the board.</p></div>
-      <div class="inside-cell"><span class="num">05</span><h3>Docs and handouts</h3><p>Family letters, syllabi, permission slips, and newsletters.</p></div>
-      <div class="inside-cell"><span class="num">06</span><h3>Reading passages</h3><p>Leveled to your class, with comprehension questions attached.</p></div>
-      <div class="inside-cell"><span class="num">07</span><h3>Lesson plans</h3><p>One class period, or a full unit, with time budgets and materials.</p></div>
-      <div class="inside-cell"><span class="num">08</span><h3>Notes home</h3><p>You write it. Atom checks the tone and drafts a translation.</p></div>
-      <div class="inside-cell"><span class="num">09</span><h3>Differentiation</h3><p>The same assignment, adapted for reading level, IEP, or your ELL group.</p></div>
-    </div>
-  </div>
-</section>
-
 <section class="parentco">
   <div class="wrap">
     <div class="parentco-head">
@@ -619,7 +610,7 @@
     <div class="note-card">
       <div class="note-kicker">Leadership note</div>
       <h3 class="note-title">A word from DocuPeer</h3>
-      <div class="note-by">Rahul Awasthi, Owner &nbsp;&middot;&nbsp; Aryan Patel, Owner</div>
+      <div class="note-by">Rahul Awasthi, Owner &nbsp;&middot;&nbsp; Aryan Patel, Co-CEO</div>
       <p class="note-body">DocuPeer builds tools that put good work within reach of the people who need it, with no paywall standing in front. Atom Edu is part of that. We own it together, fifty and fifty, and the two of us make one promise we do not intend to break: Atom Edu stays one hundred percent free for teachers, always. We steer the company from the very top and set that direction. The day to day we entrust to people we believe in: Pritam Avuthu, Co-CEO, and Akshaj Sanikommu, Co-CEO, who run Atom Edu day to day. Atom drafts, the teacher approves, and none of it ever costs a classroom a cent.</p>
     </div>
     <a class="parentco-link" href="https://docupeer.org" target="_blank" rel="noopener">Visit DocuPeer &rarr;</a>
@@ -648,7 +639,7 @@
 </section>
 
 <footer class="ft">
-  <div class="wrap"><div class="ft-main"><div class="ft-intro"><a class="ft-wordmark" href="/">atom<span>edu</span></a><p>Free drafting tools that leave teachers in charge of every final decision.</p></div><div class="ft-grid"><div class="ft-col"><h2>Product</h2><a href="#how">How it works</a><a href="#inside">Inside Atom</a><a data-signup>Get started</a></div><div class="ft-col"><h2>Company</h2><a href="/about/">About</a><a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a><a href="mailto:hello@atom-edu.org">Contact</a></div><div class="ft-col"><h2>Legal</h2><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="/terms/#terms">Use of Atom</a></div></div></div><div class="ft-bottom"><span>&copy; 2026 Atom Edu</span><span>Built by <a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a> for teachers.</span><a href="https://atom-edu.org">atom-edu.org</a></div></div>
+  <div class="wrap"><div class="ft-main"><div class="ft-intro"><a class="ft-wordmark" href="/">atom<span>edu</span></a><p>Free drafting tools that leave teachers in charge of every final decision.</p></div><div class="ft-grid"><div class="ft-col"><h2>Product</h2><a href="#how">How it works</a><a href="#top">Teacher review</a><a data-signup>Get started</a></div><div class="ft-col"><h2>Company</h2><a href="/about/">About</a><a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a><a href="mailto:hello@atom-edu.org">Contact</a></div><div class="ft-col"><h2>Legal</h2><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="/terms/#terms">Use of Atom</a></div></div></div><div class="ft-bottom"><span>&copy; 2026 Atom Edu</span><span>Built by <a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a> for teachers.</span><a href="https://atom-edu.org">atom-edu.org</a></div></div>
 </footer>
 </div>
 

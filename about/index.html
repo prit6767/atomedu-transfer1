@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>About Atom Edu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Meet the team behind Atom Edu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f4efe4;--elev:#fff;--ink:#0b1226;--ink-soft:#2a324a;--muted:#5a6178;--line:rgba(11,18,38,.12);--line-strong:rgba(11,18,38,.22);--blue:#2f63e9}
+  *{box-sizing:border-box} html,body{margin:0} body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+  nav{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .brand{font-size:20px;font-weight:800;letter-spacing:-.055em;text-decoration:none}.brand span{color:var(--blue)}
+  .nav-links{display:flex;align-items:center;gap:22px}.nav-links a{font-size:13px;font-weight:600;color:var(--ink-soft);text-decoration:none}.nav-links a:hover,.nav-links .active{color:var(--ink)}
+  .nav-cta{background:var(--ink);color:var(--bg)!important;padding:10px 15px}.nav-cta:hover{opacity:.88}
+  main{padding:86px 0 96px}.eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin:0 0 18px}
+  h1{font-family:"Fraunces",Georgia,serif;font-size:clamp(52px,8vw,104px);font-weight:400;letter-spacing:-.06em;line-height:.94;margin:0;max-width:850px}.it{font-style:italic;font-weight:300}
+  .intro{font-size:17px;line-height:1.65;color:var(--ink-soft);max-width:620px;margin:30px 0 0}.rule{height:1px;background:var(--line-strong);margin:82px 0 30px}
+  .team-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:26px}.team-head h2{font-family:"Fraunces",Georgia,serif;font-size:38px;font-weight:400;letter-spacing:-.04em;line-height:1;margin:0}.team-head p{font-size:13px;color:var(--muted);margin:0;max-width:315px;line-height:1.5}
+  .team{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  .person{min-height:415px;background:var(--elev);border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column}.photo{width:100%;aspect-ratio:1/1.03;overflow:hidden;background:#d3d0ca}.photo img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block;filter:saturate(.92)}.person:nth-child(1) .photo img{object-position:center 18%}.person:nth-child(2) .photo img{object-position:center 15%}.person:nth-child(3) .photo img{object-position:center 16%}.person:nth-child(4) .photo img{object-position:center 14%}
+  .person-info{padding:19px 20px 23px}.role{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin:0 0 8px}.name{font-family:"Fraunces",Georgia,serif;font-size:25px;font-weight:400;letter-spacing:-.035em;line-height:1.05;margin:0}
+  .statement{margin-top:72px;padding:44px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 2fr;gap:48px}.statement h2{font-family:"Fraunces",Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-.04em;line-height:1;margin:0}.statement p{font-family:"Fraunces",Georgia,serif;font-size:23px;line-height:1.35;letter-spacing:-.025em;margin:0;color:var(--ink-soft)}
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:12px}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.foot a{text-decoration:none}.foot a:hover{color:var(--ink)}.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+  @media(max-width:780px){.wrap{padding:0 20px}.nav-links a:not(.nav-cta){display:none}main{padding:58px 0 70px}.rule{margin:58px 0 24px}.team-head{align-items:start;flex-direction:column}.team{grid-template-columns:repeat(2,1fr)}.person{min-height:0}.statement{grid-template-columns:1fr;gap:22px;margin-top:48px}.statement p{font-size:20px}}
+  @media(max-width:430px){.team{grid-template-columns:1fr}.brand{font-size:19px}}
+</style>
+</head>
+<body>
+<nav class="wrap">
+  <a class="brand" href="/">atom<span>edu</span></a>
+  <div class="nav-links"><a href="/">Home</a><a class="active" href="/about/">About</a><a href="/terms/">Legal</a><a class="nav-cta" href="/#signup">Get started</a></div>
+</nav>
+<main class="wrap">
+  <p class="eyebrow">About Atom Edu</p>
+  <h1>Built for teachers.<br><span class="it">Led by people</span> who care.</h1>
+  <p class="intro">Atom Edu exists to make teacher work lighter without taking teachers out of the work. Every tool starts with a draft. Every final decision stays with the educator.</p>
+  <div class="rule"></div>
+  <div class="team-head"><h2>Our leadership</h2><p>Meet the team responsible for the direction and stewardship of Atom Edu.</p></div>
+  <section class="team" aria-label="Atom Edu leadership team">
+    <article class="person"><div class="photo"><img src="/public/team/pritam.jpg" alt="Pritam Avuthu"></div><div class="person-info"><p class="role">CEO</p><h3 class="name">Pritam Avuthu</h3></div></article>
+    <article class="person"><div class="photo"><img src="/public/team/akshaj.jpeg" alt="Akshaj Sanikommu"></div><div class="person-info"><p class="role">Co-CEO</p><h3 class="name">Akshaj Sanikommu</h3></div></article>
+    <article class="person"><div class="photo"><img src="/public/team/rahul.jpeg" alt="Rahul Awasthi"></div><div class="person-info"><p class="role">Owner</p><h3 class="name">Rahul Awasthi</h3></div></article>
+    <article class="person"><div class="photo"><img src="/public/team/aryan.jpeg" alt="Aryan Patel"></div><div class="person-info"><p class="role">Owner</p><h3 class="name">Aryan Patel</h3></div></article>
+  </section>
+  <section class="statement"><h2>Our point of view.</h2><p>Teachers should never have to choose between saving time and doing work they can stand behind. Atom handles the first draft. Teachers keep the judgment, context, and final say.</p></section>
+</main>
+<footer><div class="wrap foot"><div>&copy; 2026 Atom Edu</div><div class="foot-links"><a href="/about/">About</a><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a></div></div></footer>
+</body>
+</html>

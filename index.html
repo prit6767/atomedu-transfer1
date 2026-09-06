@@ -42,7 +42,7 @@
     background: var(--bg);
     border-bottom: 1px solid var(--line);
   }
-  .nav-in { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .nav-in { display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1180px; }
   .nav .brand { display: block; font-family: "Inter", sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.055em; }
   .nav .brand-mark { display: none; }
   .nav .brand span { color: var(--blue); }
@@ -132,11 +132,11 @@
   .partner-name { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 500; letter-spacing: -0.015em; }
   .partner-role { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
 
-  .ft { border-top: 1px solid var(--line); background: var(--bg); padding: 30px 0; font-family: "Inter", sans-serif; font-size: 12px; color: var(--muted); }
-  .ft-top { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-  .ft-cols { display: flex; gap: 20px; flex-wrap: wrap; }
-  .ft-cols a { color: var(--muted); text-decoration: none; }.ft-cols a:hover { color: var(--ink); }
-  @media (max-width: 640px) { .nav-right { gap: 14px; } .nav-right .nav-link:nth-child(-n+2) { display: none; } }
+  .ft { border-top: 1px solid var(--line); background: var(--bg); padding: 54px 0 28px; font-family: "Inter", sans-serif; font-size: 13px; color: var(--muted); }
+  .ft-main { display: flex; justify-content: space-between; gap: 56px; flex-wrap: wrap; padding-bottom: 42px; }.ft-intro { max-width: 280px; }.ft-wordmark { display: inline-block; font-size: 20px; font-weight: 800; letter-spacing: -.055em; color: var(--ink); margin-bottom: 12px; }.ft-wordmark span { color: var(--blue); }.ft-intro p { font-size: 13px; line-height: 1.6; margin: 0; }
+  .ft-grid { display: grid; grid-template-columns: repeat(3, minmax(112px, 1fr)); gap: 44px; }.ft-col { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }.ft-col h2 { font: 700 10px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 3px; }.ft-col a { color: var(--ink-soft); text-decoration: none; }.ft-col a:hover { color: var(--ink); }
+  .ft-bottom { border-top: 1px solid var(--line); padding-top: 21px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12px; }.ft-bottom a { color: inherit; text-decoration: none; }.ft-bottom a:hover { color: var(--ink); }
+  @media (max-width: 640px) { .nav-right { gap: 14px; } .nav-right .nav-link:nth-child(-n+2) { display: none; }.ft { padding-top: 40px; }.ft-main { gap: 36px; }.ft-grid { width: 100%; grid-template-columns: repeat(3, 1fr); gap: 20px; } }
 
 
   /* workspace */
@@ -558,12 +558,11 @@
 <div id="landing">
 <nav class="nav">
   <div class="wrap nav-in">
-    <a class="brand" href="#top"><div class="brand-mark"></div>atom<span>edu</span></a>
+    <a class="brand" href="/"><div class="brand-mark"></div>atom<span>edu</span></a>
     <div class="nav-right">
-      <a class="nav-link" href="#how">How it works</a>
-      <a class="nav-link" href="#inside">Inside</a>
+      <a class="nav-link active" href="/">Home</a>
       <a class="nav-link" href="/about/">About</a>
-      <button class="nav-link ghost" data-signin>Sign in</button>
+      <a class="nav-link" href="/terms/">Legal</a>
       <button class="nav-cta" data-signup>Get started</button>
     </div>
   </div>
@@ -649,7 +648,7 @@
 </section>
 
 <footer class="ft">
-  <div class="wrap"><div class="ft-top"><div>&copy; 2026 Atom Edu. A product of DocuPeer. Free forever for teachers.</div><div class="ft-cols"><a href="/">Home</a><a href="/about/">About</a><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="mailto:hello@atom-edu.org">Contact</a></div></div></div>
+  <div class="wrap"><div class="ft-main"><div class="ft-intro"><a class="ft-wordmark" href="/">atom<span>edu</span></a><p>Free drafting tools that leave teachers in charge of every final decision.</p></div><div class="ft-grid"><div class="ft-col"><h2>Product</h2><a href="#how">How it works</a><a href="#inside">Inside Atom</a><a data-signup>Get started</a></div><div class="ft-col"><h2>Company</h2><a href="/about/">About</a><a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a><a href="mailto:hello@atom-edu.org">Contact</a></div><div class="ft-col"><h2>Legal</h2><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="/terms/#terms">Use of Atom</a></div></div></div><div class="ft-bottom"><span>&copy; 2026 Atom Edu</span><span>Built by <a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a> for teachers.</span><a href="https://atom-edu.org">atom-edu.org</a></div></div>
 </footer>
 </div>
 

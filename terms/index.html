@@ -93,8 +93,8 @@
   .nav { height: 70px; border-bottom: 1px solid var(--line); display: flex; align-items: center; background: var(--bg); }
   .nav-in { height: auto; width: 100%; }.brand { font-size: 20px; font-weight: 800; letter-spacing: -.055em; }.brand-mark { display: none; }.brand span { color: #2f63e9; }
   .nav-right { gap: 22px; }.nav-link { padding: 0; border-radius: 0; font-size: 13px; font-weight: 600; }.nav-link:hover, .nav-link.active { background: transparent; }.nav-cta { padding: 10px 15px; border-radius: 0; border: 0; font-size: 13px; }
-  .ft { padding: 30px 0; font-size: 12px; }.ft-top { padding: 0; gap: 20px; }.ft-brand, .ft-tag, .ft-col, .ft-h, .ft-bottom { display: none; }.ft-cols { gap: 20px; }.ft-cols a { color: var(--muted); font-size: 12px; }.ft-cols a:hover { color: var(--ink); }
-  @media (max-width: 640px) { .nav-right a:not(.nav-cta) { display: none; }.ft-top { flex-direction: column; gap: 14px; }.ft-cols { gap: 16px; } }
+  .ft { padding: 54px 0 28px; font-size: 13px; }.ft-main { display: flex; justify-content: space-between; gap: 56px; flex-wrap: wrap; padding-bottom: 42px; }.ft-intro { max-width: 280px; }.ft-wordmark { display: inline-block; font-size: 20px; font-weight: 800; letter-spacing: -.055em; color: var(--ink); margin-bottom: 12px; text-decoration: none; }.ft-wordmark span { color: #2f63e9; }.ft-intro p { font-size: 13px; line-height: 1.6; margin: 0; }.ft-grid { display: grid; grid-template-columns: repeat(3, minmax(112px, 1fr)); gap: 44px; }.ft-col { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }.ft-col h2 { display: block; font: 700 10px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 3px; }.ft-col a { color: var(--ink-soft); font-size: 13px; text-decoration: none; }.ft-col a:hover { color: var(--ink); }.ft-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 21px; font-size: 12px; }.ft-bottom a { color: inherit; text-decoration: none; }.ft-bottom a:hover { color: var(--ink); }
+  @media (max-width: 640px) { .nav-right a:not(.nav-cta) { display: none; }.ft { padding-top: 40px; }.ft-main { gap: 36px; }.ft-grid { width: 100%; grid-template-columns: repeat(3, 1fr); gap: 20px; } }
 </style>
 </head>
 <body>
@@ -202,7 +202,7 @@
   <p>Questions or concerns: <a href="mailto:hello@atom-edu.org">hello@atom-edu.org</a>.</p>
 </main>
 
-<footer class="ft"><div class="wrap"><div class="ft-top"><div>&copy; 2026 Atom Edu. A product of DocuPeer. Free forever for teachers.</div><div class="ft-cols"><a href="/">Home</a><a href="/about/">About</a><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="mailto:hello@atom-edu.org">Contact</a></div></div></div></footer>
+<footer class="ft"><div class="wrap"><div class="ft-main"><div class="ft-intro"><a class="ft-wordmark" href="/">atom<span>edu</span></a><p>Free drafting tools that leave teachers in charge of every final decision.</p></div><div class="ft-grid"><div class="ft-col"><h2>Product</h2><a href="/#how">How it works</a><a href="/#inside">Inside Atom</a><a href="/#signup">Get started</a></div><div class="ft-col"><h2>Company</h2><a href="/about/">About</a><a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a><a href="mailto:hello@atom-edu.org">Contact</a></div><div class="ft-col"><h2>Legal</h2><a href="/terms/">Terms</a><a href="/terms/#privacy">Privacy</a><a href="/terms/#terms">Use of Atom</a></div></div></div><div class="ft-bottom"><span>&copy; 2026 Atom Edu</span><span>Built by <a href="https://docupeer.org" target="_blank" rel="noopener">DocuPeer</a> for teachers.</span><a href="https://atom-edu.org">atom-edu.org</a></div></div></footer>
 
 </body>
 </html>
